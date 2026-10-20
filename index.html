@@ -23,6 +23,13 @@ main{max-width:1168px;margin:48px auto 64px;padding:0 28px}.intro{text-align:cen
 
 @media(max-width:600px){.header-benefit{font-size:11px}}
 
+.mode-bar{display:flex;justify-content:flex-end;margin:16px 6px 0;padding-top:12px;border-top:1px solid #edf0e9}.expert-toggle{display:flex;align-items:center;gap:10px;border:0;background:none;color:#4b5942;padding:5px 0;font-size:12px;font-weight:650;min-height:32px}.switch-track{display:block;width:30px;height:18px;padding:3px;border-radius:20px;background:#dce3d5;transition:background .15s}.switch-track::before{content:"";display:block;width:12px;height:12px;background:white;border-radius:50%;box-shadow:0 1px 3px #0002;transition:transform .15s}.expert-toggle[aria-checked=true] .switch-track{background:#24311d}.expert-toggle[aria-checked=true] .switch-track::before{transform:translateX(12px)}.expert-toggle:disabled{opacity:.5}
+.expert-panel{border-top:1px solid #e2e8dc;margin:12px 6px 0;padding:22px 0 6px}.expert-summary{display:grid;grid-template-columns:1.2fr 1fr auto;align-items:center;gap:20px}.expert-summary output{display:block;margin-top:8px;font-size:13px;line-height:1.6;color:#4b5942;font-variant-numeric:tabular-nums}.quality-control{max-width:320px;margin-top:24px}.quality-control input{width:100%;margin:14px 0 4px;accent-color:#24311d}.quality-control output{font-size:12px;font-weight:650}.batch-section{border-top:1px solid #e2e8dc;margin-top:24px;padding-top:20px}.batch-heading,.batch-summary{display:flex;align-items:center;justify-content:space-between;gap:12px}.batch-summary{margin-top:20px;font-size:12px;font-weight:650}.batch-list{list-style:none;padding:0;margin:12px 0 20px;max-height:300px;overflow:auto}.batch-list li{display:grid;grid-template-columns:minmax(0,1fr) minmax(80px,40%);gap:14px;padding:10px 0;border-bottom:1px solid #edf0e9;font-size:12px;line-height:1.5}.batch-list li>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.batch-list li>span:last-child{text-align:right;color:#65725b}.batch-list li.failed>span:last-child{color:#a23327}.batch-actions{display:flex;gap:12px;flex-wrap:wrap}.batch-actions .primary{width:auto;min-width:180px}.batch-mode .actions{display:none}.batch-mode .controls{grid-template-columns:minmax(190px,1fr) minmax(180px,230px) 110px}.detail-dialog{width:min(1200px,calc(100vw - 32px));max-width:1200px;max-height:92vh;border:1px solid #dce3d5;border-radius:16px;background:#fff;color:#20281f;padding:24px;box-shadow:0 20px 80px #0003}.detail-dialog::backdrop{background:#17201288}.detail-heading{display:flex;align-items:center;justify-content:space-between;gap:14px}.detail-heading h2{font-size:18px;letter-spacing:-.5px;margin:0}.detail-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-top:18px}.detail-grid h3{font-size:12px;margin:0 0 9px}.detail-pane{height:min(55vh,520px);overflow:auto;border:1px solid #e2e8dc;border-radius:8px;background:transparent}.detail-pane img{display:block;max-width:none;max-height:none}.detail-pane:focus-visible{outline:2px solid #658447;outline-offset:3px}
+@media(max-width:1000px){.batch-mode .controls{grid-template-columns:1fr 1fr}.batch-mode .export-control{grid-column:1 / -1;max-width:140px}.expert-summary{grid-template-columns:1fr 1fr}.expert-summary .text-button{grid-column:1 / -1;justify-self:start}}
+@media(max-width:600px){.expert-panel{margin-inline:2px}.mode-bar{margin-inline:2px}.expert-summary{gap:18px 12px}.expert-summary output{font-size:11px}.expert-summary .control-label{font-size:12px}.batch-heading{align-items:flex-start}.batch-heading .control-label{max-width:160px}.batch-summary{align-items:flex-start}.batch-summary .text-button{font-size:10px}.batch-list li{font-size:11px}.batch-actions .primary{width:100%;min-width:0}.detail-dialog{padding:16px}.detail-grid{grid-template-columns:1fr}.detail-pane{height:25vh}.detail-heading h2{font-size:16px}.batch-mode .controls{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.batch-mode .export-control{max-width:none}}
+
+@media(max-width:600px){.expert-mode.has-image .scale-buttons{gap:2px;padding:3px}.expert-mode.has-image .scale{min-width:36px;height:36px;font-size:13px}}
+
 </style>
   
 </head>
@@ -50,7 +57,7 @@ main{max-width:1168px;margin:48px auto 64px;padding:0 28px}.intro{text-align:cen
           <div class="comparison" id="comparison">
             <img id="original" data-i18n-alt="originalAlt" alt="Original image">
             <div id="result-layer" class="result-layer" hidden><img id="result" data-i18n-alt="resultAlt" alt="AI upscaled image"></div>
-            <div class="compare-labels" id="compare-labels" hidden><span data-i18n="original">Original</span><span data-i18n="result">AI result</span></div>
+            <div class="compare-labels" id="compare-labels" hidden><span data-i18n="original">Original</span><span id="result-label" data-i18n="result">AI result</span></div>
             <div class="divider" id="divider" hidden><span>‹ ›</span></div>
             <input id="compare" type="range" min="0" max="100" value="50" data-i18n-aria="compare" aria-label="Compare original and upscaled image" hidden>
           </div>
@@ -58,7 +65,7 @@ main{max-width:1168px;margin:48px auto 64px;padding:0 28px}.intro{text-align:cen
         </div>
       </div>
       <div class="controls">
-        <div class="scale-control"><div><span class="control-label" data-i18n="scale">Upscale</span><span class="control-hint" data-i18n="scaleHint">More pixels, sharper detail</span></div><div class="scale-buttons" role="group" data-i18n-aria="scaleGroup" aria-label="Upscale factor"><button class="scale active" data-scale="2" aria-pressed="true" type="button">2×</button><button class="scale" data-scale="4" aria-pressed="false" type="button">4×</button></div></div>
+        <div class="scale-control"><div><span class="control-label" data-i18n="scale">Upscale</span><span class="control-hint" data-i18n="scaleHint">More pixels, sharper detail</span></div><div class="scale-buttons" role="group" data-i18n-aria="scaleGroup" aria-label="Upscale factor"><button class="scale expert-only" data-scale="1" aria-pressed="false" type="button" data-i18n-title="originalSize" title="Keep original pixel dimensions" hidden>1×</button><button class="scale active" data-scale="2" aria-pressed="true" type="button">2×</button><button class="scale" data-scale="4" aria-pressed="false" type="button">4×</button></div></div>
         <div class="print-settings" id="print-settings" hidden>
           <div class="dpi-control" data-i18n-title="dpiHelp" title="DPI controls print size. Use 2× or 4× to add pixels.">
             <div class="dpi-heading"><label class="control-label" for="dpi" data-i18n="dpi">Print resolution</label><output id="dpi-value" for="dpi">300 DPI</output></div>
@@ -70,16 +77,24 @@ main{max-width:1168px;margin:48px auto 64px;padding:0 28px}.intro{text-align:cen
           <div class="export-control"><select id="format" data-i18n-aria="format" aria-label="Export format"><option value="png">PNG</option><option value="jpeg">JPG</option></select></div>
         </div>
         <div class="actions">
-          <button class="primary" id="upscale" type="button" disabled><span data-i18n="upscale">Upscale image</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></button>
+          <button class="primary" id="upscale" type="button" disabled><span id="upscale-label" data-i18n="upscale">Upscale image</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></button>
           <a class="primary download" id="download" hidden download><span id="download-label"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v12m-4-4 4 4 4-4M5 19h14"/></svg></a>
         </div>
         <small id="format-note" hidden data-i18n="formatNote">Transparent areas will be white in JPG.</small>
       </div>
+      <div class="mode-bar"><button id="expert-toggle" class="expert-toggle" type="button" role="switch" aria-checked="false" aria-controls="expert-panel"><span data-i18n="expert">Expert</span><span class="switch-track" aria-hidden="true"></span></button></div>
+      <section id="expert-panel" class="expert-panel" hidden aria-label="Expert" data-i18n-aria="expert">
+        <div class="expert-summary"><div><span class="control-label" data-i18n="pixelDimensions">Output dimensions</span><output id="expert-pixels" data-i18n="chooseToMeasure">Choose an image to see its dimensions.</output></div><div><span class="control-label" data-i18n="printDimensions">Print size</span><output id="expert-print">—</output></div><button id="detail-open" class="text-button" type="button" disabled data-i18n="detail">Detail at 100%</button></div>
+        <div id="quality-control" class="quality-control" hidden><div class="dpi-heading"><label class="control-label" for="quality" data-i18n="quality">JPG quality</label><output id="quality-value" for="quality">95 %</output></div><input id="quality" type="range" min="50" max="100" step="1" value="95" aria-describedby="quality-help"><span class="control-hint" id="quality-help" data-i18n="qualityHelp">Higher quality creates a larger file.</span></div>
+        <p id="expert-export-size" class="control-hint" hidden></p>
+        <div class="batch-section"><div class="batch-heading"><span class="control-label" data-i18n="batch">Process multiple images</span><button id="batch-choose" class="text-button" type="button" data-i18n="batchChoose">Choose images</button></div><p class="control-hint" data-i18n="batchHelp">Up to 10 images, 20 MB each, 100 MB total. The settings above apply to all images.</p><input id="batch-files" class="visually-hidden" type="file" accept="image/png,image/jpeg,image/webp" multiple><div id="batch-queue" hidden><div class="batch-summary"><span id="batch-count"></span><button id="batch-clear" class="text-button" type="button" data-i18n="singleImage">Back to one image</button></div><ul id="batch-list" class="batch-list"></ul><div class="batch-actions"><button id="batch-start" class="primary" type="button" data-i18n="batchStart">Process queue</button><a id="batch-download" class="primary download" hidden download data-i18n="batchZip">Download ZIP</a></div><p id="batch-status" class="control-hint" role="status" aria-live="polite"></p></div></div>
+      </section>
       <div class="progress-wrap" id="progress-wrap" hidden><div class="progress-copy"><span id="progress-text" role="status" aria-live="polite" data-i18n="preparing">Preparing AI…</span><button id="cancel" type="button" class="text-button" data-i18n="cancel">Cancel</button></div><progress id="progress" max="100" value="0" data-i18n-aria="progress" aria-label="Upscaling progress"></progress></div>
       <p class="message" id="message" role="alert" hidden></p>
     </section>
     <p class="privacy"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="5" y="9" width="10" height="8" rx="2"/><path d="M7 9V6a3 3 0 0 1 6 0v3"/></svg><span data-i18n="privacy">Your image stays on your device. Nothing is uploaded.</span></p>
   </main>
+  <dialog id="detail-dialog" class="detail-dialog" aria-labelledby="detail-title"><div class="detail-heading"><h2 id="detail-title" data-i18n="detailTitle">Compare detail · 100%</h2><button id="detail-close" class="text-button" type="button" data-i18n="close">Close</button></div><p class="control-hint" data-i18n="detailHelp">Scroll to explore. Original is scaled to the output size for comparison.</p><div class="detail-grid"><section><h3 data-i18n="original">Original</h3><div id="detail-original-pane" class="detail-pane" tabindex="0"><img id="detail-original" alt="Original image" data-i18n-alt="originalAlt"></div></section><section><h3 id="detail-result-label" data-i18n="result">AI result</h3><div id="detail-result-pane" class="detail-pane" tabindex="0"><img id="detail-result" alt="AI upscaled image" data-i18n-alt="resultAlt"></div></section></div></dialog>
   
 <script type="module">
 // Paths work at a domain root, a GitHub Pages project path, and /cs/.
@@ -149,7 +164,44 @@ const messages = {
     "saveFailed": "Could not save the image. Try a smaller file.",
     "done": "Done",
     "validDpi": "Enter a valid DPI.",
-    "pngDpi": "Could not write DPI to PNG."
+    "pngDpi": "Could not write DPI to PNG.",
+    "expert": "Expert",
+    "pixelDimensions": "Output dimensions",
+    "printDimensions": "Print size",
+    "chooseToMeasure": "Choose an image to see its dimensions.",
+    "printAt": "at {dpi} DPI",
+    "originalSize": "Keep original pixel dimensions",
+    "prepareImage": "Prepare image",
+    "exportResult": "Output",
+    "outputAlt": "Processed image",
+    "quality": "JPG quality",
+    "qualityHelp": "Higher quality creates a larger file.",
+    "exportSize": "File size: {size}",
+    "detail": "Detail at 100%",
+    "detailTitle": "Compare detail · 100%",
+    "detailHelp": "Scroll to explore. Original is scaled to the output size for comparison.",
+    "close": "Close",
+    "batch": "Process multiple images",
+    "batchChoose": "Choose images",
+    "batchHelp": "Up to 10 images, 20 MB each, 100 MB total. The settings above apply to all images.",
+    "batchStart": "Process queue",
+    "batchZip": "Download ZIP",
+    "batchCount": "{count} images in queue",
+    "batchLimit": "Choose up to 10 images, up to 100 MB in total.",
+    "pending": "Waiting",
+    "working": "Processing…",
+    "cancelledShort": "Cancelled",
+    "batchProgress": "Image {current} of {total} · {message}",
+    "batchComplete": "{done} of {total} images ready. Download the completed files in ZIP.",
+    "zipPreparing": "Preparing ZIP…",
+    "zipLimit": "The output queue reached the 100 MB limit. Download completed files and process the remaining images separately.",
+    "batchDpi": "One DPI value for all images",
+    "batchDimensions": "Dimensions depend on each image.",
+    "batchFormatNote": "JPG uses white for transparent areas. PNG keeps transparency.",
+    "singleImage": "Back to one image",
+    "zipName": "processed-images.zip",
+    "skipped": "Skipped",
+    "batchNone": "No files are ready. Check the errors next to each image."
   },
   "cs": {
     "pageTitle": "Upscale — více pixelů, více detailů",
@@ -211,7 +263,44 @@ const messages = {
     "saveFailed": "Nepodařilo se uložit obrázek. Zkuste menší soubor.",
     "done": "Hotovo",
     "validDpi": "Zadejte platné DPI.",
-    "pngDpi": "Nepodařilo se zapsat DPI do PNG."
+    "pngDpi": "Nepodařilo se zapsat DPI do PNG.",
+    "expert": "Expert",
+    "pixelDimensions": "Výsledné rozměry",
+    "printDimensions": "Velikost pro tisk",
+    "chooseToMeasure": "Pro zobrazení rozměrů vyberte obrázek.",
+    "printAt": "při {dpi} DPI",
+    "originalSize": "Zachovat původní počet pixelů",
+    "prepareImage": "Připravit obrázek",
+    "exportResult": "Výsledek",
+    "outputAlt": "Upravený obrázek",
+    "quality": "Kvalita JPG",
+    "qualityHelp": "Vyšší kvalita znamená větší soubor.",
+    "exportSize": "Velikost souboru: {size}",
+    "detail": "Detail ve 100 %",
+    "detailTitle": "Porovnání detailu · 100 %",
+    "detailHelp": "Posouváním prohlédnete detaily. Originál je pro porovnání zobrazen ve velikosti výsledku.",
+    "close": "Zavřít",
+    "batch": "Zpracovat více obrázků",
+    "batchChoose": "Vybrat obrázky",
+    "batchHelp": "Nejvýše 10 obrázků, každý do 20 MB, celkem do 100 MB. Nastavení výše platí pro všechny obrázky.",
+    "batchStart": "Zpracovat frontu",
+    "batchZip": "Stáhnout ZIP",
+    "batchCount": "Obrázků ve frontě: {count}",
+    "batchLimit": "Vyberte nejvýše 10 obrázků o celkové velikosti do 100 MB.",
+    "pending": "Čeká",
+    "working": "Zpracovávám…",
+    "cancelledShort": "Zrušeno",
+    "batchProgress": "Obrázek {current} z {total} · {message}",
+    "batchComplete": "Hotovo {done} z {total} obrázků. Dokončené soubory stáhnete v ZIPu.",
+    "zipPreparing": "Připravuji ZIP…",
+    "zipLimit": "Výstupy ve frontě dosáhly limitu 100 MB. Stáhněte dokončené soubory a zbývající obrázky zpracujte zvlášť.",
+    "batchDpi": "Stejné DPI pro všechny obrázky",
+    "batchDimensions": "Rozměry se liší podle obrázku.",
+    "batchFormatNote": "JPG nahradí průhlednost bílou. PNG průhlednost zachová.",
+    "singleImage": "Zpět na jeden obrázek",
+    "zipName": "upravene-obrazky.zip",
+    "skipped": "Přeskočeno",
+    "batchNone": "Žádný soubor není připravený. Zkontrolujte chyby u jednotlivých obrázků."
   }
 };
 function t(key, values = {}) {
@@ -545,16 +634,85 @@ async function enhanceWithBackend(image, scale, tf, { signal, progress }) {
 
 
 
+function validateUpload(file) {
+  if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) throw new Error(t('fileType'));
+  if (file.size > 20 * 1048576) throw new Error(t('fileSize'));
+}
+function validateInput(image) {
+  if (!image.naturalWidth || image.naturalWidth * image.naturalHeight > 12000000 || Math.max(image.naturalWidth, image.naturalHeight) > 12000) throw new Error(t('inputSize'));
+}
+async function originalPixels(image, file, signal) {
+  if (signal.aborted) throw new DOMException(t('cancelled'), 'AbortError');
+  if (file.type === 'image/png') return { blob: file, width: image.naturalWidth, height: image.naturalHeight };
+  const canvas = document.createElement('canvas');
+  canvas.width = image.naturalWidth; canvas.height = image.naturalHeight;
+  try {
+    const context = canvas.getContext('2d');
+    if (!context) throw new Error(t('browserMemory'));
+    context.drawImage(image, 0, 0);
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+    if (!blob) throw new Error(t('saveFailed'));
+    if (signal.aborted) throw new DOMException(t('cancelled'), 'AbortError');
+    return { blob, width: canvas.width, height: canvas.height };
+  } finally { canvas.width = canvas.height = 1; }
+}
+async function encodeExport(raw, stats, { format, quality, dpi }) {
+  if (format === 'png') return writePngResolution(raw, dpi);
+  const image = new Image(), url = URL.createObjectURL(raw);
+  const canvas = document.createElement('canvas');
+  canvas.width = stats.width; canvas.height = stats.height;
+  try {
+    image.src = url; await image.decode();
+    const context = canvas.getContext('2d');
+    if (!context) throw new Error(t('jpegMemory'));
+    context.fillStyle = '#fff'; context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality / 100));
+    if (!blob || blob.type !== 'image/jpeg') throw new Error(t('jpegFailed'));
+    return writeJpegResolution(blob, dpi);
+  } finally { URL.revokeObjectURL(url); canvas.width = canvas.height = 1; }
+}
+const zipTable = Uint32Array.from({ length: 256 }, (_, n) => {
+  for (let k = 0; k < 8; k++) n = (n >>> 1) ^ ((n & 1) ? 0xedb88320 : 0);
+  return n >>> 0;
+});
+async function makeZip(files) {
+  const parts = [], directory = []; let offset = 0, directorySize = 0;
+  for (const file of files) {
+    const name = new TextEncoder().encode(file.name.replace(/[\\/\x00-\x1f]/g, '_'));
+    const bytes = new Uint8Array(await file.blob.arrayBuffer());
+    let crc = 0xffffffff;
+    for (const value of bytes) crc = (crc >>> 8) ^ zipTable[(crc ^ value) & 255];
+    crc = (crc ^ 0xffffffff) >>> 0;
+    const local = new Uint8Array(30), l = new DataView(local.buffer);
+    l.setUint32(0, 0x04034b50, true); l.setUint16(4, 20, true); l.setUint16(6, 0x800, true); l.setUint16(12, 33, true);
+    l.setUint32(14, crc, true); l.setUint32(18, bytes.length, true); l.setUint32(22, bytes.length, true); l.setUint16(26, name.length, true);
+    const central = new Uint8Array(46), c = new DataView(central.buffer);
+    c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(8, 0x800, true); c.setUint16(14, 33, true);
+    c.setUint32(16, crc, true); c.setUint32(20, bytes.length, true); c.setUint32(24, bytes.length, true); c.setUint16(28, name.length, true); c.setUint32(42, offset, true);
+    parts.push(local, name, file.blob); directory.push(central, name);
+    offset += local.length + name.length + bytes.length; directorySize += central.length + name.length;
+    await new Promise(resolve => setTimeout(resolve, 0));
+  }
+  const end = new Uint8Array(22), e = new DataView(end.buffer);
+  e.setUint32(0, 0x06054b50, true); e.setUint16(8, files.length, true); e.setUint16(10, files.length, true);
+  e.setUint32(12, directorySize, true); e.setUint32(16, offset, true);
+  return new Blob([...parts, ...directory, end], { type: 'application/zip' });
+}
+
+
+
 localize();
 const $ = id => document.getElementById(id);
 let sourceImage, sourceFile, sourceURL, outputURL, previewURL, sourceDpi = null, rawOutput = null, outputStats;
 let exportRevision = 0, exportPending = false, exportTimer, pointerSliding = false;
-let scale = 2, busy = false, controller, loadRevision = 0;
+let scale = 2, busy = false, controller, loadRevision = 0, expert = false;
+let queueMode = false, queue = [], batchURL;
 const scales = [...document.querySelectorAll('.scale')];
 const pretty = value => value.toLocaleString(locale);
 const bytes = value => `${(value / 1048576).toLocaleString(locale, { maximumFractionDigits: 1 })} MB`;
+const exportBytes = value => value < 1048576 ? `${Math.max(1, Math.round(value / 1024)).toLocaleString(locale)} KB` : bytes(value);
 const showError = text => { $('message').textContent = text; $('message').hidden = !text; };
-
 const formatDpi = dpi => {
   const fmt = value => value.toLocaleString(locale, { maximumFractionDigits: 2 });
   return Math.abs(dpi.x - dpi.y) < 0.05 ? fmt((dpi.x + dpi.y) / 2) : `${fmt(dpi.x)} × ${fmt(dpi.y)}`;
@@ -564,192 +722,272 @@ function exportDpi() {
   if (!Number.isInteger(value) || value < 72 || value > 600) throw new Error(t('dpiInvalid'));
   return { x: value, y: value };
 }
+function exportSettings() {
+  return { dpi: exportDpi(), format: $('format').value, quality: expert ? Number($('quality').value) : 95 };
+}
 function updateDpiLabel() {
   $('dpi-value').value = `${$('dpi').value} DPI`;
   $('dpi').setAttribute('aria-valuetext', `${$('dpi').value} DPI`);
   $('dpi').style.setProperty('--fill', `${(Number($('dpi').value) - 72) / 528 * 100}%`);
+  updateExpert();
 }
 function updateFormatNote() {
-  $('format-note').hidden = $('format').value !== 'jpeg' || sourceFile?.type === 'image/jpeg';
+  $('format-note').textContent = t(queueMode ? 'batchFormatNote' : 'formatNote');
+  $('format-note').hidden = $('format').value !== 'jpeg' || (!queueMode && sourceFile?.type === 'image/jpeg');
+  updateExpert();
 }
-async function encodeJpeg() {
-  const canvas = document.createElement('canvas');
-  canvas.width = outputStats.width; canvas.height = outputStats.height;
-  try {
-    const context = canvas.getContext('2d');
-    if (!context) throw new Error(t('jpegMemory'));
-    context.fillStyle = '#fff'; context.fillRect(0, 0, canvas.width, canvas.height);
-    context.drawImage($('result'), 0, 0, canvas.width, canvas.height);
-    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.95));
-    if (!blob || blob.type !== 'image/jpeg') throw new Error(t('jpegFailed'));
-    return blob;
-  } finally { canvas.width = canvas.height = 1; }
+function updateExpert() {
+  $('quality-control').hidden = !expert || $('format').value !== 'jpeg';
+  $('quality-value').value = `${$('quality').value} %`;
+  $('detail-open').disabled = busy || !rawOutput || !outputURL || exportPending || queueMode;
+  if (queueMode) {
+    $('expert-pixels').textContent = t('batchDimensions'); $('expert-print').textContent = '—';
+  } else if (sourceImage) {
+    const w = sourceImage.naturalWidth * scale, h = sourceImage.naturalHeight * scale;
+    $('expert-pixels').textContent = `${pretty(sourceImage.naturalWidth)} × ${pretty(sourceImage.naturalHeight)} → ${pretty(w)} × ${pretty(h)} px`;
+    const dpi = Number($('dpi').value) || 300;
+    const cm = value => (value / dpi * 2.54).toLocaleString(locale, { maximumFractionDigits: 2 });
+    $('expert-print').textContent = `${cm(w)} × ${cm(h)} cm · ${t('printAt', { dpi })}`;
+  } else {
+    $('expert-pixels').textContent = t('chooseToMeasure'); $('expert-print').textContent = '—';
+  }
+}
+function closeDetail() {
+  if ($('detail-dialog').open) $('detail-dialog').close();
+  $('detail-original').removeAttribute('src'); $('detail-result').removeAttribute('src');
 }
 async function refreshExport() {
-  const revision = ++exportRevision;
-  const stats = outputStats;
-  exportPending = true;
-  $('download').setAttribute('aria-disabled', 'true');
+  if (!rawOutput || !outputStats) return;
+  const revision = ++exportRevision, stats = outputStats, settings = exportSettings();
+  const input = rawOutput, name = sourceFile.name, factor = scale;
+  exportPending = true; $('download').setAttribute('aria-disabled', 'true'); updateExpert();
   try {
-    const dpi = exportDpi(), format = $('format').value;
-    const blob = format === 'jpeg'
-      ? await writeJpegResolution(await encodeJpeg(), dpi)
-      : await writePngResolution(rawOutput, dpi);
+    const blob = await encodeExport(input, stats, settings);
     if (revision !== exportRevision) return;
+    closeDetail();
     if (outputURL) URL.revokeObjectURL(outputURL);
     outputURL = URL.createObjectURL(blob);
     $('download').href = outputURL;
-    const extension = format === 'jpeg' ? 'jpg' : 'png';
-    $('download').download = `${sourceFile.name.replace(/\.[^.]+$/, '')}-${scale}x.${extension}`;
-    $('download-label').textContent = t('download', { format: format === 'jpeg' ? 'JPG' : 'PNG' });
+    const extension = settings.format === 'jpeg' ? 'jpg' : 'png';
+    $('download').download = `${name.replace(/\.[^.]+$/, '')}-${factor}x.${extension}`;
+    $('download-label').textContent = t('download', { format: extension.toUpperCase() });
     $('download').setAttribute('aria-disabled', 'false');
-    $('output-info').textContent = `${pretty(stats.width)} × ${pretty(stats.height)} px · ${bytes(blob.size)} · ${formatDpi(dpi)} DPI`;
-  } finally { if (revision === exportRevision) exportPending = false; }
+    $('output-info').textContent = `${pretty(stats.width)} × ${pretty(stats.height)} px · ${exportBytes(blob.size)} · ${formatDpi(settings.dpi)} DPI`;
+    $('expert-export-size').textContent = t('exportSize', { size: exportBytes(blob.size) });
+    $('expert-export-size').hidden = false;
+  } finally { if (revision === exportRevision) { exportPending = false; updateExpert(); } }
+}
+function invalidateBatch() {
+  if (batchURL) URL.revokeObjectURL(batchURL);
+  batchURL = null; $('batch-download').hidden = true; $('batch-download').removeAttribute('href');
+  $('batch-status').textContent = '';
+  for (const item of queue) { item.status.textContent = t('pending'); item.row.classList.remove('failed'); }
 }
 function scheduleExport(immediate = false) {
-  clearTimeout(exportTimer);
-  showError('');
+  clearTimeout(exportTimer); showError('');
+  if (queueMode) { invalidateBatch(); updateExpert(); return; }
   if (!rawOutput || busy) return;
   exportRevision++; exportPending = true;
-  $('download').setAttribute('aria-disabled', 'true');
+  $('download').setAttribute('aria-disabled', 'true'); updateExpert();
   exportTimer = setTimeout(() => refreshExport().catch(error => showError(error.message)), immediate ? 0 : 220);
 }
-
 function clearOutput() {
-  clearTimeout(exportTimer);
+  clearTimeout(exportTimer); closeDetail();
   if (outputURL) URL.revokeObjectURL(outputURL);
   if (previewURL) URL.revokeObjectURL(previewURL);
   outputURL = previewURL = rawOutput = outputStats = null;
   exportRevision++; exportPending = false;
   $('original').style.clipPath = 'none';
   $('result').removeAttribute('src'); $('download').removeAttribute('href');
-  for (const id of ['result-layer', 'compare-labels', 'divider', 'compare', 'result-meta', 'download']) $(id).hidden = true;
-  $('upscale').hidden = false;
+  for (const id of ['result-layer', 'compare-labels', 'divider', 'compare', 'result-meta', 'download', 'expert-export-size']) $(id).hidden = true;
+  $('upscale').hidden = false; updateExpert();
 }
 function setBusy(value) {
   busy = value; document.body.classList.toggle('busy', value);
-  $('upscale').disabled = value || !sourceImage;
-  $('dpi').disabled = value; $('format').disabled = value;
-  $('change').disabled = value; $('dropzone').disabled = value;
+  for (const id of ['dpi', 'format', 'quality', 'change', 'dropzone', 'expert-toggle', 'batch-choose', 'batch-start', 'batch-clear', 'file', 'batch-files']) $(id).disabled = value;
+  $('upscale').disabled = value || !sourceImage || queueMode;
   for (const button of scales) button.disabled = value;
-  $('progress-wrap').hidden = !value;
-  $('cancel').disabled = false;
+  $('progress-wrap').hidden = !value; $('cancel').disabled = false; updateExpert();
 }
-
+function selectScale(value) {
+  if (busy || scale === value) return;
+  scale = value;
+  scales.forEach(item => { item.classList.toggle('active', Number(item.dataset.scale) === scale); item.setAttribute('aria-pressed', String(Number(item.dataset.scale) === scale)); });
+  $('upscale-label').textContent = t(scale === 1 ? 'prepareImage' : 'upscale');
+  clearOutput(); if (queueMode) invalidateBatch(); showError(''); updateExpert();
+}
+function restoreSingle() {
+  if (busy) return;
+  invalidateBatch(); queue = []; queueMode = false; document.body.classList.remove('batch-mode');
+  $('batch-list').replaceChildren(); $('batch-queue').hidden = true;
+  $('dropzone').hidden = Boolean(sourceImage); $('editor').hidden = !sourceImage;
+  $('print-settings').hidden = !sourceImage; document.body.classList.toggle('has-image', Boolean(sourceImage));
+  $('source-dpi').textContent = t('sourceDpi', { value: sourceDpi ? formatDpi(sourceDpi) : t('unknown') });
+  $('upscale').disabled = !sourceImage; updateFormatNote(); updateExpert();
+}
 async function loadFile(file) {
   if (!file || busy) return;
-  const revision = ++loadRevision;
-  showError('');
-  if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) return showError(t('fileType'));
-  if (file.size > 20 * 1048576) return showError(t('fileSize'));
-  const url = URL.createObjectURL(file);
-  const img = new Image(); img.src = url;
+  const revision = ++loadRevision; showError('');
+  try { validateUpload(file); } catch (error) { showError(error.message); return; }
+  const url = URL.createObjectURL(file), img = new Image(); img.src = url;
   try {
     const [, dpi] = await Promise.all([img.decode(), readResolution(file)]);
-    if (revision !== loadRevision) { URL.revokeObjectURL(url); return; }
-    if (!img.naturalWidth || img.naturalWidth * img.naturalHeight > 12000000 || Math.max(img.naturalWidth, img.naturalHeight) > 12000) throw new Error(t('inputSize'));
+    if (revision !== loadRevision || busy) { URL.revokeObjectURL(url); return; }
+    validateInput(img);
+    if (queueMode) restoreSingle();
     clearOutput();
     if (sourceURL) URL.revokeObjectURL(sourceURL);
     sourceImage = img; sourceFile = file; sourceURL = url; sourceDpi = dpi;
     $('source-dpi').textContent = t('sourceDpi', { value: dpi ? formatDpi(dpi) : t('unknown') });
-    $('dpi').value = String(Math.max(72, Math.min(600, Math.round(dpi?.x || 300))));
-    updateDpiLabel();
-    $('format').value = file.type === 'image/jpeg' ? 'jpeg' : 'png';
-    updateFormatNote();
+    $('dpi').value = String(Math.max(72, Math.min(600, Math.round(dpi?.x || 300)))); updateDpiLabel();
+    $('format').value = file.type === 'image/jpeg' ? 'jpeg' : 'png'; updateFormatNote();
     $('print-settings').hidden = false; document.body.classList.add('has-image');
     $('comparison').style.setProperty('--image-ratio', String(img.naturalWidth / img.naturalHeight));
-    $('original').src = url;
-    $('filename').textContent = file.name;
+    $('original').src = url; $('filename').textContent = file.name;
     $('dimensions').textContent = `${pretty(img.naturalWidth)} × ${pretty(img.naturalHeight)} px · ${bytes(file.size)}`;
-    $('dropzone').hidden = true; $('editor').hidden = false;
-    $('upscale').disabled = false;
-    $('upscale').focus({ preventScroll: true });
+    $('dropzone').hidden = true; $('editor').hidden = false; $('upscale').disabled = false;
+    updateExpert(); $('upscale').focus({ preventScroll: true });
   } catch (error) {
-    URL.revokeObjectURL(url);
-    showError(error.message === t('inputSize') ? error.message : t('fileOpen'));
+    URL.revokeObjectURL(url); showError(error.message === t('inputSize') ? error.message : t('fileOpen'));
   }
 }
-
+function enterQueue(files) {
+  if (busy || !expert || !files.length) return;
+  if (files.length > 10 || files.reduce((sum, file) => sum + file.size, 0) > 100 * 1048576) return showError(t('batchLimit'));
+  try { for (const file of files) validateUpload(file); } catch (error) { showError(error.message); return; }
+  loadRevision++; clearOutput(); invalidateBatch(); showError('');
+  queueMode = true; document.body.classList.add('batch-mode', 'has-image');
+  $('batch-list').replaceChildren();
+  queue = files.map(file => {
+    const row = document.createElement('li'), name = document.createElement('span'), status = document.createElement('span');
+    name.textContent = file.name; name.title = file.name; status.textContent = t('pending'); row.append(name, status); $('batch-list').append(row);
+    return { file, row, status };
+  });
+  $('batch-count').textContent = t('batchCount', { count: queue.length }); $('batch-queue').hidden = false;
+  $('dropzone').hidden = $('editor').hidden = true; $('print-settings').hidden = false;
+  $('format').value = files[0].type === 'image/jpeg' ? 'jpeg' : 'png';
+  $('source-dpi').textContent = t('batchDpi'); $('upscale').disabled = true;
+  updateFormatNote(); updateExpert();
+}
+function acceptFiles(files) {
+  const list = [...files];
+  if (expert && list.length > 1) enterQueue(list); else loadFile(list[0]);
+}
 $('dropzone').addEventListener('click', () => $('file').click());
 $('change').addEventListener('click', () => $('file').click());
-$('file').addEventListener('change', event => { loadFile(event.target.files[0]); event.target.value = ''; });
-for (const eventName of ['dragenter', 'dragover']) {
-  $('dropzone').addEventListener(eventName, event => { event.preventDefault(); if (!busy) $('dropzone').classList.add('dragging'); });
-}
+$('file').addEventListener('change', event => { acceptFiles(event.target.files); event.target.value = ''; });
+for (const eventName of ['dragenter', 'dragover']) $('dropzone').addEventListener(eventName, event => { event.preventDefault(); if (!busy) $('dropzone').classList.add('dragging'); });
 for (const eventName of ['dragleave', 'drop']) $('dropzone').addEventListener(eventName, () => $('dropzone').classList.remove('dragging'));
 document.addEventListener('dragover', event => event.preventDefault());
-document.addEventListener('drop', event => { event.preventDefault(); if (!busy) loadFile(event.dataTransfer.files[0]); });
-scales.forEach(button => button.addEventListener('click', () => {
-  if (busy || scale === Number(button.dataset.scale)) return;
-  scale = Number(button.dataset.scale);
-  scales.forEach(item => { item.classList.toggle('active', item === button); item.setAttribute('aria-pressed', String(item === button)); });
-  clearOutput(); showError('');
-}));
-
+document.addEventListener('drop', event => { event.preventDefault(); if (!busy) acceptFiles(event.dataTransfer.files); });
+scales.forEach(button => button.addEventListener('click', () => selectScale(Number(button.dataset.scale))));
 $('compare').addEventListener('input', event => {
   const position = event.target.value;
   $('original').style.clipPath = `inset(0 ${100 - Number(position)}% 0 0)`;
-  $('result-layer').style.clipPath = `inset(0 0 0 ${position}%)`;
-  $('divider').style.left = `${position}%`;
+  $('result-layer').style.clipPath = `inset(0 0 0 ${position}%)`; $('divider').style.left = `${position}%`;
 });
 $('dpi').addEventListener('pointerdown', () => { pointerSliding = true; });
 document.addEventListener('pointerup', () => { pointerSliding = false; });
 document.addEventListener('pointercancel', () => { pointerSliding = false; });
 $('dpi').addEventListener('input', () => {
   const value = Number($('dpi').value);
-  if (pointerSliding) {
-    const snap = [150, 300].find(point => Math.abs(point - value) <= 5);
-    if (snap !== undefined) $('dpi').value = String(snap);
-  }
+  if (pointerSliding) { const snap = [150, 300].find(point => Math.abs(point - value) <= 5); if (snap !== undefined) $('dpi').value = String(snap); }
   updateDpiLabel(); scheduleExport();
 });
 $('dpi').addEventListener('change', () => scheduleExport(true));
 $('format').addEventListener('change', () => { updateFormatNote(); scheduleExport(true); });
-$('download').addEventListener('click', event => {
-  if (exportPending || $('download').getAttribute('aria-disabled') === 'true' || !$('dpi').validity.valid) event.preventDefault();
+$('quality').addEventListener('input', () => { updateExpert(); scheduleExport(); });
+$('quality').addEventListener('change', () => scheduleExport(true));
+$('download').addEventListener('click', event => { if (exportPending || $('download').getAttribute('aria-disabled') === 'true' || !$('dpi').validity.valid) event.preventDefault(); });
+$('expert-toggle').addEventListener('click', () => {
+  if (busy) return;
+  expert = !expert; document.body.classList.toggle('expert-mode', expert); $('expert-toggle').setAttribute('aria-checked', String(expert)); $('expert-panel').hidden = !expert;
+  document.querySelectorAll('.expert-only').forEach(el => { el.hidden = !expert; }); $('file').multiple = expert;
+  if (!expert) {
+    if (queueMode) restoreSingle();
+    if (scale === 1) selectScale(2);
+    $('quality').value = '95'; closeDetail(); scheduleExport(true);
+  }
+  updateExpert();
 });
-$('cancel').addEventListener('click', () => {
-  controller?.abort(); $('cancel').disabled = true;
-  $('progress-text').textContent = t('cancelling');
+$('batch-choose').addEventListener('click', () => $('batch-files').click());
+$('batch-files').addEventListener('change', event => { enterQueue([...event.target.files]); event.target.value = ''; });
+$('batch-clear').addEventListener('click', restoreSingle);
+$('detail-open').addEventListener('click', () => {
+  if (!expert || busy || !outputStats || !outputURL || exportPending) return;
+  $('detail-original').src = sourceURL; $('detail-result').src = outputURL;
+  for (const id of ['detail-original', 'detail-result']) { $(id).style.width = `${outputStats.width}px`; $(id).style.height = `${outputStats.height}px`; }
+  $('detail-result-label').textContent = t(scale === 1 ? 'exportResult' : 'result');
+  $('detail-result').alt = t(scale === 1 ? 'outputAlt' : 'resultAlt');
+  $('detail-dialog').showModal();
+  for (const id of ['detail-original-pane', 'detail-result-pane']) { $(id).scrollLeft = 0; $(id).scrollTop = 0; }
 });
+$('detail-close').addEventListener('click', closeDetail);
+for (const [from, to] of [['detail-original-pane', 'detail-result-pane'], ['detail-result-pane', 'detail-original-pane']]) {
+  $(from).addEventListener('scroll', () => { if ($(to).scrollLeft !== $(from).scrollLeft) $(to).scrollLeft = $(from).scrollLeft; if ($(to).scrollTop !== $(from).scrollTop) $(to).scrollTop = $(from).scrollTop; });
+}
+$('cancel').addEventListener('click', () => { controller?.abort(); $('cancel').disabled = true; $('progress-text').textContent = t('cancelling'); });
+const processImage = (image, file, factor, options) => factor === 1 ? originalPixels(image, file, options.signal) : enhance(image, factor, options);
+function friendlyError(error) {
+  if (isKnownMessage(error.message)) return error.message;
+  return /memory|texture|WebGL|allocation|context lost/i.test(error.message) ? t('memory') : t('failed');
+}
 $('upscale').addEventListener('click', async () => {
-  if (busy || !sourceImage) return;
+  if (busy || !sourceImage || queueMode) return;
   showError('');
-  try { validateSize(sourceImage.naturalWidth, sourceImage.naturalHeight, scale); exportDpi(); }
-  catch (error) { showError(error.message); return; }
-  clearOutput(); controller = new AbortController(); setBusy(true);
-  $('progress').value = 0;
+  try { validateSize(sourceImage.naturalWidth, sourceImage.naturalHeight, scale); exportDpi(); } catch (error) { showError(error.message); return; }
+  clearOutput(); controller = new AbortController(); setBusy(true); $('progress').value = 0;
+  $('progress-text').textContent = t(scale === 1 ? 'encoding' : 'preparing');
   let succeeded = false;
   try {
-    const result = await enhance(sourceImage, scale, {
-      signal: controller.signal,
-      progress: (value, text) => {
-        if (controller.signal.aborted) return;
-        $('progress').value = value; $('progress-text').textContent = text;
-      },
-    });
-    rawOutput = result.blob; outputStats = { width: result.width, height: result.height };
-    previewURL = URL.createObjectURL(rawOutput);
-    $('result').src = previewURL; await $('result').decode();
-    await refreshExport();
-    $('original').style.clipPath = 'inset(0 50% 0 0)';
-    $('compare').value = 50; $('divider').style.left = '50%'; $('result-layer').style.clipPath = 'inset(0 0 0 50%)';
+    const result = await processImage(sourceImage, sourceFile, scale, { signal: controller.signal, progress: (value, text) => { if (!controller.signal.aborted) { $('progress').value = value; $('progress-text').textContent = text; } } });
+    if (controller.signal.aborted) throw new DOMException(t('cancelled'), 'AbortError');
+    rawOutput = result.blob; outputStats = { width: result.width, height: result.height }; previewURL = URL.createObjectURL(rawOutput);
+    $('result').src = previewURL; await $('result').decode(); await refreshExport();
+    if (controller.signal.aborted) throw new DOMException(t('cancelled'), 'AbortError');
+    $('result-label').textContent = t(scale === 1 ? 'exportResult' : 'result'); $('result').alt = t(scale === 1 ? 'outputAlt' : 'resultAlt');
+    $('original').style.clipPath = 'inset(0 50% 0 0)'; $('compare').value = 50; $('divider').style.left = '50%'; $('result-layer').style.clipPath = 'inset(0 0 0 50%)';
     for (const id of ['result-layer', 'compare-labels', 'divider', 'compare', 'result-meta', 'download']) $(id).hidden = false;
     $('upscale').hidden = true; succeeded = true;
-  } catch (error) {
-    clearOutput();
-    if (error.name !== 'AbortError') {
-      console.error('Upscale:', error);
-      const text = /memory|texture|WebGL|allocation|context lost/i.test(error.message)
-        ? t('memory')
-        : (isKnownMessage(error.message) ? error.message : t('failed'));
-      showError(text);
-    }
-  } finally {
-    setBusy(false); controller = null;
-    if (succeeded) $('download').focus({ preventScroll: true });
-  }
+  } catch (error) { clearOutput(); if (error.name !== 'AbortError') { console.error('Upscale:', error); showError(friendlyError(error)); } }
+  finally { setBusy(false); controller = null; if (succeeded) $('download').focus({ preventScroll: true }); }
 });
+$('batch-start').addEventListener('click', async () => {
+  if (!expert || busy || !queueMode || !queue.length) return;
+  let settings; try { settings = exportSettings(); } catch (error) { showError(error.message); return; }
+  const factor = scale, completed = []; let totalBytes = 0, stoppedForLimit = false;
+  invalidateBatch(); showError(''); controller = new AbortController(); setBusy(true); $('progress').value = 0;
+  try {
+    for (let index = 0; index < queue.length; index++) {
+      if (controller.signal.aborted) break;
+      const item = queue[index], url = URL.createObjectURL(item.file), image = new Image(); image.src = url; item.status.textContent = t('working');
+      const report = (value, message) => { $('progress').value = (index * 100 + value) / queue.length; $('progress-text').textContent = t('batchProgress', { current: index + 1, total: queue.length, message }); };
+      try {
+        report(0, t(factor === 1 ? 'encoding' : 'preparing')); await image.decode(); validateInput(image); validateSize(image.naturalWidth, image.naturalHeight, factor);
+        const result = await processImage(image, item.file, factor, { signal: controller.signal, progress: report });
+        if (controller.signal.aborted) break;
+        const blob = await encodeExport(result.blob, result, settings);
+        if (controller.signal.aborted) break;
+        if (totalBytes + blob.size > 100 * 1048576) { stoppedForLimit = true; showError(t('zipLimit')); break; }
+        const ext = settings.format === 'jpeg' ? 'jpg' : 'png';
+        completed.push({ name: `${String(index + 1).padStart(2, '0')}-${item.file.name.replace(/\.[^.]+$/, '')}-${factor}x.${ext}`, blob }); totalBytes += blob.size;
+        item.status.textContent = `${t('done')} · ${exportBytes(blob.size)}`; report(100, t('done'));
+      } catch (error) {
+        if (error.name === 'AbortError') break;
+        item.status.textContent = friendlyError(error); item.row.classList.add('failed');
+      } finally { URL.revokeObjectURL(url); }
+    }
+    for (const item of queue) if ([t('pending'), t('working')].includes(item.status.textContent)) item.status.textContent = t(controller.signal.aborted ? 'cancelledShort' : 'skipped');
+    if (completed.length) {
+      $('cancel').disabled = true; $('progress-text').textContent = t('zipPreparing');
+      const zip = await makeZip(completed); batchURL = URL.createObjectURL(zip); $('batch-download').href = batchURL; $('batch-download').download = t('zipName'); $('batch-download').hidden = false;
+      $('batch-status').textContent = t('batchComplete', { done: completed.length, total: queue.length });
+    } else $('batch-status').textContent = t(controller.signal.aborted ? 'cancelledShort' : 'batchNone');
+    if (stoppedForLimit) showError(t('zipLimit'));
+  } catch (error) { showError(friendlyError(error)); }
+  finally { setBusy(false); controller = null; }
+});
+updateExpert();
 
 </script>
 </body>
