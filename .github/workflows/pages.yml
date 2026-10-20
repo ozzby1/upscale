@@ -24,8 +24,9 @@ jobs:
       - name: Prepare static files and local AI models
         run: |
           npm install --no-save --ignore-scripts --no-audit --no-fund @tensorflow/tfjs@4.11.0 @tensorflow/tfjs-backend-wasm@4.11.0 @upscalerjs/esrgan-slim@1.0.0
-          mkdir -p _site/vendor _site/models/x2 _site/models/x4
+          mkdir -p _site/cs _site/vendor _site/models/x2 _site/models/x4
           cp index.html _site/index.html
+          cp cs/index.html _site/cs/index.html
           cp node_modules/@tensorflow/tfjs/dist/tf.min.js _site/vendor/
           cp node_modules/@tensorflow/tfjs-backend-wasm/dist/tf-backend-wasm.min.js _site/vendor/
           cp node_modules/@tensorflow/tfjs-backend-wasm/dist/*.wasm _site/vendor/
