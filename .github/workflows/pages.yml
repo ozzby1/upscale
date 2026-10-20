@@ -23,8 +23,8 @@ jobs:
           node-version: '22'
       - name: Prepare static files and local AI models
         run: |
-          npm install --no-save --ignore-scripts --no-audit --no-fund @tensorflow/tfjs@4.11.0 @tensorflow/tfjs-backend-wasm@4.11.0 @upscalerjs/esrgan-slim@1.0.0
-          mkdir -p _site/cs _site/vendor _site/models/x2 _site/models/x4
+          npm install --no-save --ignore-scripts --no-audit --no-fund @tensorflow/tfjs@4.11.0 @tensorflow/tfjs-backend-wasm@4.11.0 @upscalerjs/esrgan-slim@1.0.0 onnxruntime-web@1.30.0
+          mkdir -p _site/cs _site/vendor/ort _site/models/x2 _site/models/x4 _site/models/illustration
           cp index.html _site/index.html
           cp cs/index.html _site/cs/index.html
           cp node_modules/@tensorflow/tfjs/dist/tf.min.js _site/vendor/
@@ -34,6 +34,13 @@ jobs:
           cp node_modules/@upscalerjs/esrgan-slim/models/x4/* _site/models/x4/
           cp node_modules/@upscalerjs/esrgan-slim/LICENSE _site/models/LICENSE-esrgan.txt
           curl -fsSL https://raw.githubusercontent.com/tensorflow/tfjs/tfjs-v4.11.0/LICENSE -o _site/vendor/LICENSE-tensorflow.txt
+          cp illustration-worker.js _site/
+          cp node_modules/onnxruntime-web/dist/ort.webgpu.min.js _site/vendor/ort/
+          cp node_modules/onnxruntime-web/dist/ort-wasm-simd-threaded{,.jsep}.{mjs,wasm} _site/vendor/ort/
+          curl --retry 3 -fsSL https://raw.githubusercontent.com/microsoft/onnxruntime/v1.30.0/LICENSE -o _site/vendor/ort/LICENSE-onnxruntime.txt
+          curl --retry 3 -fsSL https://huggingface.co/skillsafe-ai/realesrgan-x4plus-anime-6b/resolve/c001be50fae1c7a2bae8b2b4dec5e6fcbdbcca96/model.onnx -o _site/models/illustration/model.onnx
+          echo "9a029dae374b2cd4c3eb2dbbed857e22e6d785687c767aa12828e7356b9fb378  _site/models/illustration/model.onnx" | sha256sum --check
+          curl --retry 3 -fsSL https://raw.githubusercontent.com/xinntao/Real-ESRGAN/v0.3.0/LICENSE -o _site/models/illustration/LICENSE-Real-ESRGAN.txt
           touch _site/.nojekyll
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
