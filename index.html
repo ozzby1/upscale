@@ -34,6 +34,7 @@ main{max-width:1168px;margin:48px auto 64px;padding:0 28px}.intro{text-align:cen
 
 .export-control{position:relative}.format-trigger{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;height:50px;min-height:50px;padding:0 15px 0 16px;border:1px solid #4a4a4a;border-radius:10px;background:#4a4a4a;color:white;font-size:14px;font-weight:750;cursor:pointer;transition:background .18s,border-color .18s}.format-trigger svg{width:16px;height:16px;stroke-width:2;transition:transform .15s}.format-trigger:hover:not(:disabled){background:#595959;border-color:#595959}.format-trigger[aria-expanded=true] svg{transform:rotate(180deg)}.format-trigger:focus{outline:none}.format-trigger:focus-visible{outline:2px solid #969b92;outline-offset:3px}.format-trigger:disabled{opacity:.5;cursor:default}.format-menu{position:absolute;top:calc(100% + 7px);right:0;z-index:30;min-width:120px;width:100%;margin:0;padding:5px;list-style:none;background:#fff;border:1px solid #dce1d7;border-radius:11px;box-shadow:0 10px 30px #20281f22}.format-option{display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:40px;padding:9px 11px;border-radius:7px;color:#374130;font-size:13px;font-weight:600;cursor:pointer;user-select:none}.format-option:hover,.format-option:focus{background:#e9ece6;outline:none}.format-option[aria-selected=true]{color:#242d20;font-weight:750}.format-check{width:15px;height:15px;visibility:hidden;stroke-width:2}.format-option[aria-selected=true] .format-check{visibility:visible}
 
+.model-control{margin:0 0 24px}.model-buttons{display:flex;gap:8px;margin-top:12px}.model-choice{height:42px;min-width:110px;padding:0 20px;background:#eceee9;color:#444;border:1px solid #dde1d7;border-radius:8px;font:inherit;font-size:13px;font-weight:650}.model-choice:hover{background:#e1e5dc}.model-choice.active{background:#202020;color:#fff;border-color:#202020}.model-choice:disabled{opacity:.5;cursor:wait}.model-control .control-hint{max-width:540px;margin:10px 0 0;line-height:1.6}.model-choice:focus-visible{outline:2px solid #969b92;outline-offset:3px}
 </style>
   
 </head>
@@ -88,6 +89,7 @@ main{max-width:1168px;margin:48px auto 64px;padding:0 28px}.intro{text-align:cen
       </div>
       <div class="mode-bar"><button id="expert-toggle" class="expert-toggle" type="button" role="switch" aria-checked="false" aria-controls="expert-panel"><span data-i18n="expert">Expert</span><span class="switch-track" aria-hidden="true"></span></button></div>
       <section id="expert-panel" class="expert-panel" hidden aria-label="Expert" data-i18n-aria="expert">
+        <div id="model-control" class="model-control"><span class="control-label" id="model-label" data-i18n="aiModel">AI model</span><div class="model-buttons" role="group" aria-labelledby="model-label"><button id="model-fast" class="model-choice active" type="button" data-model="fast" aria-pressed="true" data-i18n="modelFast">Fast</button><button id="model-illustration" class="model-choice" type="button" data-model="illustration" aria-pressed="false" data-i18n="modelIllustration" aria-describedby="model-help">Illustrations</button></div><p id="model-help" class="control-hint" data-i18n="illustrationHelp" hidden>Smoother outlines for cartoons and illustrations. May redraw fine details. Slower than the fast model; the first run downloads additional model files.</p></div>
         <label class="metadata-option"><input id="metadata-only" type="checkbox"><span data-i18n="metadataOnly">Only change DPI / format (no enlargement)</span></label>
         <div class="expert-summary"><div><span class="control-label" data-i18n="pixelDimensions">Output dimensions</span><output id="expert-pixels" data-i18n="chooseToMeasure">Choose an image to see its dimensions.</output></div><div><span class="control-label" data-i18n="printDimensions">Print size</span><output id="expert-print">—</output></div><button id="detail-open" class="text-button" type="button" disabled data-i18n="detail">Detail at 100%</button></div>
         <div id="smoothing-control" class="quality-control"><div class="dpi-heading"><label class="control-label" for="smoothing" data-i18n="smoothing">Edge smoothing</label><output id="smoothing-value" for="smoothing">50 %</output></div><input id="smoothing" type="range" min="0" max="100" step="5" value="50" aria-describedby="smoothing-help"><span class="control-hint" id="smoothing-help" data-i18n="smoothingHelp">Softens jagged edges. Higher values also soften fine detail. Set to 0 to switch off.</span></div>
@@ -213,7 +215,13 @@ const messages = {
     "detailSource": "Original · enlarged {scale}× for comparison",
     "smoothing": "Edge smoothing",
     "smoothingHelp": "Softens jagged edges. Higher values also soften fine detail. Set to 0 to switch off.",
-    "smoothingProgress": "Smoothing edges…"
+    "smoothingProgress": "Smoothing edges…",
+    "aiModel": "AI model",
+    "modelFast": "Fast",
+    "modelIllustration": "Illustrations",
+    "illustrationHelp": "Smoother outlines for cartoons and illustrations. May redraw fine details. Slower than the fast model; the first run downloads additional model files.",
+    "illustrationLoading": "Loading illustration model…",
+    "illustrationFailed": "The illustration model could not start. Try again or choose Fast."
   },
   "cs": {
     "pageTitle": "Upscale — více pixelů, více detailů",
@@ -318,7 +326,13 @@ const messages = {
     "detailSource": "Původní · pro porovnání zvětšený {scale}×",
     "smoothing": "Vyhlazení hran",
     "smoothingHelp": "Zjemní zubaté hrany. Vyšší hodnoty změkčí i jemné detaily. Hodnota 0 vyhlazení vypne.",
-    "smoothingProgress": "Vyhlazuji hrany…"
+    "smoothingProgress": "Vyhlazuji hrany…",
+    "aiModel": "AI model",
+    "modelFast": "Rychlý",
+    "modelIllustration": "Ilustrace",
+    "illustrationHelp": "Hladší obrysy pro kresby a ilustrace. Může překreslit jemné detaily. Je pomalejší než rychlý model; při prvním použití se stáhnou další soubory modelu.",
+    "illustrationLoading": "Načítám model pro ilustrace…",
+    "illustrationFailed": "Model pro ilustrace se nepodařilo spustit. Zkuste to znovu nebo zvolte Rychlý."
   }
 };
 function t(key, values = {}) {
@@ -498,6 +512,126 @@ async function writeJpegResolution(blob, dpi) {
   return new Blob(parts, { type: 'image/jpeg' });
 }
 
+
+// The illustration runtime is lazy-loaded in a dedicated worker. Cancellation
+// terminates it immediately, including an in-flight WASM/GPU call or download.
+let illustrationWorker, illustrationReady, illustrationProvider;
+let illustrationRequest = 0;
+const illustrationPending = new Map();
+function stopIllustration(error = new DOMException(t('cancelled'), 'AbortError')) {
+  illustrationWorker?.terminate(); illustrationWorker = null; illustrationReady = null; illustrationProvider = null;
+  for (const request of illustrationPending.values()) request.reject(error);
+  illustrationPending.clear();
+}
+function illustrationMessage(message, transfer = []) {
+  return new Promise((resolve, reject) => {
+    const id = ++illustrationRequest;
+    illustrationPending.set(id, { resolve, reject });
+    try { illustrationWorker.postMessage({ ...message, id }, transfer); }
+    catch (error) { illustrationPending.delete(id); reject(error); }
+  });
+}
+async function startIllustration(cpuOnly) {
+  if (!illustrationReady) {
+    illustrationWorker = new Worker(assetUrl('./illustration-worker.js'));
+    illustrationWorker.onmessage = ({ data }) => {
+      const request = illustrationPending.get(data.id);
+      if (!request) return;
+      illustrationPending.delete(data.id);
+      if (data.error) request.reject(new Error(data.error)); else request.resolve(data);
+    };
+    illustrationWorker.onerror = () => stopIllustration(new Error(t('illustrationFailed')));
+    illustrationReady = illustrationMessage({ type: 'init', cpuOnly }).then(result => { illustrationProvider = result.provider; }).catch(error => { stopIllustration(error); throw error; });
+  }
+  await illustrationReady;
+}
+
+// Weighted overlap with a bounded row band. Never allocate a full floating-point
+// output image; transparent pixels are restored independently after RGB inference.
+function blendIllustrationTile(band, width, height, rgba, x, y, core, stride, factor) {
+  const tileSide = core * factor, overlap = (core - stride) * factor;
+  const targetX = x * factor, targetY = y * factor;
+  const w = Math.min(tileSide, width - targetX), h = Math.min(tileSide, height - targetY);
+  for (let py = 0; py < h; py++) for (let px = 0; px < w; px++) {
+    let wx = 1, wy = 1;
+    if (x > 0 && px < overlap) wx *= px / overlap;
+    if (targetX + tileSide < width && px >= tileSide - overlap) wx *= (tileSide - px) / overlap;
+    if (y > 0 && py < overlap) wy *= py / overlap;
+    if (targetY + tileSide < height && py >= tileSide - overlap) wy *= (tileSide - py) / overlap;
+    const weight = wx * wy, source = (py * tileSide + px) * 4, dest = (py * width + targetX + px) * 4;
+    band[dest] += rgba[source] * weight; band[dest + 1] += rgba[source + 1] * weight; band[dest + 2] += rgba[source + 2] * weight; band[dest + 3] += weight;
+  }
+}
+function illustrationBandPixels(band, width, rows) {
+  const pixels = new Uint8ClampedArray(width * rows * 4);
+  for (let p = 0; p < pixels.length; p += 4) {
+    const weight = band[p + 3];
+    if (!(weight > 0)) throw new Error('Incomplete illustration tile coverage.');
+    pixels[p] = Math.round(band[p] / weight); pixels[p + 1] = Math.round(band[p + 1] / weight); pixels[p + 2] = Math.round(band[p + 2] / weight); pixels[p + 3] = 255;
+  }
+  return pixels;
+}
+async function enhanceIllustration(image, factor, options) {
+  const { signal, progress } = options;
+  validateSize(image.naturalWidth, image.naturalHeight, factor); check(signal);
+  const abort = () => stopIllustration();
+  signal.addEventListener('abort', abort, { once: true });
+  try {
+    try { return await renderIllustration(image, factor, options, false); }
+    catch (error) {
+      if (signal.aborted || illustrationProvider !== 'webgpu') throw error;
+      stopIllustration(error); progress(0, t('processor'));
+      return await renderIllustration(image, factor, options, true);
+    }
+  } finally { signal.removeEventListener('abort', abort); }
+}
+async function renderIllustration(image, factor, { signal, progress }, cpuOnly) {
+  check(signal); progress(0, t('illustrationLoading'));
+  await startIllustration(cpuOnly); check(signal);
+  const { width, height } = validateSize(image.naturalWidth, image.naturalHeight, factor);
+  const core = 96, padding = 32, stride = 80, side = core + padding * 2;
+  const canvas = document.createElement('canvas'); canvas.width = canvas.height = side;
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  const output = document.createElement('canvas'); output.width = width; output.height = height;
+  const out = output.getContext('2d');
+  if (!ctx || !out) throw new Error(t('browserMemory'));
+  let band;
+  try {
+    band = new Float32Array(width * core * factor * 4);
+    const total = Math.ceil(image.naturalWidth / stride) * Math.ceil(image.naturalHeight / stride);
+    let completed = 0;
+    for (let y = 0; y < image.naturalHeight; y += stride) {
+      for (let x = 0; x < image.naturalWidth; x += stride) {
+        check(signal);
+        ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, side, side);
+        ctx.drawImage(image, padding - x, padding - y);
+        ctx.imageSmoothingEnabled = false;
+        if (x < padding) ctx.drawImage(canvas, padding - x, 0, 1, side, 0, 0, padding - x, side);
+        if (y < padding) ctx.drawImage(canvas, 0, padding - y, side, 1, 0, 0, side, padding - y);
+        const right = padding + image.naturalWidth - x, bottom = padding + image.naturalHeight - y;
+        if (right < side) ctx.drawImage(canvas, Math.max(0, right - 1), 0, 1, side, right, 0, side - right, side);
+        if (bottom < side) ctx.drawImage(canvas, 0, Math.max(0, bottom - 1), side, 1, 0, bottom, side, side - bottom);
+        const rgba = ctx.getImageData(0, 0, side, side).data;
+        const result = await illustrationMessage({ type: 'tile', rgba, side, padding, core, factor }, [rgba.buffer]);
+        check(signal);
+        blendIllustrationTile(band, width, height, result.pixels, x, y, core, stride, factor);
+        completed++;
+        progress(5 + Math.round(completed / total * 92), t('processing', { percent: Math.round(completed / total * 100) }));
+        await pause();
+      }
+      const rows = Math.min(stride * factor, height - y * factor);
+      out.putImageData(new ImageData(illustrationBandPixels(band, width, rows), width, rows), 0, y * factor);
+      band.copyWithin(0, rows * width * 4); band.fill(0, band.length - rows * width * 4);
+    }
+    check(signal);
+    out.globalCompositeOperation = 'destination-in'; out.imageSmoothingEnabled = true; out.imageSmoothingQuality = 'high';
+    out.drawImage(image, 0, 0, width, height); out.globalCompositeOperation = 'source-over';
+    progress(99, t('encoding'));
+    const blob = await new Promise(resolve => output.toBlob(resolve, 'image/png'));
+    check(signal); if (!blob) throw new Error(t('saveFailed'));
+    progress(100, t('done')); return { blob, width, height };
+  } finally { band = null; canvas.width = canvas.height = output.width = output.height = 1; }
+}
 
 // Local inference only. ESRGAN Slim (RDN) expects and returns RGB in [0, 255].
 // Tiles with context keep memory bounded and avoid a full-size output tensor.
@@ -800,6 +934,7 @@ let sourceImage, sourceFile, sourceURL, outputURL, previewURL, sourceDpi = null,
 let exportController, processedOutput, processedRaw, processedStrength, previewBlob;
 let exportRevision = 0, exportPending = false, exportTimer, pointerSliding = false;
 let scale = 2, lastUpscale = 2, busy = false, controller, loadRevision = 0, expert = false;
+let aiModel = 'fast';
 let queueMode = false, queue = [], batchURL;
 const scales = [...document.querySelectorAll('.scale')];
 const formatOptions = [...document.querySelectorAll('.format-option')];
@@ -833,6 +968,8 @@ function updateFormatNote() {
   updateExpert();
 }
 function updateExpert() {
+  $('model-control').hidden = scale === 1;
+  $('model-help').hidden = aiModel !== 'illustration';
   $('smoothing-control').hidden = scale === 1;
   $('smoothing-value').value = `${$('smoothing').value} %`;
   $('metadata-only').checked = scale === 1;
@@ -931,7 +1068,7 @@ function clearOutput() {
 function setBusy(value) {
   busy = value; document.body.classList.toggle('busy', value);
   if (value) closeFormatMenu();
-  for (const id of ['dpi', 'format', 'format-toggle', 'quality', 'change', 'dropzone', 'expert-toggle', 'batch-choose', 'batch-start', 'batch-clear', 'file', 'batch-files', 'metadata-only', 'smoothing']) $(id).disabled = value;
+  for (const id of ['dpi', 'format', 'format-toggle', 'quality', 'change', 'dropzone', 'expert-toggle', 'batch-choose', 'batch-start', 'batch-clear', 'file', 'batch-files', 'metadata-only', 'smoothing', 'model-fast', 'model-illustration']) $(id).disabled = value;
   $('upscale').disabled = value || !sourceImage || queueMode;
   for (const button of scales) button.disabled = value;
   $('progress-wrap').hidden = !value; $('cancel').disabled = false; updateExpert();
@@ -1069,11 +1206,25 @@ $('smoothing').addEventListener('change', () => scheduleExport(true));
 $('quality').addEventListener('input', () => { updateExpert(); scheduleExport(); });
 $('quality').addEventListener('change', () => scheduleExport(true));
 $('download').addEventListener('click', event => { if (exportPending || $('download').getAttribute('aria-disabled') === 'true' || !$('dpi').validity.valid) event.preventDefault(); });
+function selectModel(value) {
+  if (busy || !['fast', 'illustration'].includes(value) || aiModel === value) return;
+  aiModel = value;
+  if (value === 'fast') stopIllustration();
+  for (const name of ['fast', 'illustration']) {
+    $('model-' + name).classList.toggle('active', value === name);
+    $('model-' + name).setAttribute('aria-pressed', String(value === name));
+  }
+  $('smoothing').value = value === 'illustration' ? '0' : '50';
+  clearOutput(); if (queueMode) invalidateBatch(); showError(''); updateExpert();
+}
+$('model-fast').addEventListener('click', () => selectModel('fast'));
+$('model-illustration').addEventListener('click', () => selectModel('illustration'));
 $('expert-toggle').addEventListener('click', () => {
   if (busy) return;
   expert = !expert; document.body.classList.toggle('expert-mode', expert); $('expert-toggle').setAttribute('aria-checked', String(expert)); $('expert-panel').hidden = !expert;
   $('file').multiple = expert;
   if (!expert) {
+    selectModel('fast');
     if (queueMode) restoreSingle();
     if (scale === 1) selectScale(lastUpscale);
     $('quality').value = '95'; $('smoothing').value = '50'; closeDetail(); scheduleExport(true);
@@ -1102,7 +1253,7 @@ for (const [from, to] of [['detail-original-pane', 'detail-result-pane'], ['deta
   $(from).addEventListener('scroll', () => { if ($(to).scrollLeft !== $(from).scrollLeft) $(to).scrollLeft = $(from).scrollLeft; if ($(to).scrollTop !== $(from).scrollTop) $(to).scrollTop = $(from).scrollTop; });
 }
 $('cancel').addEventListener('click', () => { controller?.abort(); $('cancel').disabled = true; $('progress-text').textContent = t('cancelling'); });
-const processImage = (image, file, factor, options) => factor === 1 ? originalPixels(image, file, options.signal) : enhance(image, factor, options);
+const processImage = (image, file, factor, options) => factor === 1 ? originalPixels(image, file, options.signal) : (expert && aiModel === 'illustration' ? enhanceIllustration(image, factor, options) : enhance(image, factor, options));
 function friendlyError(error) {
   if (isKnownMessage(error.message)) return error.message;
   return /memory|texture|WebGL|allocation|context lost/i.test(error.message) ? t('memory') : t('failed');
