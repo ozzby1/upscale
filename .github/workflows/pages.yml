@@ -23,10 +23,12 @@ jobs:
           node-version: '22'
       - name: Prepare static files and local AI models
         run: |
-          npm install --no-save --ignore-scripts --no-audit --no-fund @tensorflow/tfjs@4.11.0 @upscalerjs/esrgan-slim@1.0.0
+          npm install --no-save --ignore-scripts --no-audit --no-fund @tensorflow/tfjs@4.11.0 @tensorflow/tfjs-backend-wasm@4.11.0 @upscalerjs/esrgan-slim@1.0.0
           mkdir -p _site/vendor _site/models/x2 _site/models/x4
           cp index.html _site/index.html
           cp node_modules/@tensorflow/tfjs/dist/tf.min.js _site/vendor/
+          cp node_modules/@tensorflow/tfjs-backend-wasm/dist/tf-backend-wasm.min.js _site/vendor/
+          cp node_modules/@tensorflow/tfjs-backend-wasm/dist/*.wasm _site/vendor/
           cp node_modules/@upscalerjs/esrgan-slim/models/x2/* _site/models/x2/
           cp node_modules/@upscalerjs/esrgan-slim/models/x4/* _site/models/x4/
           cp node_modules/@upscalerjs/esrgan-slim/LICENSE _site/models/LICENSE-esrgan.txt
