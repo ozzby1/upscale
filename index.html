@@ -533,12 +533,12 @@ function illustrationMessage(message, transfer = []) {
 }
 async function startIllustration(cpuOnly) {
   if (!illustrationReady) {
-    illustrationWorker = new Worker(assetUrl('./illustration-worker.js'));
+    illustrationWorker = new Worker(assetUrl('./illustration-worker.js?v=2'));
     illustrationWorker.onmessage = ({ data }) => {
       const request = illustrationPending.get(data.id);
       if (!request) return;
       illustrationPending.delete(data.id);
-      if (data.error) request.reject(new Error(data.error)); else request.resolve(data);
+      if (data.error) request.reject(Object.assign(new Error(data.error), { illustrationInit: data.initializing, gpuAttempt: data.gpuAttempt })); else request.resolve(data);
     };
     illustrationWorker.onerror = () => stopIllustration(new Error(t('illustrationFailed')));
     illustrationReady = illustrationMessage({ type: 'init', cpuOnly }).then(result => { illustrationProvider = result.provider; }).catch(error => { stopIllustration(error); throw error; });
@@ -579,10 +579,14 @@ async function enhanceIllustration(image, factor, options) {
   try {
     try { return await renderIllustration(image, factor, options, false); }
     catch (error) {
-      if (signal.aborted || illustrationProvider !== 'webgpu') throw error;
+      if (signal.aborted || (illustrationProvider !== 'webgpu' && !error.gpuAttempt)) throw error;
       stopIllustration(error); progress(0, t('processor'));
       return await renderIllustration(image, factor, options, true);
     }
+  } catch (error) {
+    stopIllustration(error);
+    if (error.illustrationInit && error.name !== 'AbortError') throw new Error(t('illustrationFailed'));
+    throw error;
   } finally { signal.removeEventListener('abort', abort); }
 }
 async function renderIllustration(image, factor, { signal, progress }, cpuOnly) {
