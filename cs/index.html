@@ -30,6 +30,8 @@ main{max-width:1168px;margin:48px auto 64px;padding:0 28px}.intro{text-align:cen
 
 @media(max-width:600px){.expert-mode.has-image .scale-buttons{gap:2px;padding:3px}.expert-mode.has-image .scale{min-width:36px;height:36px;font-size:13px}}
 
+.metadata-option{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:600;color:#405631;margin:0 0 22px;cursor:pointer}.metadata-option input{width:16px;height:16px;margin:0;accent-color:#24311d}.metadata-option:has(input:disabled){opacity:.55;cursor:default}
+
 </style>
   
 </head>
@@ -65,7 +67,7 @@ main{max-width:1168px;margin:48px auto 64px;padding:0 28px}.intro{text-align:cen
         </div>
       </div>
       <div class="controls">
-        <div class="scale-control"><div><span class="control-label" data-i18n="scale">Zvětšení</span><span class="control-hint" data-i18n="scaleHint">Více pixelů, jemnější detaily</span></div><div class="scale-buttons" role="group" data-i18n-aria="scaleGroup" aria-label="Měřítko zvětšení"><button class="scale expert-only" data-scale="1" aria-pressed="false" type="button" data-i18n-title="originalSize" title="Zachovat původní počet pixelů" hidden>1×</button><button class="scale active" data-scale="2" aria-pressed="true" type="button">2×</button><button class="scale" data-scale="4" aria-pressed="false" type="button">4×</button></div></div>
+        <div class="scale-control"><div><span id="scale-label" class="control-label" data-i18n="scale">Zvětšení</span><span id="scale-hint" class="control-hint" data-i18n="scaleHint">Více pixelů, jemnější detaily</span></div><div id="scale-buttons" class="scale-buttons" role="group" data-i18n-aria="scaleGroup" aria-label="Měřítko zvětšení"><button class="scale active" data-scale="2" aria-pressed="true" type="button">2×</button><button class="scale" data-scale="4" aria-pressed="false" type="button">4×</button></div></div>
         <div class="print-settings" id="print-settings" hidden>
           <div class="dpi-control" data-i18n-title="dpiHelp" title="DPI určuje velikost pro tisk. Počet pixelů změníte volbou 2× nebo 4×.">
             <div class="dpi-heading"><label class="control-label" for="dpi" data-i18n="dpi">Rozlišení pro tisk</label><output id="dpi-value" for="dpi">300 DPI</output></div>
@@ -84,6 +86,7 @@ main{max-width:1168px;margin:48px auto 64px;padding:0 28px}.intro{text-align:cen
       </div>
       <div class="mode-bar"><button id="expert-toggle" class="expert-toggle" type="button" role="switch" aria-checked="false" aria-controls="expert-panel"><span data-i18n="expert">Expert</span><span class="switch-track" aria-hidden="true"></span></button></div>
       <section id="expert-panel" class="expert-panel" hidden aria-label="Expert" data-i18n-aria="expert">
+        <label class="metadata-option"><input id="metadata-only" type="checkbox"><span data-i18n="metadataOnly">Pouze upravit DPI / formát (bez zvětšení)</span></label>
         <div class="expert-summary"><div><span class="control-label" data-i18n="pixelDimensions">Výsledné rozměry</span><output id="expert-pixels" data-i18n="chooseToMeasure">Pro zobrazení rozměrů vyberte obrázek.</output></div><div><span class="control-label" data-i18n="printDimensions">Velikost pro tisk</span><output id="expert-print">—</output></div><button id="detail-open" class="text-button" type="button" disabled data-i18n="detail">Detail ve 100 %</button></div>
         <div id="quality-control" class="quality-control" hidden><div class="dpi-heading"><label class="control-label" for="quality" data-i18n="quality">Kvalita JPG</label><output id="quality-value" for="quality">95 %</output></div><input id="quality" type="range" min="50" max="100" step="1" value="95" aria-describedby="quality-help"><span class="control-hint" id="quality-help" data-i18n="qualityHelp">Vyšší kvalita znamená větší soubor.</span></div>
         <p id="expert-export-size" class="control-hint" hidden></p>
@@ -94,7 +97,7 @@ main{max-width:1168px;margin:48px auto 64px;padding:0 28px}.intro{text-align:cen
     </section>
     <p class="privacy"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="5" y="9" width="10" height="8" rx="2"/><path d="M7 9V6a3 3 0 0 1 6 0v3"/></svg><span data-i18n="privacy">Váš obrázek zůstává ve vašem zařízení. Nikam ho neodesíláme.</span></p>
   </main>
-  <dialog id="detail-dialog" class="detail-dialog" aria-labelledby="detail-title"><div class="detail-heading"><h2 id="detail-title" data-i18n="detailTitle">Porovnání detailu · 100 %</h2><button id="detail-close" class="text-button" type="button" data-i18n="close">Zavřít</button></div><p class="control-hint" data-i18n="detailHelp">Posouváním prohlédnete detaily. Originál je pro porovnání zobrazen ve velikosti výsledku.</p><div class="detail-grid"><section><h3 data-i18n="original">Původní</h3><div id="detail-original-pane" class="detail-pane" tabindex="0"><img id="detail-original" alt="Původní obrázek" data-i18n-alt="originalAlt"></div></section><section><h3 id="detail-result-label" data-i18n="result">AI výsledek</h3><div id="detail-result-pane" class="detail-pane" tabindex="0"><img id="detail-result" alt="Obrázek zvětšený pomocí AI" data-i18n-alt="resultAlt"></div></section></div></dialog>
+  <dialog id="detail-dialog" class="detail-dialog" aria-labelledby="detail-title"><div class="detail-heading"><h2 id="detail-title" data-i18n="detailTitle">Porovnání ve stejné velikosti · výstup 100 %</h2><button id="detail-close" class="text-button" type="button" data-i18n="close">Zavřít</button></div><p id="detail-help" class="control-hint" data-i18n="detailHelp">Výstup je zobrazený ve 100 %. Oba náhledy mají stejné rozměry; originál je zvětšený běžnou interpolací prohlížeče. Posouváním prohlédnete detaily.</p><div class="detail-grid"><section><h3 id="detail-source-label" data-i18n="original">Původní</h3><div id="detail-original-pane" class="detail-pane" tabindex="0"><img id="detail-original" alt="Původní obrázek" data-i18n-alt="originalAlt"></div></section><section><h3 id="detail-result-label" data-i18n="result">AI výsledek</h3><div id="detail-result-pane" class="detail-pane" tabindex="0"><img id="detail-result" alt="Obrázek zvětšený pomocí AI" data-i18n-alt="resultAlt"></div></section></div></dialog>
   
 <script type="module">
 // Paths work at a domain root, a GitHub Pages project path, and /cs/.
@@ -178,8 +181,8 @@ const messages = {
     "qualityHelp": "Higher quality creates a larger file.",
     "exportSize": "File size: {size}",
     "detail": "Detail at 100%",
-    "detailTitle": "Compare detail · 100%",
-    "detailHelp": "Scroll to explore. Original is scaled to the output size for comparison.",
+    "detailTitle": "Compare at equal size · output at 100%",
+    "detailHelp": "The output is shown at 100%. Both views have equal dimensions; the original uses standard browser interpolation. Scroll to explore.",
     "close": "Close",
     "batch": "Process multiple images",
     "batchChoose": "Choose images",
@@ -201,7 +204,10 @@ const messages = {
     "singleImage": "Back to one image",
     "zipName": "processed-images.zip",
     "skipped": "Skipped",
-    "batchNone": "No files are ready. Check the errors next to each image."
+    "batchNone": "No files are ready. Check the errors next to each image.",
+    "metadataOnly": "Only change DPI / format (no enlargement)",
+    "noUpscale": "No enlargement",
+    "detailSource": "Original · enlarged {scale}× for comparison"
   },
   "cs": {
     "pageTitle": "Upscale — více pixelů, více detailů",
@@ -277,8 +283,8 @@ const messages = {
     "qualityHelp": "Vyšší kvalita znamená větší soubor.",
     "exportSize": "Velikost souboru: {size}",
     "detail": "Detail ve 100 %",
-    "detailTitle": "Porovnání detailu · 100 %",
-    "detailHelp": "Posouváním prohlédnete detaily. Originál je pro porovnání zobrazen ve velikosti výsledku.",
+    "detailTitle": "Porovnání ve stejné velikosti · výstup 100 %",
+    "detailHelp": "Výstup je zobrazený ve 100 %. Oba náhledy mají stejné rozměry; originál je zvětšený běžnou interpolací prohlížeče. Posouváním prohlédnete detaily.",
     "close": "Zavřít",
     "batch": "Zpracovat více obrázků",
     "batchChoose": "Vybrat obrázky",
@@ -300,7 +306,10 @@ const messages = {
     "singleImage": "Zpět na jeden obrázek",
     "zipName": "upravene-obrazky.zip",
     "skipped": "Přeskočeno",
-    "batchNone": "Žádný soubor není připravený. Zkontrolujte chyby u jednotlivých obrázků."
+    "batchNone": "Žádný soubor není připravený. Zkontrolujte chyby u jednotlivých obrázků.",
+    "metadataOnly": "Pouze upravit DPI / formát (bez zvětšení)",
+    "noUpscale": "Bez zvětšení",
+    "detailSource": "Původní · pro porovnání zvětšený {scale}×"
   }
 };
 function t(key, values = {}) {
@@ -706,7 +715,7 @@ localize();
 const $ = id => document.getElementById(id);
 let sourceImage, sourceFile, sourceURL, outputURL, previewURL, sourceDpi = null, rawOutput = null, outputStats;
 let exportRevision = 0, exportPending = false, exportTimer, pointerSliding = false;
-let scale = 2, busy = false, controller, loadRevision = 0, expert = false;
+let scale = 2, lastUpscale = 2, busy = false, controller, loadRevision = 0, expert = false;
 let queueMode = false, queue = [], batchURL;
 const scales = [...document.querySelectorAll('.scale')];
 const pretty = value => value.toLocaleString(locale);
@@ -737,6 +746,10 @@ function updateFormatNote() {
   updateExpert();
 }
 function updateExpert() {
+  $('metadata-only').checked = scale === 1;
+  $('scale-buttons').hidden = scale === 1;
+  $('scale-label').textContent = t(scale === 1 ? 'noUpscale' : 'scale');
+  $('scale-hint').textContent = t(scale === 1 ? 'originalSize' : 'scaleHint');
   $('quality-control').hidden = !expert || $('format').value !== 'jpeg';
   $('quality-value').value = `${$('quality').value} %`;
   $('detail-open').disabled = busy || !rawOutput || !outputURL || exportPending || queueMode;
@@ -804,14 +817,14 @@ function clearOutput() {
 }
 function setBusy(value) {
   busy = value; document.body.classList.toggle('busy', value);
-  for (const id of ['dpi', 'format', 'quality', 'change', 'dropzone', 'expert-toggle', 'batch-choose', 'batch-start', 'batch-clear', 'file', 'batch-files']) $(id).disabled = value;
+  for (const id of ['dpi', 'format', 'quality', 'change', 'dropzone', 'expert-toggle', 'batch-choose', 'batch-start', 'batch-clear', 'file', 'batch-files', 'metadata-only']) $(id).disabled = value;
   $('upscale').disabled = value || !sourceImage || queueMode;
   for (const button of scales) button.disabled = value;
   $('progress-wrap').hidden = !value; $('cancel').disabled = false; updateExpert();
 }
 function selectScale(value) {
   if (busy || scale === value) return;
-  scale = value;
+  scale = value; if (value > 1) lastUpscale = value;
   scales.forEach(item => { item.classList.toggle('active', Number(item.dataset.scale) === scale); item.setAttribute('aria-pressed', String(Number(item.dataset.scale) === scale)); });
   $('upscale-label').textContent = t(scale === 1 ? 'prepareImage' : 'upscale');
   clearOutput(); if (queueMode) invalidateBatch(); showError(''); updateExpert();
@@ -902,22 +915,27 @@ $('download').addEventListener('click', event => { if (exportPending || $('downl
 $('expert-toggle').addEventListener('click', () => {
   if (busy) return;
   expert = !expert; document.body.classList.toggle('expert-mode', expert); $('expert-toggle').setAttribute('aria-checked', String(expert)); $('expert-panel').hidden = !expert;
-  document.querySelectorAll('.expert-only').forEach(el => { el.hidden = !expert; }); $('file').multiple = expert;
+  $('file').multiple = expert;
   if (!expert) {
     if (queueMode) restoreSingle();
-    if (scale === 1) selectScale(2);
+    if (scale === 1) selectScale(lastUpscale);
     $('quality').value = '95'; closeDetail(); scheduleExport(true);
   }
   updateExpert();
 });
+$('metadata-only').addEventListener('change', () => selectScale($('metadata-only').checked ? 1 : lastUpscale));
 $('batch-choose').addEventListener('click', () => $('batch-files').click());
 $('batch-files').addEventListener('change', event => { enterQueue([...event.target.files]); event.target.value = ''; });
 $('batch-clear').addEventListener('click', restoreSingle);
 $('detail-open').addEventListener('click', () => {
   if (!expert || busy || !outputStats || !outputURL || exportPending) return;
   $('detail-original').src = sourceURL; $('detail-result').src = outputURL;
+  $('detail-source-label').textContent = scale === 1 ? t('original') : t('detailSource', { scale });
+  const dims = `${pretty(outputStats.width)} × ${pretty(outputStats.height)} px`;
+  $('detail-help').textContent = t('detailHelp') + ' ' + dims;
+  const format = $('format').value === 'jpeg' ? `JPG · ${expert ? $('quality').value : 95} %` : 'PNG';
   for (const id of ['detail-original', 'detail-result']) { $(id).style.width = `${outputStats.width}px`; $(id).style.height = `${outputStats.height}px`; }
-  $('detail-result-label').textContent = t(scale === 1 ? 'exportResult' : 'result');
+  $('detail-result-label').textContent = `${t(scale === 1 ? 'exportResult' : 'result')} · ${format}`;
   $('detail-result').alt = t(scale === 1 ? 'outputAlt' : 'resultAlt');
   $('detail-dialog').showModal();
   for (const id of ['detail-original-pane', 'detail-result-pane']) { $(id).scrollLeft = 0; $(id).scrollTop = 0; }
