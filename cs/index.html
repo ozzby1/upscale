@@ -1,0 +1,753 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f7f8f5">
+  <meta name="description" content="Zvětšete obrázky pomocí AI přímo v prohlížeči. Zdarma, v soukromí a bez registrace.">
+  <title>Upscale — více pixelů, více detailů</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23252a34'/%3E%3Cpath d='m8 24 16-16M8 8h16v16' fill='none' stroke='%23d9f99d' stroke-width='2.5'/%3E%3C/svg%3E">
+  <style>
+:root{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#20281f;background:#f7f8f5;font-synthesis:none;-webkit-font-smoothing:antialiased;font-size:14px}
+*{box-sizing:border-box}body{margin:0}button,input,select{font:inherit}button,a,input,select{-webkit-tap-highlight-color:transparent}button,a{touch-action:manipulation}button{cursor:pointer}a{color:inherit}button:disabled{cursor:default}svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;width:22px;height:22px;flex-shrink:0}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #618b3c;outline-offset:4px}[hidden]{display:none!important}.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.header{max-width:1360px;margin:auto;padding:26px 40px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{font-size:27px;font-weight:750;letter-spacing:-1.3px;text-decoration:none;display:flex;align-items:center;gap:9px}.brand svg{width:27px;height:27px;stroke-width:2.6}.brand-dot{color:#6f9c46;margin-left:-8px}.header-right{display:flex;align-items:center;gap:28px}.local{color:#55604e;font-size:12px;display:flex;align-items:center;gap:8px}.local>span:first-child{width:7px;height:7px;background:#6f9c46;border-radius:50%}.languages{display:flex;gap:3px;padding:3px;background:#e9ede5;border-radius:9px}.languages a{display:grid;place-items:center;min-width:37px;min-height:31px;padding:0 8px;text-decoration:none;color:#5d6757;font-size:11px;font-weight:750;border-radius:6px}.languages a:hover{background:#f7f8f5}.languages a[aria-current=page]{background:white;color:#20281f;box-shadow:0 1px 4px #26311d12}
+main{max-width:1168px;margin:48px auto 64px;padding:0 28px}.intro{text-align:center;margin:0 auto 36px}h1{font-size:clamp(38px,5.2vw,64px);letter-spacing:-2.8px;line-height:1.12;font-weight:700;margin:0 0 17px}.accent{color:#658447}.intro p{font-size:16px;line-height:1.6;color:#5d6657;margin:0}.workspace{padding:18px;background:white;border:1px solid #dfe5d9;border-radius:22px;box-shadow:0 12px 48px #29351f08}.dropzone{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;width:100%;min-height:338px;padding:36px 20px;border:1.5px dashed #b9c9ac;border-radius:13px;background:#f8faf6;color:#24321d;transition:background .18s,border-color .18s}.dropzone:hover,.dropzone.dragging{background:#eff6e8;border-color:#658447}.upload-icon{display:grid;place-items:center;width:58px;height:58px;background:white;border:1px solid #dce6d4;border-radius:17px;margin-bottom:20px;color:#527934;box-shadow:0 3px 12px #20301406}.upload-icon svg{width:27px;height:27px}.drop-title{font-size:23px;font-weight:650;letter-spacing:-.5px}.choose-label{display:grid;place-items:center;margin-top:20px;padding:12px 22px;min-height:44px;border-radius:9px;background:#22311b;color:white;font-size:14px;font-weight:650;transition:background .18s}.dropzone:hover .choose-label{background:#3c542d}.formats{margin-top:16px;font-size:12px;color:#637059}
+.controls{display:grid;grid-template-columns:minmax(0,1fr) 228px;align-items:center;gap:26px;padding:22px 6px 4px}.control-label{display:block;font-size:13px;font-weight:700;line-height:1.4;color:#2e3927}.control-hint{display:block;font-size:11px;line-height:1.5;color:#65725b;margin-top:5px}.scale-control{display:flex;align-items:center;justify-content:flex-start;gap:24px}.scale-buttons{display:flex;gap:4px;border:1px solid #dce3d5;border-radius:10px;padding:4px;background:#f4f6f0}.scale{min-width:52px;height:39px;border:0;border-radius:6px;background:transparent;color:#4d5c42;font-size:15px;font-weight:750;transition:background .15s,color .15s}.scale:hover{background:#e4eddc}.scale.active{background:#24311d;color:white;box-shadow:0 2px 5px #1a2b1414}.scale:disabled{opacity:.55}.primary{display:flex;justify-content:space-between;align-items:center;gap:16px;background:#bced8f;color:#203218;border:1px solid #a8d87c;border-radius:10px;min-height:50px;width:100%;padding:0 18px;font-size:14px;font-weight:750;text-decoration:none;transition:background .18s,transform .18s;white-space:nowrap}.primary svg{width:19px;height:19px}.primary:hover{background:#ace476}.primary:active{transform:translateY(1px)}.primary:disabled{background:#edf0e9;color:#697360;border-color:#e1e6da}.download{background:#24311d;color:white;border-color:#24311d}.download:hover{background:#405631}.download[aria-disabled=true]{opacity:.5;cursor:wait}.print-settings{display:contents}.has-image .controls{grid-template-columns:minmax(190px,1fr) minmax(180px,230px) 110px minmax(180px,220px);gap:24px;padding-top:24px}.has-image .scale-control{display:block}.has-image .scale-buttons{margin-top:10px;width:max-content}.has-image .scale-control .control-hint{display:none}.dpi-heading{display:flex;align-items:center;justify-content:space-between;gap:8px}.dpi-heading output{font-size:12px;font-weight:750;font-variant-numeric:tabular-nums;background:#edf4e6;color:#405b2b;border-radius:5px;padding:4px 6px;white-space:nowrap}.dpi-control input{appearance:none;display:block;--fill:43.1818%;width:100%;height:4px;border-radius:8px;margin:16px 0 0;background:linear-gradient(to right,#658447 var(--fill),#dce4d5 var(--fill));cursor:pointer}.dpi-control input::-webkit-slider-thumb{appearance:none;width:14px;height:14px;border:2px solid white;border-radius:50%;background:#405b2b;box-shadow:0 0 0 1px #7b9863}.dpi-control input::-moz-range-thumb{width:10px;height:10px;border:2px solid white;border-radius:50%;background:#405b2b;box-shadow:0 0 0 1px #7b9863}.dpi-control input:disabled{opacity:.5;cursor:default}.dpi-ticks{position:relative;height:17px;margin:9px 7px 0;font-size:10px;color:#66735c;pointer-events:none}.dpi-ticks span{position:absolute;transform:translateX(-50%)}.dpi-ticks span:first-child{left:0}.dpi-ticks span:last-child{left:100%}.dpi-ticks span:nth-child(2),.dpi-ticks span:nth-child(3){font-weight:700;color:#3f5331}.dpi-control .control-hint{font-size:10px;margin-top:2px}.export-control{align-self:start}.export-control select{display:block;margin-top:10px;width:100%;min-height:45px;padding:9px 12px;border:1px solid #cbd6c1;border-radius:8px;background:white;color:#283721;font-size:14px;font-weight:650;cursor:pointer}#format-note{display:block;font-size:10px;color:#65725b;line-height:1.4;margin-top:7px}.actions{align-self:center}
+.filebar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:1px 2px 18px;font-size:13px}.filebar>div{display:flex;flex-direction:column;gap:5px;min-width:0}#filename{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:590px;font-weight:650}.muted{color:#65725b;font-size:11px}.text-button{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid #ccd6c2;border-radius:8px;background:white;color:#34472a;font-size:12px;font-weight:650;padding:9px 12px;white-space:nowrap;min-height:38px}.text-button svg{width:16px;height:16px}.text-button:hover{background:#f0f5eb;border-color:#91aa7c}.text-button:disabled{opacity:.5}.comparison{--preview-height:640px;position:relative;overflow:hidden;isolation:isolate;width:min(100%,calc(var(--preview-height) * var(--image-ratio,1.5)));height:auto;aspect-ratio:var(--image-ratio,1.5);margin-inline:auto;border-radius:10px;background:transparent}.comparison>img,.result-layer,.result-layer>img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}.result-layer{clip-path:inset(0 0 0 50%);background:transparent}.compare-labels{position:absolute;inset:14px 14px auto;display:flex;justify-content:space-between;pointer-events:none}.compare-labels span{padding:7px 10px;border-radius:6px;background:#fffffff0;backdrop-filter:blur(8px);font-size:11px;font-weight:650;color:#283721;box-shadow:0 1px 6px #0001}.divider{position:absolute;top:0;bottom:0;left:50%;width:2px;background:white;box-shadow:0 0 3px #0003;pointer-events:none}.divider span{position:absolute;top:50%;left:1px;transform:translate(-50%,-50%);width:38px;height:38px;display:grid;place-items:center;background:white;border-radius:50%;color:#34472a;font-size:19px;box-shadow:0 1px 7px #0002}.comparison input[type=range]{position:absolute;inset:0;opacity:0;width:100%;height:100%;margin:0;cursor:ew-resize}.comparison:focus-within{outline:2px solid #658447;outline-offset:3px}.result-meta{display:flex;justify-content:space-between;gap:14px;padding:14px 2px 0;font-size:11px;line-height:1.5;color:#65725b}.result-meta>span:first-child{color:#3f5c2c;font-weight:600}.has-image .intro{margin-bottom:26px}.has-image h1{font-size:38px;letter-spacing:-1.5px;margin-bottom:10px}.has-image main{margin-top:24px}.progress-wrap{padding:22px 6px 4px}.progress-copy{display:flex;justify-content:space-between;align-items:center;gap:14px;font-size:13px;font-weight:550;color:#405631}progress{appearance:none;width:100%;height:6px;border:0;border-radius:5px;overflow:hidden;margin-top:13px;display:block;background:#e9efE2}progress::-webkit-progress-bar{background:#e9efe2}progress::-webkit-progress-value{background:#749e4f;transition:width .2s}progress::-moz-progress-bar{background:#749e4f}.message{padding:15px 6px 4px;color:#a23327;font-size:13px;line-height:1.6;margin:0}body.busy .comparison{opacity:.75}.privacy{display:flex;align-items:center;justify-content:center;gap:7px;font-size:12px;line-height:1.6;color:#536348;margin:22px 0 7px}.privacy svg{width:15px;height:15px}.hint{font-size:11px;color:#69775f;text-align:center;margin:0;line-height:1.6}footer{max-width:1280px;padding:23px 40px;margin:0 auto;display:flex;justify-content:space-between;font-size:11px;color:#67735e;border-top:1px solid #e1e6da}footer>span:last-child{font-weight:700;font-size:13px;letter-spacing:-.4px}
+@media(max-width:1000px){.has-image .controls{grid-template-columns:1fr 1fr;gap:24px 32px}.has-image .scale-control{display:flex;justify-content:space-between}.has-image .scale-buttons{margin-top:0}.dpi-control{grid-column:2;grid-row:1}.export-control{display:flex;align-items:center;gap:16px;flex-wrap:wrap}.export-control select{width:90px;margin-top:0}#format-note{flex-basis:100%;margin-top:-6px}.actions{grid-column:2}.has-image .controls{align-items:start}}
+@media(max-width:600px){.header{padding:21px 20px}.brand{font-size:24px}.header-right{gap:10px}.local{display:none}main{margin-top:30px;margin-bottom:42px;padding:0 16px}.intro{margin-bottom:27px}h1{font-size:43px;letter-spacing:-2px;max-width:340px;margin-inline:auto}.intro p{font-size:14px;max-width:320px;margin:auto}.workspace{padding:12px;border-radius:17px}.dropzone{min-height:300px;padding:25px 12px}.drop-title{font-size:20px}.choose-label{font-size:14px}.controls{grid-template-columns:1fr;gap:18px;padding:20px 2px 2px}.scale-control{justify-content:space-between;gap:12px}.scale-buttons{flex-shrink:0}.control-hint{font-size:10px}.primary{min-height:49px;font-size:14px}.has-image .controls{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px 18px;padding-top:22px}.has-image .scale-control{display:block}.has-image .scale-buttons{margin-top:12px}.has-image .scale{min-width:45px}.dpi-control{grid-column:2;grid-row:1}.dpi-heading{gap:4px;flex-wrap:wrap}.dpi-heading .control-label{font-size:12px}.dpi-heading output{font-size:11px;padding:3px 5px}.dpi-control .control-hint{font-size:9px}.export-control{grid-column:1 / -1;justify-content:space-between;gap:12px}.export-control select{width:100px}.actions{grid-column:1 / -1}#format-note{flex-basis:100%;font-size:11px;margin-top:0}.privacy{font-size:11px;align-items:flex-start;gap:5px}.privacy svg{margin-top:2px}.hint{font-size:10px;max-width:310px;margin:auto}.comparison{--preview-height:480px}.filebar{padding:2px 1px 14px;gap:8px}#filename{font-size:12px}.muted{font-size:10px}.filebar .text-button{padding:9px;min-height:38px;font-size:11px}.filebar .text-button svg{display:none}.result-meta{font-size:10px;flex-wrap:wrap;gap:4px}.progress-copy{font-size:12px}.has-image h1{font-size:30px;letter-spacing:-1px}.has-image .intro p{font-size:12px}.has-image main{margin-top:12px}footer{padding:20px;font-size:10px}.languages a{min-height:32px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+</style>
+  
+</head>
+<body>
+  <header class="header">
+    <a class="brand" href="./" data-i18n-aria="home" aria-label="Upscale — úvod"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7 25 25 7M7 7h18v18"/></svg>upscale<span class="brand-dot">.</span></a>
+    <div class="header-right"><span class="local"><span></span><span data-i18n="local">Zpracování ve vašem zařízení</span></span><nav class="languages" aria-label="Language"><a href="../" data-language="en" lang="en" hreflang="en" aria-label="English">EN</a><a href="./" aria-current="page" data-language="cs" lang="cs" hreflang="cs" aria-label="Čeština">CS</a></nav></div>
+  </header>
+  <main>
+    <section class="intro">
+      <h1><span data-i18n="heading">Více pixelů.</span> <span class="accent" data-i18n="headingAccent">Více detailů.</span></h1>
+      <p data-i18n="intro">Zvětšete své obrázky pomocí AI. Zdarma, v soukromí a jednoduše.</p>
+    </section>
+    <section class="workspace" data-i18n-aria="workspace" aria-label="Zvětšení obrázku">
+      <input id="file" class="visually-hidden" type="file" accept="image/png,image/jpeg,image/webp">
+      <div class="preview-area">
+        <button class="dropzone" id="dropzone" type="button">
+          <span class="upload-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m-4 4 4-4 4 4M4 15v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4"/></svg></span>
+          <span class="drop-title" data-i18n="drop">Přetáhněte sem obrázek</span>
+          <span class="choose-label" data-i18n="choose">Vybrat obrázek</span>
+          <span class="formats" data-i18n="formats">JPG, PNG, WebP · do 20 MB</span>
+        </button>
+        <div id="editor" hidden>
+          <div class="filebar"><div><span id="filename"></span><span id="dimensions" class="muted"></span></div><button id="change" class="text-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h12l-3-3M20 17H8l3 3M20 7v4M4 17v-4"/></svg><span data-i18n="change">Změnit obrázek</span></button></div>
+          <div class="comparison" id="comparison">
+            <img id="original" data-i18n-alt="originalAlt" alt="Původní obrázek">
+            <div id="result-layer" class="result-layer" hidden><img id="result" data-i18n-alt="resultAlt" alt="Obrázek zvětšený pomocí AI"></div>
+            <div class="compare-labels" id="compare-labels" hidden><span data-i18n="original">Původní</span><span data-i18n="result">AI výsledek</span></div>
+            <div class="divider" id="divider" hidden><span>‹ ›</span></div>
+            <input id="compare" type="range" min="0" max="100" value="50" data-i18n-aria="compare" aria-label="Porovnat původní obrázek a výsledek" hidden>
+          </div>
+          <div class="result-meta" id="result-meta" hidden><span id="output-info"></span><span data-i18n="compareHint">Posunutím porovnáte výsledek</span></div>
+        </div>
+      </div>
+      <div class="controls">
+        <div class="scale-control"><div><span class="control-label" data-i18n="scale">Zvětšení</span><span class="control-hint" data-i18n="scaleHint">Více pixelů, jemnější detaily</span></div><div class="scale-buttons" role="group" data-i18n-aria="scaleGroup" aria-label="Měřítko zvětšení"><button class="scale active" data-scale="2" aria-pressed="true" type="button">2×</button><button class="scale" data-scale="4" aria-pressed="false" type="button">4×</button></div></div>
+        <div class="print-settings" id="print-settings" hidden>
+          <div class="dpi-control" data-i18n-title="dpiHelp" title="DPI určuje velikost pro tisk. Počet pixelů změníte volbou 2× nebo 4×.">
+            <div class="dpi-heading"><label class="control-label" for="dpi" data-i18n="dpi">Rozlišení pro tisk</label><output id="dpi-value" for="dpi">300 DPI</output></div>
+            <input id="dpi" type="range" min="72" max="600" step="1" value="300" list="dpi-stops" data-i18n-aria="dpi" aria-label="Rozlišení pro tisk" aria-describedby="source-dpi dpi-help">
+            <datalist id="dpi-stops"><option value="150"></option><option value="300"></option></datalist>
+            <div class="dpi-ticks" aria-hidden="true"><span>72</span><span style="left:14.7727%">150</span><span style="left:43.1818%">300</span><span>600</span></div>
+            <span id="source-dpi" class="control-hint"></span><span id="dpi-help" class="visually-hidden" data-i18n="dpiHelp">DPI určuje velikost pro tisk. Počet pixelů změníte volbou 2× nebo 4×.</span>
+          </div>
+          <div class="export-control"><label class="control-label" for="format" data-i18n="format">Formát exportu</label><select id="format"><option value="png">PNG</option><option value="jpeg">JPG</option></select><small id="format-note" hidden data-i18n="formatNote">Průhledná místa budou v JPG bílá.</small></div>
+        </div>
+        <div class="actions">
+          <button class="primary" id="upscale" type="button" disabled><span data-i18n="upscale">Zvětšit obrázek</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></button>
+          <a class="primary download" id="download" hidden download><span id="download-label"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v12m-4-4 4 4 4-4M5 19h14"/></svg></a>
+        </div>
+      </div>
+      <div class="progress-wrap" id="progress-wrap" hidden><div class="progress-copy"><span id="progress-text" role="status" aria-live="polite" data-i18n="preparing">Připravuji AI…</span><button id="cancel" type="button" class="text-button" data-i18n="cancel">Zrušit</button></div><progress id="progress" max="100" value="0" data-i18n-aria="progress" aria-label="Průběh zvětšování"></progress></div>
+      <p class="message" id="message" role="alert" hidden></p>
+    </section>
+    <p class="privacy"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="5" y="9" width="10" height="8" rx="2"/><path d="M7 9V6a3 3 0 0 1 6 0v3"/></svg><span data-i18n="privacy">Váš obrázek zůstává ve vašem zařízení. Nikam ho neodesíláme.</span></p>
+    <p class="hint" data-i18n="hint">Při prvním použití se stáhne AI model. Rychlost zpracování závisí na vašem zařízení.</p>
+  </main>
+  <footer><span data-i18n="footer">Bez registrace. Bez vodoznaku.</span><span>upscale.</span></footer>
+<script type="module">
+// Paths work at a domain root, a GitHub Pages project path, and /cs/.
+const language = /\/cs(?:\/index\.html)?\/?$/.test(location.pathname) ? 'cs' : 'en';
+const locale = language === 'cs' ? 'cs-CZ' : 'en-US';
+const basePath = location.pathname.replace(/\/cs(?:\/index\.html)?\/?$/, '/').replace(/index\.html$/, '');
+const appBase = new URL(basePath.endsWith('/') ? basePath : basePath + '/', location.origin);
+const assetUrl = path => new URL(path, appBase).href;
+const messages = {
+  "en": {
+    "pageTitle": "Upscale — more pixels, more detail",
+    "description": "Upscale images with AI in your browser. Free, private, and no sign-up required.",
+    "home": "Upscale — home",
+    "local": "Processed on your device",
+    "heading": "More pixels.",
+    "headingAccent": "More detail.",
+    "intro": "Enlarge your images with AI. Free, private, and beautifully simple.",
+    "workspace": "Image upscaler",
+    "drop": "Drop your image here",
+    "choose": "Choose an image",
+    "dropHint": "or click to browse",
+    "formats": "JPG, PNG, WebP · up to 20 MB",
+    "change": "Change image",
+    "originalAlt": "Original image",
+    "resultAlt": "AI upscaled image",
+    "original": "Original",
+    "result": "AI result",
+    "compare": "Compare original and upscaled image",
+    "compareHint": "Drag to compare",
+    "scale": "Upscale",
+    "scaleGroup": "Upscale factor",
+    "scaleHint": "More pixels, sharper detail",
+    "dpi": "Print resolution",
+    "dpiHelp": "DPI controls print size. Use 2× or 4× to add pixels.",
+    "sourceDpi": "Original DPI: {value}",
+    "unknown": "not specified",
+    "format": "Export format",
+    "formatNote": "Transparent areas will be white in JPG.",
+    "upscale": "Upscale image",
+    "download": "Download {format}",
+    "preparing": "Preparing AI…",
+    "cancel": "Cancel",
+    "progress": "Upscaling progress",
+    "privacy": "Your image stays on your device. Nothing is uploaded.",
+    "hint": "The AI model downloads on first use. Processing speed depends on your device.",
+    "footer": "No sign-up. No watermark.",
+    "dpiInvalid": "Choose a DPI between 72 and 600.",
+    "jpegMemory": "Could not save JPG. Try a smaller image.",
+    "jpegFailed": "Could not save JPG.",
+    "fileType": "Please choose a JPG, PNG, or WebP image.",
+    "fileSize": "This file is too large. The maximum size is 20 MB.",
+    "inputSize": "This image is too large. Use an image up to 12 MP and 12,000 px per side.",
+    "fileOpen": "Could not open this file. Choose another JPG, PNG, or WebP image.",
+    "cancelling": "Cancelling…",
+    "memory": "Your device does not have enough memory for this image. Try 2× or a smaller image.",
+    "failed": "Upscaling failed. Check your connection and try a smaller image.",
+    "outputSize4": "The result would be too large for your browser. Choose 2× or a smaller image (output up to 24 MP and 8,192 px per side).",
+    "outputSize2": "The result would be too large for your browser. Use a smaller image (output up to 24 MP and 8,192 px per side).",
+    "loadFailed": "Could not load AI. Check your connection and try again.",
+    "backendFailed": "Could not start AI processing. Try refreshing the page.",
+    "cancelled": "Cancelled",
+    "loading": "Loading AI… This may take a moment on first use.",
+    "processor": "Switching to processor…",
+    "loadingModel": "Loading AI model…",
+    "browserMemory": "Your browser does not have enough memory. Try a smaller image.",
+    "processing": "Upscaling image… {percent}%",
+    "encoding": "Preparing your image…",
+    "saveFailed": "Could not save the image. Try a smaller file.",
+    "done": "Done",
+    "validDpi": "Enter a valid DPI.",
+    "pngDpi": "Could not write DPI to PNG."
+  },
+  "cs": {
+    "pageTitle": "Upscale — více pixelů, více detailů",
+    "description": "Zvětšete obrázky pomocí AI přímo v prohlížeči. Zdarma, v soukromí a bez registrace.",
+    "home": "Upscale — úvod",
+    "local": "Zpracování ve vašem zařízení",
+    "heading": "Více pixelů.",
+    "headingAccent": "Více detailů.",
+    "intro": "Zvětšete své obrázky pomocí AI. Zdarma, v soukromí a jednoduše.",
+    "workspace": "Zvětšení obrázku",
+    "drop": "Přetáhněte sem obrázek",
+    "choose": "Vybrat obrázek",
+    "dropHint": "nebo klikněte pro výběr",
+    "formats": "JPG, PNG, WebP · do 20 MB",
+    "change": "Změnit obrázek",
+    "originalAlt": "Původní obrázek",
+    "resultAlt": "Obrázek zvětšený pomocí AI",
+    "original": "Původní",
+    "result": "AI výsledek",
+    "compare": "Porovnat původní obrázek a výsledek",
+    "compareHint": "Posunutím porovnáte výsledek",
+    "scale": "Zvětšení",
+    "scaleGroup": "Měřítko zvětšení",
+    "scaleHint": "Více pixelů, jemnější detaily",
+    "dpi": "Rozlišení pro tisk",
+    "dpiHelp": "DPI určuje velikost pro tisk. Počet pixelů změníte volbou 2× nebo 4×.",
+    "sourceDpi": "Původní DPI: {value}",
+    "unknown": "neuvedeno",
+    "format": "Formát exportu",
+    "formatNote": "Průhledná místa budou v JPG bílá.",
+    "upscale": "Zvětšit obrázek",
+    "download": "Stáhnout {format}",
+    "preparing": "Připravuji AI…",
+    "cancel": "Zrušit",
+    "progress": "Průběh zvětšování",
+    "privacy": "Váš obrázek zůstává ve vašem zařízení. Nikam ho neodesíláme.",
+    "hint": "Při prvním použití se stáhne AI model. Rychlost zpracování závisí na vašem zařízení.",
+    "footer": "Bez registrace. Bez vodoznaku.",
+    "dpiInvalid": "Zvolte DPI od 72 do 600.",
+    "jpegMemory": "Nepodařilo se uložit JPG. Zkuste menší obrázek.",
+    "jpegFailed": "Nepodařilo se uložit JPG.",
+    "fileType": "Vyberte prosím obrázek ve formátu JPG, PNG nebo WebP.",
+    "fileSize": "Soubor je příliš velký. Maximální velikost je 20 MB.",
+    "inputSize": "Obrázek je příliš velký. Použijte vstup nejvýše 12 Mpx a 12 000 px na stranu.",
+    "fileOpen": "Tento soubor se nepodařilo otevřít. Vyberte jiný JPG, PNG nebo WebP.",
+    "cancelling": "Ruším zpracování…",
+    "memory": "Zařízení nemá dostatek paměti pro tento obrázek. Zkuste měřítko 2× nebo menší obrázek.",
+    "failed": "Zvětšení se nepodařilo. Zkontrolujte připojení a zkuste menší obrázek.",
+    "outputSize4": "Výsledek by byl příliš velký pro prohlížeč. Zvolte 2× nebo použijte menší obrázek (výstup nejvýše 24 Mpx a 8 192 px na stranu).",
+    "outputSize2": "Výsledek by byl příliš velký pro prohlížeč. Použijte menší obrázek (výstup nejvýše 24 Mpx a 8 192 px na stranu).",
+    "loadFailed": "Nepodařilo se načíst AI. Zkontrolujte připojení a zkuste to znovu.",
+    "backendFailed": "Nepodařilo se spustit AI výpočet. Zkuste stránku obnovit.",
+    "cancelled": "Zrušeno",
+    "loading": "Načítám AI… Při prvním použití to může chvíli trvat.",
+    "processor": "Přepínám na výpočet přes procesor…",
+    "loadingModel": "Načítám AI model…",
+    "browserMemory": "Prohlížeč nemá dostatek paměti. Zkuste menší obrázek.",
+    "processing": "Zvětšuji obrázek… {percent} %",
+    "encoding": "Připravuji obrázek ke stažení…",
+    "saveFailed": "Nepodařilo se uložit obrázek. Zkuste menší soubor.",
+    "done": "Hotovo",
+    "validDpi": "Zadejte platné DPI.",
+    "pngDpi": "Nepodařilo se zapsat DPI do PNG."
+  }
+};
+function t(key, values = {}) {
+  return messages[language][key].replace(/\{(\w+)\}/g, (_, name) => values[name] ?? `{${name}}`);
+}
+function localize() {
+  document.documentElement.lang = language;
+  document.title = t('pageTitle');
+  document.querySelector('meta[name="description"]').content = t('description');
+  for (const el of document.querySelectorAll('[data-i18n]')) el.textContent = t(el.dataset.i18n);
+  for (const el of document.querySelectorAll('[data-i18n-aria]')) el.setAttribute('aria-label', t(el.dataset.i18nAria));
+  for (const el of document.querySelectorAll('[data-i18n-alt]')) el.alt = t(el.dataset.i18nAlt);
+  for (const el of document.querySelectorAll('[data-i18n-title]')) el.title = t(el.dataset.i18nTitle);
+  for (const link of document.querySelectorAll('[data-language]')) {
+    link.href = new URL(link.dataset.language === 'cs' ? 'cs/' : './', appBase).href;
+    if (link.dataset.language === language) link.setAttribute('aria-current', 'page');
+  }
+  document.querySelector('.brand').href = new URL(language === 'cs' ? 'cs/' : './', appBase).href;
+}
+
+const isKnownMessage = value => Object.values(messages[language]).includes(value);
+
+
+// Physical resolution metadata only. Never infer DPI from pixel dimensions.
+const text = (bytes, start, length) => String.fromCharCode(...bytes.subarray(start, start + length));
+const isDpi = value => Number.isFinite(value) && value > 0 && value <= 10000000;
+const resolution = (x, y, source) => isDpi(x) && isDpi(y) ? { x, y, source } : null;
+
+function exifResolution(bytes, start, end) {
+  try {
+    if (text(bytes, start, 6) === 'Exif\0\0') start += 6;
+    const little = text(bytes, start, 2) === 'II';
+    if (!little && text(bytes, start, 2) !== 'MM') return null;
+    const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+    const u16 = offset => { if (offset < start || offset + 2 > end) throw new Error(); return view.getUint16(offset, little); };
+    const u32 = offset => { if (offset < start || offset + 4 > end) throw new Error(); return view.getUint32(offset, little); };
+    if (u16(start + 2) !== 42) return null;
+    const ifd = start + u32(start + 4), count = u16(ifd);
+    if (count > 1024 || ifd + 2 + count * 12 > end) return null;
+    let x, y, unit = 2, orientation = 1;
+    for (let index = 0; index < count; index++) {
+      const offset = ifd + 2 + index * 12, tag = u16(offset), type = u16(offset + 2), length = u32(offset + 4);
+      if ((tag === 0x11a || tag === 0x11b) && type === 5 && length === 1) {
+        const pointer = start + u32(offset + 8), denominator = u32(pointer + 4);
+        const value = denominator ? u32(pointer) / denominator : NaN;
+        if (tag === 0x11a) x = value; else y = value;
+      }
+      if (type === 3 && length === 1) {
+        if (tag === 0x128) unit = u16(offset + 8);
+        if (tag === 0x112) orientation = u16(offset + 8);
+      }
+    }
+    if (unit !== 2 && unit !== 3) return null;
+    const factor = unit === 3 ? 2.54 : 1;
+    return orientation >= 5 && orientation <= 8
+      ? resolution(y * factor, x * factor, 'EXIF')
+      : resolution(x * factor, y * factor, 'EXIF');
+  } catch { return null; }
+}
+
+async function readResolution(file) {
+  try { return readResolutionBytes(new Uint8Array(await file.arrayBuffer())); }
+  catch { return null; }
+}
+
+function readResolutionBytes(bytes) {
+  try {
+    const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+    if (bytes.length >= 8 && view.getUint32(0) === 0x89504e47 && view.getUint32(4) === 0x0d0a1a0a) {
+      let exif = null;
+      for (let offset = 8; offset + 12 <= bytes.length;) {
+        const length = view.getUint32(offset), type = text(bytes, offset + 4, 4), data = offset + 8;
+        if (length > bytes.length - offset - 12) return exif;
+        if (type === 'pHYs' && length === 9 && bytes[data + 8] === 1) {
+          const found = resolution(view.getUint32(data) * 0.0254, view.getUint32(data + 4) * 0.0254, 'PNG');
+          if (found) return found;
+        }
+        if (type === 'eXIf') exif = exifResolution(bytes, data, data + length);
+        if (type === 'IEND') break;
+        offset += length + 12;
+      }
+      return exif;
+    }
+    if (bytes[0] === 0xff && bytes[1] === 0xd8) {
+      let jfif = null;
+      for (let offset = 2; offset + 4 <= bytes.length;) {
+        if (bytes[offset++] !== 0xff) break;
+        while (bytes[offset] === 0xff) offset++;
+        const marker = bytes[offset++];
+        if (marker === 0xda || marker === 0xd9) break;
+        if (marker === 0x01 || (marker >= 0xd0 && marker <= 0xd7)) continue;
+        const length = view.getUint16(offset), data = offset + 2, end = offset + length;
+        if (length < 2 || end > bytes.length) break;
+        if (marker === 0xe1 && text(bytes, data, 6) === 'Exif\0\0') {
+          const exif = exifResolution(bytes, data, end);
+          if (exif) return exif;
+        }
+        if (marker === 0xe0 && length >= 16 && text(bytes, data, 5) === 'JFIF\0') {
+          const unit = bytes[data + 7], factor = unit === 1 ? 1 : unit === 2 ? 2.54 : 0;
+          if (factor) jfif = resolution(view.getUint16(data + 8) * factor, view.getUint16(data + 10) * factor, 'JFIF');
+        }
+        offset = end;
+      }
+      return jfif;
+    }
+    if (bytes.length >= 12 && text(bytes, 0, 4) === 'RIFF' && text(bytes, 8, 4) === 'WEBP') {
+      const end = Math.min(bytes.length, view.getUint32(4, true) + 8);
+      for (let offset = 12; offset + 8 <= end;) {
+        const length = view.getUint32(offset + 4, true), data = offset + 8;
+        if (length > end - data) break;
+        if (text(bytes, offset, 4) === 'EXIF') return exifResolution(bytes, data, data + length);
+        offset = data + length + (length % 2);
+      }
+    }
+  } catch { /* Missing or malformed metadata must not prevent image processing. */ }
+  return null;
+}
+
+function crc32(bytes) {
+  let crc = 0xffffffff;
+  for (const byte of bytes) {
+    crc ^= byte;
+    for (let bit = 0; bit < 8; bit++) crc = (crc >>> 1) ^ ((crc & 1) ? 0xedb88320 : 0);
+  }
+  return (crc ^ 0xffffffff) >>> 0;
+}
+
+async function writePngResolution(blob, dpi) {
+  if (dpi && (!isDpi(dpi.x) || !isDpi(dpi.y))) throw new Error(t('validDpi'));
+  const bytes = new Uint8Array(await blob.arrayBuffer());
+  const view = new DataView(bytes.buffer);
+  if (view.getUint32(0) !== 0x89504e47 || view.getUint32(4) !== 0x0d0a1a0a) throw new Error(t('pngDpi'));
+  const parts = [bytes.subarray(0, 8)];
+  for (let offset = 8; offset + 12 <= bytes.length;) {
+    const length = view.getUint32(offset), end = offset + length + 12;
+    if (end > bytes.length) throw new Error(t('pngDpi'));
+    const type = text(bytes, offset + 4, 4);
+    // Remove the canvas's default 96 DPI and any previous physical metadata.
+    if (type !== 'pHYs') parts.push(bytes.subarray(offset, end));
+    if (type === 'IHDR' && dpi) {
+      const chunk = new Uint8Array(21), chunkView = new DataView(chunk.buffer);
+      chunkView.setUint32(0, 9); chunk.set([112, 72, 89, 115], 4);
+      chunkView.setUint32(8, Math.round(dpi.x / 0.0254));
+      chunkView.setUint32(12, Math.round(dpi.y / 0.0254)); chunk[16] = 1;
+      chunkView.setUint32(17, crc32(chunk.subarray(4, 17))); parts.push(chunk);
+    }
+    if (type === 'IEND') break;
+    offset = end;
+  }
+  return new Blob(parts, { type: 'image/png' });
+}
+
+async function writeJpegResolution(blob, dpi) {
+  if (!dpi || !isDpi(dpi.x) || !isDpi(dpi.y) || dpi.x > 65535 || dpi.y > 65535) throw new Error(t('validDpi'));
+  const bytes = new Uint8Array(await blob.arrayBuffer());
+  if (bytes[0] !== 255 || bytes[1] !== 216) throw new Error(t('jpegFailed'));
+  // JFIF APP0: absolute X/Y density in dots per inch. Keep the encoded scan intact.
+  const jfif = new Uint8Array([255,224,0,16,74,70,73,70,0,1,1,1,0,0,0,0,0,0]);
+  const density = new DataView(jfif.buffer);
+  density.setUint16(12, Math.round(dpi.x)); density.setUint16(14, Math.round(dpi.y));
+  const parts = [bytes.subarray(0, 2), jfif];
+  const view = new DataView(bytes.buffer);
+  let offset = 2;
+  while (offset + 4 <= bytes.length) {
+    const markerStart = offset;
+    if (bytes[offset++] !== 255) throw new Error(t('jpegFailed'));
+    while (bytes[offset] === 255) offset++;
+    const marker = bytes[offset++];
+    if (marker === 218 || marker === 217) { parts.push(bytes.subarray(markerStart)); offset = bytes.length; break; }
+    if (marker === 1 || (marker >= 208 && marker <= 215)) { parts.push(bytes.subarray(markerStart, offset)); continue; }
+    const length = view.getUint16(offset), end = offset + length;
+    if (length < 2 || end > bytes.length) throw new Error(t('jpegFailed'));
+    if (!(marker === 224 && text(bytes, offset + 2, 5) === 'JFIF\0')) parts.push(bytes.subarray(markerStart, end));
+    offset = end;
+  }
+  if (offset !== bytes.length) throw new Error(t('jpegFailed'));
+  return new Blob(parts, { type: 'image/jpeg' });
+}
+
+
+// Local inference only. ESRGAN Slim (RDN) expects and returns RGB in [0, 255].
+// Tiles with context keep memory bounded and avoid a full-size output tensor.
+let runtimePromise;
+let cachedModel;
+let cachedScale;
+
+function validateSize(width, height, scale) {
+  const w = width * scale, h = height * scale;
+  if (w > 8192 || h > 8192 || w * h > 24000000) {
+    throw new Error(scale === 4
+      ? t('outputSize4')
+      : t('outputSize2'));
+  }
+  return { width: w, height: h };
+}
+
+const scriptLoads = new Map();
+function loadRuntimeScript(path) {
+  if (!scriptLoads.has(path)) {
+    scriptLoads.set(path, new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = assetUrl(path);
+      script.onload = resolve;
+      script.onerror = () => { script.remove(); scriptLoads.delete(path); reject(new Error(t('loadFailed'))); };
+      document.head.append(script);
+    }));
+  }
+  return scriptLoads.get(path);
+}
+
+async function useProcessor(tf) {
+  try {
+    await loadRuntimeScript('./vendor/tf-backend-wasm.min.js');
+    tf.wasm.setWasmPaths(assetUrl('./vendor/'));
+    if (await tf.setBackend('wasm')) { await tf.ready(); return; }
+  } catch (error) {
+    console.warn('WASM unavailable; using JavaScript CPU fallback.', error);
+  }
+  if (!await tf.setBackend('cpu')) throw new Error(t('backendFailed'));
+  await tf.ready();
+}
+
+async function runtime() {
+  if (!runtimePromise) {
+    runtimePromise = (async () => {
+      if (!window.tf) await loadRuntimeScript('./vendor/tf.min.js');
+      const tf = window.tf;
+      const supported = await tf.setBackend('webgl').catch(() => false);
+      if (supported) await tf.ready();
+      else await useProcessor(tf);
+      return tf;
+    })().catch(error => { runtimePromise = null; throw error; });
+  }
+  return runtimePromise;
+}
+
+function check(signal) { if (signal.aborted) throw new DOMException(t('cancelled'), 'AbortError'); }
+const pause = () => new Promise(resolve => setTimeout(resolve, 0));
+
+async function enhance(image, scale, options) {
+  validateSize(image.naturalWidth, image.naturalHeight, scale);
+  check(options.signal);
+  options.progress(0, t('loading'));
+  const tf = await runtime();
+  check(options.signal);
+  try {
+    return await enhanceWithBackend(image, scale, tf, options);
+  } catch (error) {
+    if (error.name === 'AbortError' || tf.getBackend() !== 'webgl' ||
+      !/webgl|texture|memory|allocation|context|shader|backend|kernel/i.test(error.message)) throw error;
+    cachedModel?.dispose(); cachedModel = null; cachedScale = null;
+    options.progress(0, t('processor'));
+    await useProcessor(tf);
+    check(options.signal);
+    return enhanceWithBackend(image, scale, tf, options);
+  }
+}
+
+async function enhanceWithBackend(image, scale, tf, { signal, progress }) {
+  const size = validateSize(image.naturalWidth, image.naturalHeight, scale);
+  check(signal);
+  if (!cachedModel || cachedScale !== scale) {
+    cachedModel?.dispose(); cachedModel = null; cachedScale = null;
+    cachedModel = await tf.loadLayersModel(assetUrl(`./models/x${scale}/model.json`), {
+      onProgress: fraction => progress(Math.round(fraction * 5), t('loadingModel')),
+    });
+    cachedScale = scale;
+  }
+  check(signal);
+  const width = image.naturalWidth, height = image.naturalHeight;
+  const tileSize = tf.getBackend() === 'cpu' ? 32 : 64, padding = 12, side = tileSize + 2 * padding;
+  const input = document.createElement('canvas'); input.width = input.height = side;
+  const ctx = input.getContext('2d', { willReadFrequently: true });
+  const tile = document.createElement('canvas'); tile.width = tile.height = tileSize * scale;
+  const tileCtx = tile.getContext('2d');
+  const output = document.createElement('canvas'); output.width = size.width; output.height = size.height;
+  const out = output.getContext('2d');
+  if (!ctx || !tileCtx || !out) throw new Error(t('browserMemory'));
+  const total = Math.ceil(width / tileSize) * Math.ceil(height / tileSize);
+  let completed = 0;
+  try {
+    for (let y = 0; y < height; y += tileSize) {
+      for (let x = 0; x < width; x += tileSize) {
+        check(signal);
+        // Replicate boundary pixels; white composite prevents dark transparent edges.
+        ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, side, side);
+        ctx.drawImage(image, padding - x, padding - y);
+        ctx.imageSmoothingEnabled = false;
+        if (x < padding) ctx.drawImage(input, padding - x, 0, 1, side, 0, 0, padding - x, side);
+        if (y < padding) ctx.drawImage(input, 0, padding - y, side, 1, 0, 0, side, padding - y);
+        const right = padding + width - x, bottom = padding + height - y;
+        if (right < side) ctx.drawImage(input, Math.max(0, right - 1), 0, 1, side, right, 0, side - right, side);
+        if (bottom < side) ctx.drawImage(input, 0, Math.max(0, bottom - 1), side, 1, 0, bottom, side, side - bottom);
+        let pixels;
+        try {
+          pixels = tf.tidy(() => {
+            const batch = tf.browser.fromPixels(input, 3).toFloat().expandDims(0);
+            const predicted = cachedModel.predict(batch);
+            return predicted.squeeze([0]).slice([padding * scale, padding * scale, 0], [tileSize * scale, tileSize * scale, 3]).clipByValue(0, 255).round().toInt();
+          });
+          const rgb = await pixels.data();
+          check(signal);
+          const rgba = new Uint8ClampedArray(tile.width * tile.height * 4);
+          for (let p = 0, q = 0; p < rgb.length; p += 3, q += 4) {
+            rgba[q] = rgb[p]; rgba[q + 1] = rgb[p + 1]; rgba[q + 2] = rgb[p + 2]; rgba[q + 3] = 255;
+          }
+          tileCtx.putImageData(new ImageData(rgba, tile.width, tile.height), 0, 0);
+          out.drawImage(tile, x * scale, y * scale);
+        } finally { pixels?.dispose(); }
+        completed++;
+        progress(5 + Math.round(completed / total * 92), t('processing', { percent: Math.round(completed / total * 100) }));
+        await pause();
+      }
+    }
+    check(signal);
+    // Keep alpha separate from the RGB neural network; scale it smoothly.
+    out.globalCompositeOperation = 'destination-in';
+    out.imageSmoothingEnabled = true; out.imageSmoothingQuality = 'high';
+    out.drawImage(image, 0, 0, size.width, size.height);
+    out.globalCompositeOperation = 'source-over';
+    progress(99, t('encoding'));
+    const blob = await new Promise(resolve => output.toBlob(resolve, 'image/png'));
+    check(signal);
+    if (!blob) throw new Error(t('saveFailed'));
+    progress(100, t('done'));
+    return { blob, ...size };
+  } finally {
+    output.width = output.height = input.width = input.height = tile.width = tile.height = 1;
+  }
+}
+
+
+
+localize();
+const $ = id => document.getElementById(id);
+let sourceImage, sourceFile, sourceURL, outputURL, previewURL, sourceDpi = null, rawOutput = null, outputStats;
+let exportRevision = 0, exportPending = false, exportTimer, pointerSliding = false;
+let scale = 2, busy = false, controller, loadRevision = 0;
+const scales = [...document.querySelectorAll('.scale')];
+const pretty = value => value.toLocaleString(locale);
+const bytes = value => `${(value / 1048576).toLocaleString(locale, { maximumFractionDigits: 1 })} MB`;
+const showError = text => { $('message').textContent = text; $('message').hidden = !text; };
+
+const formatDpi = dpi => {
+  const fmt = value => value.toLocaleString(locale, { maximumFractionDigits: 2 });
+  return Math.abs(dpi.x - dpi.y) < 0.05 ? fmt((dpi.x + dpi.y) / 2) : `${fmt(dpi.x)} × ${fmt(dpi.y)}`;
+};
+function exportDpi() {
+  const value = Number($('dpi').value);
+  if (!Number.isInteger(value) || value < 72 || value > 600) throw new Error(t('dpiInvalid'));
+  return { x: value, y: value };
+}
+function updateDpiLabel() {
+  $('dpi-value').value = `${$('dpi').value} DPI`;
+  $('dpi').setAttribute('aria-valuetext', `${$('dpi').value} DPI`);
+  $('dpi').style.setProperty('--fill', `${(Number($('dpi').value) - 72) / 528 * 100}%`);
+}
+function updateFormatNote() {
+  $('format-note').hidden = $('format').value !== 'jpeg' || sourceFile?.type === 'image/jpeg';
+}
+async function encodeJpeg() {
+  const canvas = document.createElement('canvas');
+  canvas.width = outputStats.width; canvas.height = outputStats.height;
+  try {
+    const context = canvas.getContext('2d');
+    if (!context) throw new Error(t('jpegMemory'));
+    context.fillStyle = '#fff'; context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage($('result'), 0, 0, canvas.width, canvas.height);
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.95));
+    if (!blob || blob.type !== 'image/jpeg') throw new Error(t('jpegFailed'));
+    return blob;
+  } finally { canvas.width = canvas.height = 1; }
+}
+async function refreshExport() {
+  const revision = ++exportRevision;
+  const stats = outputStats;
+  exportPending = true;
+  $('download').setAttribute('aria-disabled', 'true');
+  try {
+    const dpi = exportDpi(), format = $('format').value;
+    const blob = format === 'jpeg'
+      ? await writeJpegResolution(await encodeJpeg(), dpi)
+      : await writePngResolution(rawOutput, dpi);
+    if (revision !== exportRevision) return;
+    if (outputURL) URL.revokeObjectURL(outputURL);
+    outputURL = URL.createObjectURL(blob);
+    $('download').href = outputURL;
+    const extension = format === 'jpeg' ? 'jpg' : 'png';
+    $('download').download = `${sourceFile.name.replace(/\.[^.]+$/, '')}-${scale}x.${extension}`;
+    $('download-label').textContent = t('download', { format: format === 'jpeg' ? 'JPG' : 'PNG' });
+    $('download').setAttribute('aria-disabled', 'false');
+    $('output-info').textContent = `${pretty(stats.width)} × ${pretty(stats.height)} px · ${bytes(blob.size)} · ${formatDpi(dpi)} DPI`;
+  } finally { if (revision === exportRevision) exportPending = false; }
+}
+function scheduleExport(immediate = false) {
+  clearTimeout(exportTimer);
+  showError('');
+  if (!rawOutput || busy) return;
+  exportRevision++; exportPending = true;
+  $('download').setAttribute('aria-disabled', 'true');
+  exportTimer = setTimeout(() => refreshExport().catch(error => showError(error.message)), immediate ? 0 : 220);
+}
+
+function clearOutput() {
+  clearTimeout(exportTimer);
+  if (outputURL) URL.revokeObjectURL(outputURL);
+  if (previewURL) URL.revokeObjectURL(previewURL);
+  outputURL = previewURL = rawOutput = outputStats = null;
+  exportRevision++; exportPending = false;
+  $('original').style.clipPath = 'none';
+  $('result').removeAttribute('src'); $('download').removeAttribute('href');
+  for (const id of ['result-layer', 'compare-labels', 'divider', 'compare', 'result-meta', 'download']) $(id).hidden = true;
+  $('upscale').hidden = false;
+}
+function setBusy(value) {
+  busy = value; document.body.classList.toggle('busy', value);
+  $('upscale').disabled = value || !sourceImage;
+  $('dpi').disabled = value; $('format').disabled = value;
+  $('change').disabled = value; $('dropzone').disabled = value;
+  for (const button of scales) button.disabled = value;
+  $('progress-wrap').hidden = !value;
+  $('cancel').disabled = false;
+}
+
+async function loadFile(file) {
+  if (!file || busy) return;
+  const revision = ++loadRevision;
+  showError('');
+  if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) return showError(t('fileType'));
+  if (file.size > 20 * 1048576) return showError(t('fileSize'));
+  const url = URL.createObjectURL(file);
+  const img = new Image(); img.src = url;
+  try {
+    const [, dpi] = await Promise.all([img.decode(), readResolution(file)]);
+    if (revision !== loadRevision) { URL.revokeObjectURL(url); return; }
+    if (!img.naturalWidth || img.naturalWidth * img.naturalHeight > 12000000 || Math.max(img.naturalWidth, img.naturalHeight) > 12000) throw new Error(t('inputSize'));
+    clearOutput();
+    if (sourceURL) URL.revokeObjectURL(sourceURL);
+    sourceImage = img; sourceFile = file; sourceURL = url; sourceDpi = dpi;
+    $('source-dpi').textContent = t('sourceDpi', { value: dpi ? formatDpi(dpi) : t('unknown') });
+    $('dpi').value = String(Math.max(72, Math.min(600, Math.round(dpi?.x || 300))));
+    updateDpiLabel();
+    $('format').value = file.type === 'image/jpeg' ? 'jpeg' : 'png';
+    updateFormatNote();
+    $('print-settings').hidden = false; document.body.classList.add('has-image');
+    $('comparison').style.setProperty('--image-ratio', String(img.naturalWidth / img.naturalHeight));
+    $('original').src = url;
+    $('filename').textContent = file.name;
+    $('dimensions').textContent = `${pretty(img.naturalWidth)} × ${pretty(img.naturalHeight)} px · ${bytes(file.size)}`;
+    $('dropzone').hidden = true; $('editor').hidden = false;
+    $('upscale').disabled = false;
+    $('upscale').focus({ preventScroll: true });
+  } catch (error) {
+    URL.revokeObjectURL(url);
+    showError(error.message === t('inputSize') ? error.message : t('fileOpen'));
+  }
+}
+
+$('dropzone').addEventListener('click', () => $('file').click());
+$('change').addEventListener('click', () => $('file').click());
+$('file').addEventListener('change', event => { loadFile(event.target.files[0]); event.target.value = ''; });
+for (const eventName of ['dragenter', 'dragover']) {
+  $('dropzone').addEventListener(eventName, event => { event.preventDefault(); if (!busy) $('dropzone').classList.add('dragging'); });
+}
+for (const eventName of ['dragleave', 'drop']) $('dropzone').addEventListener(eventName, () => $('dropzone').classList.remove('dragging'));
+document.addEventListener('dragover', event => event.preventDefault());
+document.addEventListener('drop', event => { event.preventDefault(); if (!busy) loadFile(event.dataTransfer.files[0]); });
+scales.forEach(button => button.addEventListener('click', () => {
+  if (busy || scale === Number(button.dataset.scale)) return;
+  scale = Number(button.dataset.scale);
+  scales.forEach(item => { item.classList.toggle('active', item === button); item.setAttribute('aria-pressed', String(item === button)); });
+  clearOutput(); showError('');
+}));
+
+$('compare').addEventListener('input', event => {
+  const position = event.target.value;
+  $('original').style.clipPath = `inset(0 ${100 - Number(position)}% 0 0)`;
+  $('result-layer').style.clipPath = `inset(0 0 0 ${position}%)`;
+  $('divider').style.left = `${position}%`;
+});
+$('dpi').addEventListener('pointerdown', () => { pointerSliding = true; });
+document.addEventListener('pointerup', () => { pointerSliding = false; });
+document.addEventListener('pointercancel', () => { pointerSliding = false; });
+$('dpi').addEventListener('input', () => {
+  const value = Number($('dpi').value);
+  if (pointerSliding) {
+    const snap = [150, 300].find(point => Math.abs(point - value) <= 5);
+    if (snap !== undefined) $('dpi').value = String(snap);
+  }
+  updateDpiLabel(); scheduleExport();
+});
+$('dpi').addEventListener('change', () => scheduleExport(true));
+$('format').addEventListener('change', () => { updateFormatNote(); scheduleExport(true); });
+$('download').addEventListener('click', event => {
+  if (exportPending || $('download').getAttribute('aria-disabled') === 'true' || !$('dpi').validity.valid) event.preventDefault();
+});
+$('cancel').addEventListener('click', () => {
+  controller?.abort(); $('cancel').disabled = true;
+  $('progress-text').textContent = t('cancelling');
+});
+$('upscale').addEventListener('click', async () => {
+  if (busy || !sourceImage) return;
+  showError('');
+  try { validateSize(sourceImage.naturalWidth, sourceImage.naturalHeight, scale); exportDpi(); }
+  catch (error) { showError(error.message); return; }
+  clearOutput(); controller = new AbortController(); setBusy(true);
+  $('progress').value = 0;
+  let succeeded = false;
+  try {
+    const result = await enhance(sourceImage, scale, {
+      signal: controller.signal,
+      progress: (value, text) => {
+        if (controller.signal.aborted) return;
+        $('progress').value = value; $('progress-text').textContent = text;
+      },
+    });
+    rawOutput = result.blob; outputStats = { width: result.width, height: result.height };
+    previewURL = URL.createObjectURL(rawOutput);
+    $('result').src = previewURL; await $('result').decode();
+    await refreshExport();
+    $('original').style.clipPath = 'inset(0 50% 0 0)';
+    $('compare').value = 50; $('divider').style.left = '50%'; $('result-layer').style.clipPath = 'inset(0 0 0 50%)';
+    for (const id of ['result-layer', 'compare-labels', 'divider', 'compare', 'result-meta', 'download']) $(id).hidden = false;
+    $('upscale').hidden = true; succeeded = true;
+  } catch (error) {
+    clearOutput();
+    if (error.name !== 'AbortError') {
+      console.error('Upscale:', error);
+      const text = /memory|texture|WebGL|allocation|context lost/i.test(error.message)
+        ? t('memory')
+        : (isKnownMessage(error.message) ? error.message : t('failed'));
+      showError(text);
+    }
+  } finally {
+    setBusy(false); controller = null;
+    if (succeeded) $('download').focus({ preventScroll: true });
+  }
+});
+
+</script>
+</body>
+</html>
