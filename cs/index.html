@@ -88,6 +88,7 @@ main{max-width:1168px;margin:48px auto 64px;padding:0 28px}.intro{text-align:cen
       <section id="expert-panel" class="expert-panel" hidden aria-label="Expert" data-i18n-aria="expert">
         <label class="metadata-option"><input id="metadata-only" type="checkbox"><span data-i18n="metadataOnly">Pouze upravit DPI / formát (bez zvětšení)</span></label>
         <div class="expert-summary"><div><span class="control-label" data-i18n="pixelDimensions">Výsledné rozměry</span><output id="expert-pixels" data-i18n="chooseToMeasure">Pro zobrazení rozměrů vyberte obrázek.</output></div><div><span class="control-label" data-i18n="printDimensions">Velikost pro tisk</span><output id="expert-print">—</output></div><button id="detail-open" class="text-button" type="button" disabled data-i18n="detail">Detail ve 100 %</button></div>
+        <div id="smoothing-control" class="quality-control"><div class="dpi-heading"><label class="control-label" for="smoothing" data-i18n="smoothing">Vyhlazení hran</label><output id="smoothing-value" for="smoothing">50 %</output></div><input id="smoothing" type="range" min="0" max="100" step="5" value="50" aria-describedby="smoothing-help"><span class="control-hint" id="smoothing-help" data-i18n="smoothingHelp">Zjemní zubaté hrany. Vyšší hodnoty změkčí i jemné detaily. Hodnota 0 vyhlazení vypne.</span></div>
         <div id="quality-control" class="quality-control" hidden><div class="dpi-heading"><label class="control-label" for="quality" data-i18n="quality">Kvalita JPG</label><output id="quality-value" for="quality">95 %</output></div><input id="quality" type="range" min="50" max="100" step="1" value="95" aria-describedby="quality-help"><span class="control-hint" id="quality-help" data-i18n="qualityHelp">Vyšší kvalita znamená větší soubor.</span></div>
         <p id="expert-export-size" class="control-hint" hidden></p>
         <div class="batch-section"><div class="batch-heading"><span class="control-label" data-i18n="batch">Zpracovat více obrázků</span><button id="batch-choose" class="text-button" type="button" data-i18n="batchChoose">Vybrat obrázky</button></div><p class="control-hint" data-i18n="batchHelp">Nejvýše 10 obrázků, každý do 20 MB, celkem do 100 MB. Nastavení výše platí pro všechny obrázky.</p><input id="batch-files" class="visually-hidden" type="file" accept="image/png,image/jpeg,image/webp" multiple><div id="batch-queue" hidden><div class="batch-summary"><span id="batch-count"></span><button id="batch-clear" class="text-button" type="button" data-i18n="singleImage">Zpět na jeden obrázek</button></div><ul id="batch-list" class="batch-list"></ul><div class="batch-actions"><button id="batch-start" class="primary" type="button" data-i18n="batchStart">Zpracovat frontu</button><a id="batch-download" class="primary download" hidden download data-i18n="batchZip">Stáhnout ZIP</a></div><p id="batch-status" class="control-hint" role="status" aria-live="polite"></p></div></div>
@@ -207,7 +208,10 @@ const messages = {
     "batchNone": "No files are ready. Check the errors next to each image.",
     "metadataOnly": "Only change DPI / format (no enlargement)",
     "noUpscale": "No enlargement",
-    "detailSource": "Original · enlarged {scale}× for comparison"
+    "detailSource": "Original · enlarged {scale}× for comparison",
+    "smoothing": "Edge smoothing",
+    "smoothingHelp": "Softens jagged edges. Higher values also soften fine detail. Set to 0 to switch off.",
+    "smoothingProgress": "Smoothing edges…"
   },
   "cs": {
     "pageTitle": "Upscale — více pixelů, více detailů",
@@ -309,7 +313,10 @@ const messages = {
     "batchNone": "Žádný soubor není připravený. Zkontrolujte chyby u jednotlivých obrázků.",
     "metadataOnly": "Pouze upravit DPI / formát (bez zvětšení)",
     "noUpscale": "Bez zvětšení",
-    "detailSource": "Původní · pro porovnání zvětšený {scale}×"
+    "detailSource": "Původní · pro porovnání zvětšený {scale}×",
+    "smoothing": "Vyhlazení hran",
+    "smoothingHelp": "Zjemní zubaté hrany. Vyšší hodnoty změkčí i jemné detaily. Hodnota 0 vyhlazení vypne.",
+    "smoothingProgress": "Vyhlazuji hrany…"
   }
 };
 function t(key, values = {}) {
@@ -710,10 +717,85 @@ async function makeZip(files) {
 }
 
 
+// Directional, contrast-adaptive edge antialiasing. The source alpha is retained.
+// Related method: NVIDIA FXAA white paper, Timothy Lottes (2011).
+function antialiasBand(data, width, height, from, to, strength) {
+  const amount = Math.max(0, Math.min(100, strength)) / 100;
+  const output = new Uint8ClampedArray(data.subarray(from * width * 4, to * width * 4));
+  if (!amount || width < 2 || height < 2) return output;
+  const samples = new Float64Array(12);
+  const luma = i => data[i] * .299 + data[i + 1] * .587 + data[i + 2] * .114;
+  const sample = (x, y, offset, center) => {
+    x = Math.max(0, Math.min(width - 1, x)); y = Math.max(0, Math.min(height - 1, y));
+    const x0 = Math.floor(x), y0 = Math.floor(y), x1 = Math.min(width - 1, x0 + 1), y1 = Math.min(height - 1, y0 + 1);
+    const fx = x - x0, fy = y - y0, a = (y0 * width + x0) * 4, b = (y0 * width + x1) * 4, c = (y1 * width + x0) * 4, d = (y1 * width + x1) * 4;
+    if (data[a + 3] < 255 || data[b + 3] < 255 || data[c + 3] < 255 || data[d + 3] < 255) { for (let ch = 0; ch < 3; ch++) samples[offset + ch] = data[center + ch]; return; }
+    for (let ch = 0; ch < 3; ch++) samples[offset + ch] = (data[a + ch] * (1 - fx) + data[b + ch] * fx) * (1 - fy) + (data[c + ch] * (1 - fx) + data[d + ch] * fx) * fy;
+  };
+  for (let y = from; y < to; y++) {
+    const up = Math.max(0, y - 1), down = Math.min(height - 1, y + 1);
+    for (let x = 0; x < width; x++) {
+      const left = Math.max(0, x - 1), right = Math.min(width - 1, x + 1), center = (y * width + x) * 4;
+      const nw = (up * width + left) * 4, ne = (up * width + right) * 4, sw = (down * width + left) * 4, se = (down * width + right) * 4;
+      // Do not mix RGB across transparency boundaries.
+      if (data[center + 3] < 255 || data[nw + 3] < 255 || data[ne + 3] < 255 || data[sw + 3] < 255 || data[se + 3] < 255) continue;
+      const lnw = luma(nw), lne = luma(ne), lsw = luma(sw), lse = luma(se), lm = luma(center);
+      const low = Math.min(lm, lnw, lne, lsw, lse), high = Math.max(lm, lnw, lne, lsw, lse);
+      if (high - low < Math.max(12, high * .08)) continue;
+      let dx = -((lnw + lne) - (lsw + lse)), dy = (lnw + lsw) - (lne + lse);
+      const reduce = Math.max((lnw + lne + lsw + lse) / 32, 255 / 128);
+      const reciprocal = 1 / (Math.min(Math.abs(dx), Math.abs(dy)) + reduce);
+      dx = Math.max(-8, Math.min(8, dx * reciprocal)); dy = Math.max(-8, Math.min(8, dy * reciprocal));
+      sample(x - dx / 6, y - dy / 6, 0, center); sample(x + dx / 6, y + dy / 6, 3, center);
+      sample(x - dx / 2, y - dy / 2, 6, center); sample(x + dx / 2, y + dy / 2, 9, center);
+      const ar = (samples[0] + samples[3]) / 2, ag = (samples[1] + samples[4]) / 2, ab = (samples[2] + samples[5]) / 2;
+      const br = ar / 2 + (samples[6] + samples[9]) / 4, bg = ag / 2 + (samples[7] + samples[10]) / 4, bb = ab / 2 + (samples[8] + samples[11]) / 4;
+      const lb = br * .299 + bg * .587 + bb * .114, chooseA = lb < low || lb > high, dest = ((y - from) * width + x) * 4;
+      output[dest] = data[center] + amount * ((chooseA ? ar : br) - data[center]);
+      output[dest + 1] = data[center + 1] + amount * ((chooseA ? ag : bg) - data[center + 1]);
+      output[dest + 2] = data[center + 2] + amount * ((chooseA ? ab : bb) - data[center + 2]);
+    }
+  }
+  return output;
+}
+async function smoothResult(blob, stats, strength, signal, onProgress = () => {}) {
+  if (!strength) return blob;
+  const checkAbort = () => { if (signal?.aborted) throw new DOMException(t('cancelled'), 'AbortError'); };
+  checkAbort();
+  const url = URL.createObjectURL(blob), image = new Image(), canvas = document.createElement('canvas');
+  canvas.width = stats.width; canvas.height = stats.height;
+  try {
+    image.src = url; await image.decode(); checkAbort();
+    const context = canvas.getContext('2d', { willReadFrequently: true });
+    if (!context) throw new Error(t('browserMemory'));
+    context.drawImage(image, 0, 0);
+    const width = canvas.width, height = canvas.height, band = 64, radius = 5, stride = width * 4;
+    let carry;
+    for (let y = 0; y < height; y += band) {
+      checkAbort();
+      const rows = Math.min(band, height - y), top = Math.max(0, y - radius), bottom = Math.min(height, y + rows + radius);
+      const pixels = context.getImageData(0, top, width, bottom - top);
+      // Restore unfiltered overlap so the result does not depend on band boundaries.
+      if (carry) pixels.data.set(carry, 0);
+      if (y + rows < height) carry = pixels.data.slice((y + rows - radius - top) * stride, (y + rows - top) * stride);
+      const result = antialiasBand(pixels.data, width, bottom - top, y - top, y - top + rows, strength);
+      context.putImageData(new ImageData(result, width, rows), 0, y);
+      onProgress((y + rows) / height);
+      await new Promise(resolve => setTimeout(resolve, 0));
+    }
+    checkAbort();
+    const output = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+    checkAbort(); if (!output) throw new Error(t('saveFailed'));
+    return output;
+  } finally { URL.revokeObjectURL(url); canvas.width = canvas.height = 1; }
+}
+
+
 
 localize();
 const $ = id => document.getElementById(id);
 let sourceImage, sourceFile, sourceURL, outputURL, previewURL, sourceDpi = null, rawOutput = null, outputStats;
+let exportController, processedOutput, processedRaw, processedStrength, previewBlob;
 let exportRevision = 0, exportPending = false, exportTimer, pointerSliding = false;
 let scale = 2, lastUpscale = 2, busy = false, controller, loadRevision = 0, expert = false;
 let queueMode = false, queue = [], batchURL;
@@ -732,7 +814,7 @@ function exportDpi() {
   return { x: value, y: value };
 }
 function exportSettings() {
-  return { dpi: exportDpi(), format: $('format').value, quality: expert ? Number($('quality').value) : 95 };
+  return { dpi: exportDpi(), format: $('format').value, quality: expert ? Number($('quality').value) : 95, smoothing: scale === 1 ? 0 : (expert ? Number($('smoothing').value) : 50) };
 }
 function updateDpiLabel() {
   $('dpi-value').value = `${$('dpi').value} DPI`;
@@ -746,6 +828,8 @@ function updateFormatNote() {
   updateExpert();
 }
 function updateExpert() {
+  $('smoothing-control').hidden = scale === 1;
+  $('smoothing-value').value = `${$('smoothing').value} %`;
   $('metadata-only').checked = scale === 1;
   $('scale-buttons').hidden = scale === 1;
   $('scale-label').textContent = t(scale === 1 ? 'noUpscale' : 'scale');
@@ -773,9 +857,32 @@ async function refreshExport() {
   if (!rawOutput || !outputStats) return;
   const revision = ++exportRevision, stats = outputStats, settings = exportSettings();
   const input = rawOutput, name = sourceFile.name, factor = scale;
+  exportController?.abort();
+  const localController = new AbortController(); exportController = localController;
+  const inferenceController = controller;
+  const abortExport = () => localController.abort();
+  if (inferenceController?.signal.aborted) localController.abort();
+  else inferenceController?.signal.addEventListener('abort', abortExport, { once: true });
   exportPending = true; $('download').setAttribute('aria-disabled', 'true'); updateExpert();
+  $('expert-export-size').textContent = t('encoding');
   try {
-    const blob = await encodeExport(input, stats, settings);
+    const filtered = processedRaw === input && processedStrength === settings.smoothing && processedOutput
+      ? processedOutput
+      : await smoothResult(input, stats, settings.smoothing, localController.signal, fraction => {
+        if (revision === exportRevision && busy) { $('progress-text').textContent = t('smoothingProgress'); $('progress').value = 97 + fraction * 2; }
+      });
+    if (revision !== exportRevision || localController.signal.aborted) return;
+    const blob = await encodeExport(filtered, stats, settings);
+    if (revision !== exportRevision || localController.signal.aborted) return;
+    if (previewBlob !== filtered) {
+      const nextPreview = URL.createObjectURL(filtered), nextImage = new Image();
+      try { nextImage.src = nextPreview; await nextImage.decode(); }
+      catch (error) { URL.revokeObjectURL(nextPreview); throw error; }
+      if (revision !== exportRevision || localController.signal.aborted) { URL.revokeObjectURL(nextPreview); return; }
+      if (previewURL) URL.revokeObjectURL(previewURL);
+      previewURL = nextPreview; previewBlob = filtered; $('result').src = previewURL;
+    }
+    processedOutput = filtered; processedRaw = input; processedStrength = settings.smoothing;
     if (revision !== exportRevision) return;
     closeDetail();
     if (outputURL) URL.revokeObjectURL(outputURL);
@@ -788,7 +895,7 @@ async function refreshExport() {
     $('output-info').textContent = `${pretty(stats.width)} × ${pretty(stats.height)} px · ${exportBytes(blob.size)} · ${formatDpi(settings.dpi)} DPI`;
     $('expert-export-size').textContent = t('exportSize', { size: exportBytes(blob.size) });
     $('expert-export-size').hidden = false;
-  } finally { if (revision === exportRevision) { exportPending = false; updateExpert(); } }
+  } finally { inferenceController?.signal.removeEventListener('abort', abortExport); if (exportController === localController) exportController = null; if (revision === exportRevision) { exportPending = false; updateExpert(); } }
 }
 function invalidateBatch() {
   if (batchURL) URL.revokeObjectURL(batchURL);
@@ -797,15 +904,16 @@ function invalidateBatch() {
   for (const item of queue) { item.status.textContent = t('pending'); item.row.classList.remove('failed'); }
 }
 function scheduleExport(immediate = false) {
-  clearTimeout(exportTimer); showError('');
+  clearTimeout(exportTimer); exportController?.abort(); showError('');
   if (queueMode) { invalidateBatch(); updateExpert(); return; }
   if (!rawOutput || busy) return;
   exportRevision++; exportPending = true;
   $('download').setAttribute('aria-disabled', 'true'); updateExpert();
-  exportTimer = setTimeout(() => refreshExport().catch(error => showError(error.message)), immediate ? 0 : 220);
+  exportTimer = setTimeout(() => refreshExport().catch(error => { if (error.name !== 'AbortError') showError(error.message); }), immediate ? 0 : 220);
 }
 function clearOutput() {
-  clearTimeout(exportTimer); closeDetail();
+  clearTimeout(exportTimer); exportController?.abort(); exportController = null; closeDetail();
+  processedOutput = processedRaw = processedStrength = previewBlob = null;
   if (outputURL) URL.revokeObjectURL(outputURL);
   if (previewURL) URL.revokeObjectURL(previewURL);
   outputURL = previewURL = rawOutput = outputStats = null;
@@ -817,7 +925,7 @@ function clearOutput() {
 }
 function setBusy(value) {
   busy = value; document.body.classList.toggle('busy', value);
-  for (const id of ['dpi', 'format', 'quality', 'change', 'dropzone', 'expert-toggle', 'batch-choose', 'batch-start', 'batch-clear', 'file', 'batch-files', 'metadata-only']) $(id).disabled = value;
+  for (const id of ['dpi', 'format', 'quality', 'change', 'dropzone', 'expert-toggle', 'batch-choose', 'batch-start', 'batch-clear', 'file', 'batch-files', 'metadata-only', 'smoothing']) $(id).disabled = value;
   $('upscale').disabled = value || !sourceImage || queueMode;
   for (const button of scales) button.disabled = value;
   $('progress-wrap').hidden = !value; $('cancel').disabled = false; updateExpert();
@@ -909,6 +1017,8 @@ $('dpi').addEventListener('input', () => {
 });
 $('dpi').addEventListener('change', () => scheduleExport(true));
 $('format').addEventListener('change', () => { updateFormatNote(); scheduleExport(true); });
+$('smoothing').addEventListener('input', () => { updateExpert(); scheduleExport(); });
+$('smoothing').addEventListener('change', () => scheduleExport(true));
 $('quality').addEventListener('input', () => { updateExpert(); scheduleExport(); });
 $('quality').addEventListener('change', () => scheduleExport(true));
 $('download').addEventListener('click', event => { if (exportPending || $('download').getAttribute('aria-disabled') === 'true' || !$('dpi').validity.valid) event.preventDefault(); });
@@ -919,7 +1029,7 @@ $('expert-toggle').addEventListener('click', () => {
   if (!expert) {
     if (queueMode) restoreSingle();
     if (scale === 1) selectScale(lastUpscale);
-    $('quality').value = '95'; closeDetail(); scheduleExport(true);
+    $('quality').value = '95'; $('smoothing').value = '50'; closeDetail(); scheduleExport(true);
   }
   updateExpert();
 });
@@ -958,10 +1068,9 @@ $('upscale').addEventListener('click', async () => {
   $('progress-text').textContent = t(scale === 1 ? 'encoding' : 'preparing');
   let succeeded = false;
   try {
-    const result = await processImage(sourceImage, sourceFile, scale, { signal: controller.signal, progress: (value, text) => { if (!controller.signal.aborted) { $('progress').value = value; $('progress-text').textContent = text; } } });
+    const result = await processImage(sourceImage, sourceFile, scale, { signal: controller.signal, progress: (value, text) => { if (!controller.signal.aborted) { $('progress').value = value * .95; $('progress-text').textContent = text; } } });
     if (controller.signal.aborted) throw new DOMException(t('cancelled'), 'AbortError');
-    rawOutput = result.blob; outputStats = { width: result.width, height: result.height }; previewURL = URL.createObjectURL(rawOutput);
-    $('result').src = previewURL; await $('result').decode(); await refreshExport();
+    rawOutput = result.blob; outputStats = { width: result.width, height: result.height }; await refreshExport();
     if (controller.signal.aborted) throw new DOMException(t('cancelled'), 'AbortError');
     $('result-label').textContent = t(scale === 1 ? 'exportResult' : 'result'); $('result').alt = t(scale === 1 ? 'outputAlt' : 'resultAlt');
     $('original').style.clipPath = 'inset(0 50% 0 0)'; $('compare').value = 50; $('divider').style.left = '50%'; $('result-layer').style.clipPath = 'inset(0 0 0 50%)';
@@ -982,9 +1091,10 @@ $('batch-start').addEventListener('click', async () => {
       const report = (value, message) => { $('progress').value = (index * 100 + value) / queue.length; $('progress-text').textContent = t('batchProgress', { current: index + 1, total: queue.length, message }); };
       try {
         report(0, t(factor === 1 ? 'encoding' : 'preparing')); await image.decode(); validateInput(image); validateSize(image.naturalWidth, image.naturalHeight, factor);
-        const result = await processImage(image, item.file, factor, { signal: controller.signal, progress: report });
+        const result = await processImage(image, item.file, factor, { signal: controller.signal, progress: (value, message) => report(value * .95, message) });
         if (controller.signal.aborted) break;
-        const blob = await encodeExport(result.blob, result, settings);
+        const filtered = await smoothResult(result.blob, result, settings.smoothing, controller.signal, fraction => report(95 + fraction * 4, t('smoothingProgress')));
+        const blob = await encodeExport(filtered, result, settings);
         if (controller.signal.aborted) break;
         if (totalBytes + blob.size > 100 * 1048576) { stoppedForLimit = true; showError(t('zipLimit')); break; }
         const ext = settings.format === 'jpeg' ? 'jpg' : 'png';
