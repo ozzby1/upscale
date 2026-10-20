@@ -1,0 +1,41 @@
+name: Publish Upscale
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Prepare static files and local AI models
+        run: |
+          npm install --no-save --ignore-scripts --no-audit --no-fund @tensorflow/tfjs@4.11.0 @upscalerjs/esrgan-slim@1.0.0
+          mkdir -p _site/vendor _site/models/x2 _site/models/x4
+          cp index.html _site/index.html
+          cp node_modules/@tensorflow/tfjs/dist/tf.min.js _site/vendor/
+          cp node_modules/@upscalerjs/esrgan-slim/models/x2/* _site/models/x2/
+          cp node_modules/@upscalerjs/esrgan-slim/models/x4/* _site/models/x4/
+          cp node_modules/@upscalerjs/esrgan-slim/LICENSE _site/models/LICENSE-esrgan.txt
+          curl -fsSL https://raw.githubusercontent.com/tensorflow/tfjs/tfjs-v4.11.0/LICENSE -o _site/vendor/LICENSE-tensorflow.txt
+          touch _site/.nojekyll
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
