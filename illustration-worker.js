@@ -3,19 +3,18 @@ let session, provider;
 const base = new URL('./', self.location.href);
 async function init(cpuOnly) {
   importScripts(new URL('vendor/ort/ort.webgpu.min.js', base).href);
-  ort.env.wasm.wasmPaths = new URL('vendor/ort/', base).href;
+  ort.env.wasm.wasmPaths = {
+    mjs: new URL('vendor/ort/ort-wasm-simd-threaded.asyncify.mjs?v=1.30.0', base).href,
+    wasm: new URL('vendor/ort/ort-wasm-simd-threaded.asyncify.wasm?v=1.30.0', base).href,
+  };
   ort.env.wasm.numThreads = 1;
   const model = new URL('models/illustration/model.onnx', base).href;
-  if (!cpuOnly && self.navigator.gpu) {
-    try {
-      session = await ort.InferenceSession.create(model, { executionProviders: ['webgpu', 'wasm'] });
-      provider = 'webgpu';
-    } catch (error) { console.warn('Illustration GPU unavailable; using WASM.', error); }
-  }
-  if (!session) {
-    session = await ort.InferenceSession.create(model, { executionProviders: ['wasm'] });
-    provider = 'wasm';
-  }
+  provider = !cpuOnly && self.navigator.gpu ? 'webgpu' : 'wasm';
+  // A failed WASM initialization poisons this runtime instance. Let the main
+  // thread retry in a fresh worker rather than reusing a failed instance.
+  session = await ort.InferenceSession.create(model, {
+    executionProviders: provider === 'webgpu' ? ['webgpu', 'wasm'] : ['wasm'],
+  });
   return { provider };
 }
 
@@ -59,5 +58,5 @@ self.onmessage = async ({ data: message }) => {
       input.dispose();
       if (outputs) for (const output of Object.values(outputs)) output.dispose();
     }
-  } catch (error) { self.postMessage({ id, error: error.message, provider }); }
+  } catch (error) { self.postMessage({ id, error: error.message, provider, initializing: type === 'init', gpuAttempt: type === 'init' && !message.cpuOnly && !!self.navigator.gpu }); }
 };
