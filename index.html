@@ -73,24 +73,42 @@ function validateSize(width, height, scale) {
   return { width: w, height: h };
 }
 
+const scriptLoads = new Map();
+function loadRuntimeScript(path) {
+  if (!scriptLoads.has(path)) {
+    scriptLoads.set(path, new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = new URL(path, import.meta.url).href;
+      script.onload = resolve;
+      script.onerror = () => { script.remove(); scriptLoads.delete(path); reject(new Error('Nepodařilo se načíst AI. Zkontrolujte připojení a zkuste to znovu.')); };
+      document.head.append(script);
+    }));
+  }
+  return scriptLoads.get(path);
+}
+
+async function useProcessor(tf) {
+  try {
+    await loadRuntimeScript('./vendor/tf-backend-wasm.min.js');
+    tf.wasm.setWasmPaths(new URL('./vendor/', import.meta.url).href);
+    if (await tf.setBackend('wasm')) { await tf.ready(); return; }
+  } catch (error) {
+    console.warn('WASM unavailable; using JavaScript CPU fallback.', error);
+  }
+  if (!await tf.setBackend('cpu')) throw new Error('Nepodařilo se spustit AI výpočet. Zkuste stránku obnovit.');
+  await tf.ready();
+}
+
 async function runtime() {
   if (!runtimePromise) {
-    runtimePromise = new Promise((resolve, reject) => {
-      const script = document.createElement('script');
-      script.src = new URL('./vendor/tf.min.js', import.meta.url).href;
-      script.onload = async () => {
-        try {
-          const tf = window.tf;
-          // WebGL is widely supported, including on devices without WebGPU.
-          const supported = await tf.setBackend('webgl').catch(() => false);
-          if (!supported) throw new Error('Pro AI zvětšení je potřeba zapnutá grafická akcelerace (WebGL). Zkuste aktuální Chrome, Edge, Firefox nebo Safari.');
-          await tf.ready();
-          resolve(tf);
-        } catch (error) { reject(error); }
-      };
-      script.onerror = () => { script.remove(); reject(new Error('Nepodařilo se načíst AI. Zkontrolujte připojení a zkuste to znovu.')); };
-      document.head.append(script);
-    }).catch(error => { runtimePromise = null; throw error; });
+    runtimePromise = (async () => {
+      if (!window.tf) await loadRuntimeScript('./vendor/tf.min.js');
+      const tf = window.tf;
+      const supported = await tf.setBackend('webgl').catch(() => false);
+      if (supported) await tf.ready();
+      else await useProcessor(tf);
+      return tf;
+    })().catch(error => { runtimePromise = null; throw error; });
   }
   return runtimePromise;
 }
@@ -98,11 +116,27 @@ async function runtime() {
 function check(signal) { if (signal.aborted) throw new DOMException('Zrušeno', 'AbortError'); }
 const pause = () => new Promise(resolve => setTimeout(resolve, 0));
 
-async function enhance(image, scale, { signal, progress }) {
-  const size = validateSize(image.naturalWidth, image.naturalHeight, scale);
-  check(signal);
-  progress(0, 'Načítám AI… Při prvním použití to může chvíli trvat.');
+async function enhance(image, scale, options) {
+  validateSize(image.naturalWidth, image.naturalHeight, scale);
+  check(options.signal);
+  options.progress(0, 'Načítám AI… Při prvním použití to může chvíli trvat.');
   const tf = await runtime();
+  check(options.signal);
+  try {
+    return await enhanceWithBackend(image, scale, tf, options);
+  } catch (error) {
+    if (error.name === 'AbortError' || tf.getBackend() !== 'webgl' ||
+      !/webgl|texture|memory|allocation|context|shader|backend|kernel/i.test(error.message)) throw error;
+    cachedModel?.dispose(); cachedModel = null; cachedScale = null;
+    options.progress(0, 'Přepínám na výpočet přes procesor…');
+    await useProcessor(tf);
+    check(options.signal);
+    return enhanceWithBackend(image, scale, tf, options);
+  }
+}
+
+async function enhanceWithBackend(image, scale, tf, { signal, progress }) {
+  const size = validateSize(image.naturalWidth, image.naturalHeight, scale);
   check(signal);
   if (!cachedModel || cachedScale !== scale) {
     cachedModel?.dispose(); cachedModel = null; cachedScale = null;
@@ -113,7 +147,7 @@ async function enhance(image, scale, { signal, progress }) {
   }
   check(signal);
   const width = image.naturalWidth, height = image.naturalHeight;
-  const tileSize = 64, padding = 12, side = tileSize + 2 * padding;
+  const tileSize = tf.getBackend() === 'cpu' ? 32 : 64, padding = 12, side = tileSize + 2 * padding;
   const input = document.createElement('canvas'); input.width = input.height = side;
   const ctx = input.getContext('2d', { willReadFrequently: true });
   const tile = document.createElement('canvas'); tile.width = tile.height = tileSize * scale;
@@ -281,7 +315,7 @@ $('upscale').addEventListener('click', async () => {
     if (error.name !== 'AbortError') {
       console.error('Upscale:', error);
       const text = /memory|texture|WebGL|allocation|context lost/i.test(error.message)
-        ? 'Zařízení nemá dostatek grafické paměti nebo podporu WebGL. Zkuste menší obrázek, měřítko 2× nebo jiný prohlížeč.'
+        ? 'Zařízení nemá dostatek paměti pro tento obrázek. Zkuste měřítko 2× nebo menší obrázek.'
         : (error.message?.startsWith('Nepodařilo') || error.message?.startsWith('Pro AI') ? error.message : 'Zvětšení se nepodařilo. Zkontrolujte připojení a zkuste menší obrázek.');
       showError(text);
     }
