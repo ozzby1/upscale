@@ -1,0 +1,7 @@
+# Public pages and application assets are crawlable by search and AI search bots.
+User-agent: *
+Allow: /
+Disallow: /tests/
+Disallow: /__shared/
+
+Sitemap: https://photoupscale.online/sitemap.xml

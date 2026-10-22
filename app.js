@@ -6,13 +6,13 @@ const appBase = new URL(basePath.endsWith('/') ? basePath : basePath + '/', loca
 const assetUrl = path => new URL(path, appBase).href;
 const messages = {
   "en": {
-    "pageTitle": "Upscale — more pixels, more detail",
-    "description": "Upscale images with AI in your browser. Free, private, and no sign-up required.",
+    "pageTitle": "Free AI Image Upscaler – 2× & 4× | Photoupscale.online",
+    "description": "Upscale photos and illustrations 2× or 4× with free AI in your browser. No sign-up or watermark. Private image processing, batch exports and print-size settings.",
     "home": "Upscale — home",
     "local": "Processed on your device",
     "heading": "More pixels.",
     "headingAccent": "More detail.",
-    "intro": "Enlarge your images with AI. Free, private, and beautifully simple.",
+    "intro": "Free AI image upscaler for photos and illustrations. Enlarge 2× or 4×, right in your browser.",
     "workspace": "Image upscaler",
     "drop": "Drop your images here",
     "choose": "Choose images",
@@ -148,13 +148,13 @@ const messages = {
     "previewDone": "Done. Choose a model for the whole image."
   },
   "cs": {
-    "pageTitle": "Upscale — více pixelů, více detailů",
-    "description": "Zvětšete obrázky pomocí AI přímo v prohlížeči. Zdarma, v soukromí a bez registrace.",
+    "pageTitle": "Zvětšení obrázků pomocí AI zdarma | Photoupscale.online",
+    "description": "Zvětšete fotografie a ilustrace 2× nebo 4× pomocí AI přímo v prohlížeči. Zdarma, bez registrace a vodoznaku. Hromadné zpracování a rozměry pro tisk.",
     "home": "Upscale — úvod",
     "local": "Zpracování ve vašem zařízení",
     "heading": "Více pixelů.",
     "headingAccent": "Více detailů.",
-    "intro": "Zvětšete své obrázky pomocí AI. Zdarma, v soukromí a jednoduše.",
+    "intro": "Zvětšete fotografie a ilustrace pomocí AI 2× nebo 4×. Zdarma a přímo v prohlížeči.",
     "workspace": "Zvětšení obrázku",
     "drop": "Přetáhněte sem obrázky",
     "choose": "Vybrat obrázky",
@@ -1708,9 +1708,11 @@ function previewCard(title, size, model) {
   $('preview-grid').append(card);
   return card;
 }
-function showPreviewImage(card, blob) {
+async function showPreviewImage(card, blob) {
   const url = URL.createObjectURL(blob); previewURLs.push(url);
-  card.image.src = url; card.image.hidden = false;
+  card.image.src = url;
+  await card.image.decode();
+  card.image.hidden = false;
 }
 function closePreview() {
   if (busy && controller) controller.abort();
@@ -1739,7 +1741,7 @@ async function runPreview() {
   // Run the currently selected model last so its workers stay ready for the full image.
   const order = [...modelNames.filter(model => model !== aiModel), aiModel];
   try {
-    showPreviewImage(original, await canvasBlob(sourceImage, x, y, size, size));
+    await showPreviewImage(original, await canvasBlob(sourceImage, x, y, size, size));
     const context = await blobImage(await canvasBlob(sourceImage, left, top, right - left, bottom - top));
     for (const [index, model] of order.entries()) {
       check(signal);
@@ -1755,7 +1757,7 @@ async function runPreview() {
         const result = await runModel(model, context, factor, { signal, progress: report });
         check(signal);
         const output = await blobImage(result.blob);
-        showPreviewImage(card, await canvasBlob(output, (x - left) * factor, (y - top) * factor, size * factor, size * factor));
+        await showPreviewImage(card, await canvasBlob(output, (x - left) * factor, (y - top) * factor, size * factor, size * factor));
         card.status.textContent = t('previewTime', { seconds: ((performance.now() - started) / 1000).toLocaleString(locale, { maximumFractionDigits: 1 }) });
         card.use.disabled = false;
       } catch (error) {
