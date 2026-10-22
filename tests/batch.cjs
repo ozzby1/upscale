@@ -50,6 +50,7 @@ async function runCase(language,model,factor,format){
 (async()=>{await tf.setBackend('cpu');await tf.ready();for(const language of ['en','cs'])for(const model of ['fast','illustration'])await runCase(language,model,(model==='fast')===(language==='en')?2:4,language==='en'?'jpeg':'png');
  const prepared=app('cs');try{
   const d=prepared.document;
+  assert.equal(d.getElementById('detail-open').hidden,true);assert.equal(d.getElementById('detail-open').disabled,true);
   assert.equal(d.getElementById('output-pixels').textContent,'— px');assert.equal(d.getElementById('output-print').textContent,'— cm');
   assert.equal(d.getElementById('output-pixels').parentElement.parentElement,d.getElementById('output-print').parentElement.parentElement);
   d.getElementById('dpi').value='150';for(const handler of prepared.events.get('dpi:input'))handler();
@@ -58,6 +59,10 @@ async function runCase(language,model,factor,format){
   assert.equal(d.getElementById('dpi').value,'150');assert.equal(d.getElementById('format').value,'jpeg');
   assert.equal(d.getElementById('output-pixels').textContent,'24 × 20 px');assert.equal(d.getElementById('output-print').textContent,'0,41 × 0,34 cm');
   vm.runInContext('selectScale(4)',prepared.ctx);assert.equal(d.getElementById('output-pixels').textContent,'48 × 40 px');assert.equal(d.getElementById('output-print').textContent,'0,81 × 0,68 cm');
+  assert.equal(d.getElementById('detail-open').hidden,true);await prepared.click('upscale');
+  assert.equal(d.getElementById('detail-open').hidden,false);assert.equal(d.getElementById('detail-open').disabled,false);
+  vm.runInContext('clearOutput()',prepared.ctx);assert.equal(d.getElementById('detail-open').hidden,true);
+  console.log('PASS: detail button appears only after a successful upscale and hides when output is cleared');
   prepared.ctx.preparedFiles=[fixture('batch.png',12,10),fixture('another.png',9,14)];vm.runInContext('acceptFiles(preparedFiles);restoreSingle()',prepared.ctx);
   assert.equal(d.getElementById('format').value,'jpeg');assert.equal(d.getElementById('dpi').value,'150');assert.equal(d.getElementById('print-settings').hidden,false);
   console.log('PASS: settings visible before upload, chosen DPI/format retained, paired px/cm dimensions update');
