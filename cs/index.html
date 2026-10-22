@@ -89,7 +89,7 @@ main{max-width:1168px;margin:48px auto 64px;padding:0 28px}.intro{text-align:cen
       </div>
       <div class="mode-bar"><button id="expert-toggle" class="expert-toggle" type="button" role="switch" aria-checked="false" aria-controls="expert-panel"><span data-i18n="expert">Expert</span><span class="switch-track" aria-hidden="true"></span></button></div>
       <section id="expert-panel" class="expert-panel" hidden aria-label="Expert" data-i18n-aria="expert">
-        <div id="model-control" class="model-control"><span class="control-label" id="model-label" data-i18n="aiModel">AI model</span><div class="model-buttons" role="group" aria-labelledby="model-label"><button id="model-fast" class="model-choice active" type="button" data-model="fast" aria-pressed="true" data-i18n="modelFast">Rychlý</button><button id="model-illustration" class="model-choice" type="button" data-model="illustration" aria-pressed="false" data-i18n="modelIllustration" aria-describedby="model-help">Ilustrace</button><button id="model-illustration-detail" class="model-choice" type="button" data-model="illustration-detail" aria-pressed="false" data-i18n="modelIllustrationDetail">Detailed illustration</button></div><p id="model-help" class="control-hint" data-i18n="illustrationHelp" hidden>Hladší obrysy pro kresby a ilustrace. Může překreslit jemné detaily. Je pomalejší než rychlý model; při prvním použití se stáhnou další soubory modelu.</p></div>
+        <div id="model-control" class="model-control"><span class="control-label" id="model-label" data-i18n="aiModel">AI model</span><div class="model-buttons" role="group" aria-labelledby="model-label"><button id="model-fast" class="model-choice active" type="button" data-model="fast" aria-pressed="true" data-i18n="modelFast">Fotografie</button><button id="model-illustration" class="model-choice" type="button" data-model="illustration" aria-pressed="false" data-i18n="modelIllustration" aria-describedby="model-help">Ilustrace</button><button id="model-illustration-detail" class="model-choice" type="button" data-model="illustration-detail" aria-pressed="false" data-i18n="modelIllustrationDetail">Detailed illustration</button></div><p id="model-help" class="control-hint" data-i18n="illustrationHelp" hidden>Hladší obrysy pro kresby a ilustrace. Může překreslit jemné detaily. Je pomalejší než rychlý model; při prvním použití se stáhnou další soubory modelu.</p></div>
         <div id="cpu-control" class="model-control" hidden><span class="control-label" id="cpu-label" data-i18n="cpuPower">CPU performance</span><div class="model-buttons" role="group" aria-labelledby="cpu-label"><button id="cpu-auto" class="model-choice active" type="button" aria-pressed="true" data-i18n="cpuAuto">Automatic</button><button id="cpu-high" class="model-choice" type="button" aria-pressed="false" aria-describedby="cpu-help" data-i18n="cpuHigh">Higher performance</button></div><p id="cpu-help" class="control-hint" data-i18n="cpuHelp">Higher performance runs up to four tasks at once, depending on your device. Uses more CPU and memory and may slow other apps. Choose before starting.</p></div>
         <label class="metadata-option"><input id="metadata-only" type="checkbox"><span data-i18n="metadataOnly">Pouze upravit DPI / formát (bez zvětšení)</span></label>
         <div class="expert-summary"><div><span class="control-label" data-i18n="pixelDimensions">Výsledné rozměry</span><output id="expert-pixels" data-i18n="chooseToMeasure">Pro zobrazení rozměrů vyberte obrázek.</output></div><div><span class="control-label" data-i18n="printDimensions">Velikost pro tisk</span><output id="expert-print">—</output></div><button id="detail-open" class="text-button" type="button" disabled data-i18n="detail">Detail ve 100 %</button></div>
@@ -218,11 +218,11 @@ const messages = {
     "smoothingHelp": "Softens jagged edges. Higher values also soften fine detail. Set to 0 to switch off.",
     "smoothingProgress": "Smoothing edges…",
     "aiModel": "AI model",
-    "modelFast": "Fast",
+    "modelFast": "Photos",
     "modelIllustration": "Illustrations",
     "illustrationHelp": "A compact AI model for smooth outlines in cartoons and illustrations. Recommended for everyday use. May change fine details.",
     "illustrationLoading": "Loading illustration model…",
-    "illustrationFailed": "The illustration model could not start. Try again or choose Fast.",
+    "illustrationFailed": "The illustration model could not start. Try again or choose Photos.",
     "illustrationGpu": "GPU",
     "illustrationCpu": "CPU (slower)",
     "illustrationEta": " · about {time} left",
@@ -341,11 +341,11 @@ const messages = {
     "smoothingHelp": "Zjemní zubaté hrany. Vyšší hodnoty změkčí i jemné detaily. Hodnota 0 vyhlazení vypne.",
     "smoothingProgress": "Vyhlazuji hrany…",
     "aiModel": "AI model",
-    "modelFast": "Rychlý",
+    "modelFast": "Fotografie",
     "modelIllustration": "Ilustrace",
     "illustrationHelp": "Úspornější AI model pro hladké obrysy kreseb a ilustrací. Doporučený pro běžné použití. Může změnit jemné detaily.",
     "illustrationLoading": "Načítám model pro ilustrace…",
-    "illustrationFailed": "Model pro ilustrace se nepodařilo spustit. Zkuste to znovu nebo zvolte Rychlý.",
+    "illustrationFailed": "Model pro ilustrace se nepodařilo spustit. Zkuste to znovu nebo zvolte Fotografie.",
     "illustrationGpu": "Grafika",
     "illustrationCpu": "Procesor (pomalejší)",
     "illustrationEta": " · zbývá přibližně {time}",
