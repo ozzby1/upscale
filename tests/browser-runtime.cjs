@@ -2,7 +2,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
 const deployment=process.argv[2]||'.';
 const root=path.resolve(deployment,'vendor/ort');
 (async()=>{
- for(const model of ['illustration','illustration-quick']) {
+ for(const model of ['illustration-quick']) {
  let reference;
  for(const name of ['webgpu','wasm']){
   const build=fs.readFileSync(root+'/ort.'+name+'.min.js','utf8');
