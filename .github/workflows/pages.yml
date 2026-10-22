@@ -21,34 +21,10 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '22'
-      - name: Prepare static files and local AI models
-        run: |
-          npm install --no-save --ignore-scripts --no-audit --no-fund @tensorflow/tfjs@4.11.0 @tensorflow/tfjs-backend-wasm@4.11.0 @upscalerjs/esrgan-slim@1.0.0 onnxruntime-web@1.30.0 linkedom@0.18.12 @napi-rs/canvas@0.1.80 playwright@1.56.1
-          npx playwright install --with-deps chromium
-          mkdir -p _site/cs _site/tests _site/vendor/ort _site/models/x2 _site/models/x4 _site/models/illustration-quick
-          cp index.html _site/index.html
-          cp cs/index.html _site/cs/index.html
-          cp app.js _site/app.js
-          cp node_modules/@tensorflow/tfjs/dist/tf.min.js _site/vendor/
-          cp node_modules/@tensorflow/tfjs-backend-wasm/dist/tf-backend-wasm.min.js _site/vendor/
-          cp node_modules/@tensorflow/tfjs-backend-wasm/dist/*.wasm _site/vendor/
-          cp node_modules/@upscalerjs/esrgan-slim/models/x2/* _site/models/x2/
-          cp node_modules/@upscalerjs/esrgan-slim/models/x4/* _site/models/x4/
-          cp node_modules/@upscalerjs/esrgan-slim/LICENSE _site/models/LICENSE-esrgan.txt
-          curl -fsSL https://raw.githubusercontent.com/tensorflow/tfjs/tfjs-v4.11.0/LICENSE -o _site/vendor/LICENSE-tensorflow.txt
-          cp illustration-worker.js _site/
-          cp tests/browser-performance.html tests/batch-fixtures.html _site/tests/
-          cp node_modules/onnxruntime-web/dist/ort.{webgpu,wasm}.min.js _site/vendor/ort/
-          cp node_modules/onnxruntime-web/dist/ort-wasm-simd-threaded{,.asyncify}.{mjs,wasm} _site/vendor/ort/
-          curl --retry 3 -fsSL https://raw.githubusercontent.com/microsoft/onnxruntime/v1.30.0/LICENSE -o _site/vendor/ort/LICENSE-onnxruntime.txt
-          curl --retry 3 -fsSL https://raw.githubusercontent.com/xinntao/Real-ESRGAN/v0.3.0/LICENSE -o _site/models/illustration-quick/LICENSE-Real-ESRGAN.txt
-          curl --retry 3 -fsSL https://huggingface.co/skillsafe-ai/realesr-animevideov3/resolve/185e9142d439d17e3fb99395600fb7d08af09de5/model.onnx -o _site/models/illustration-quick/model.onnx
-          echo "78baa685a1a92cac6e14ab2af2a8ad0ef56fa48629563b1414e3a7acc54d86e2  _site/models/illustration-quick/model.onnx" | sha256sum --check
-          node tests/cpu-performance.cjs
-          node tests/browser-runtime.cjs _site
-          node tests/batch.cjs _site
-          node tests/browser-e2e.cjs _site
-          touch _site/.nojekyll
+      - name: Build site
+        run: bash scripts/build-site.sh
+      - name: Test site
+        run: bash scripts/test-site.sh
       - uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
       - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
         with:
