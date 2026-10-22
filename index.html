@@ -23,12 +23,10 @@ main{max-width:1168px;margin:48px auto 64px;padding:0 28px}.intro{text-align:cen
 
 @media(max-width:600px){.header-benefit{font-size:11px}}
 
-.mode-bar{display:flex;justify-content:flex-end;margin:16px 6px 0;padding-top:12px;border-top:1px solid #edf0e9}.expert-toggle{display:flex;align-items:center;gap:10px;border:0;background:none;color:#4b5942;padding:5px 0;font-size:12px;font-weight:650;min-height:32px}.switch-track{display:block;width:30px;height:18px;padding:3px;border-radius:20px;background:#dce3d5;transition:background .15s}.switch-track::before{content:"";display:block;width:12px;height:12px;background:white;border-radius:50%;box-shadow:0 1px 3px #0002;transition:transform .15s}.expert-toggle[aria-checked=true] .switch-track{background:#24311d}.expert-toggle[aria-checked=true] .switch-track::before{transform:translateX(12px)}.expert-toggle:disabled{opacity:.5}
-.expert-panel{border-top:1px solid #e2e8dc;margin:12px 6px 0;padding:22px 0 6px}.expert-summary{display:grid;grid-template-columns:1.2fr 1fr auto;align-items:center;gap:20px}.expert-summary output{display:block;margin-top:8px;font-size:13px;line-height:1.6;color:#4b5942;font-variant-numeric:tabular-nums}.quality-control{max-width:320px;margin-top:24px}.quality-control input{width:100%;margin:14px 0 4px;accent-color:#24311d}.quality-control output{font-size:12px;font-weight:650}.batch-section{border-top:1px solid #e2e8dc;margin-top:24px;padding-top:20px}.batch-heading,.batch-summary{display:flex;align-items:center;justify-content:space-between;gap:12px}.batch-summary{margin-top:20px;font-size:12px;font-weight:650}.batch-list{list-style:none;padding:0;margin:12px 0 20px;max-height:300px;overflow:auto}.batch-list li{display:grid;grid-template-columns:minmax(0,1fr) minmax(80px,40%);gap:14px;padding:10px 0;border-bottom:1px solid #edf0e9;font-size:12px;line-height:1.5}.batch-list li>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.batch-list li>span:last-child{text-align:right;color:#65725b}.batch-list li.failed>span:last-child{color:#a23327}.batch-actions{display:flex;gap:12px;flex-wrap:wrap}.batch-actions .primary{width:auto;min-width:180px}.batch-mode .actions{display:none}.batch-mode .controls{grid-template-columns:minmax(190px,1fr) minmax(180px,230px) 110px}.detail-dialog{width:min(1200px,calc(100vw - 32px));max-width:1200px;max-height:92vh;border:1px solid #dce3d5;border-radius:16px;background:#fff;color:#20281f;padding:24px;box-shadow:0 20px 80px #0003}.detail-dialog::backdrop{background:#17201288}.detail-heading{display:flex;align-items:center;justify-content:space-between;gap:14px}.detail-heading h2{font-size:18px;letter-spacing:-.5px;margin:0}.detail-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-top:18px}.detail-grid h3{font-size:12px;margin:0 0 9px}.detail-pane{height:min(55vh,520px);overflow:auto;border:1px solid #e2e8dc;border-radius:8px;background:transparent}.detail-pane img{display:block;max-width:none;max-height:none}.detail-pane:focus-visible{outline:2px solid #658447;outline-offset:3px}
-@media(max-width:1000px){.batch-mode .controls{grid-template-columns:1fr 1fr}.batch-mode .export-control{grid-column:1 / -1;max-width:140px}.expert-summary{grid-template-columns:1fr 1fr}.expert-summary .text-button{grid-column:1 / -1;justify-self:start}}
-@media(max-width:600px){.expert-panel{margin-inline:2px}.mode-bar{margin-inline:2px}.expert-summary{gap:18px 12px}.expert-summary output{font-size:11px}.expert-summary .control-label{font-size:12px}.batch-heading{align-items:flex-start}.batch-heading .control-label{max-width:160px}.batch-summary{align-items:flex-start}.batch-summary .text-button{font-size:10px}.batch-list li{font-size:11px}.batch-actions .primary{width:100%;min-width:0}.detail-dialog{padding:16px}.detail-grid{grid-template-columns:1fr}.detail-pane{height:25vh}.detail-heading h2{font-size:16px}.batch-mode .controls{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.batch-mode .export-control{max-width:none}}
+.settings-panel{border-top:1px solid #e2e8dc;margin:12px 6px 0;padding:22px 0 6px}.settings-summary{display:grid;grid-template-columns:1.2fr 1fr auto;align-items:center;gap:20px}.settings-summary output{display:block;margin-top:8px;font-size:13px;line-height:1.6;color:#4b5942;font-variant-numeric:tabular-nums}.quality-control{max-width:320px;margin-top:24px}.quality-control input{width:100%;margin:14px 0 4px;accent-color:#24311d}.quality-control output{font-size:12px;font-weight:650}.batch-section{border-top:1px solid #e2e8dc;margin-top:24px;padding-top:20px}.batch-heading,.batch-summary{display:flex;align-items:center;justify-content:space-between;gap:12px}.batch-summary{margin-top:20px;font-size:12px;font-weight:650}.batch-list{list-style:none;padding:0;margin:12px 0 20px;max-height:300px;overflow:auto}.batch-list li{display:grid;grid-template-columns:minmax(0,1fr) minmax(80px,40%);gap:14px;padding:10px 0;border-bottom:1px solid #edf0e9;font-size:12px;line-height:1.5}.batch-list li>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.batch-list li>span:last-child{text-align:right;color:#65725b}.batch-list li.failed>span:last-child{color:#a23327}.batch-actions{display:flex;gap:12px;flex-wrap:wrap}.batch-actions .primary{width:auto;min-width:180px}.batch-mode .actions{display:none}.batch-mode .controls{grid-template-columns:minmax(190px,1fr) minmax(180px,230px) 110px}.detail-dialog{width:min(1200px,calc(100vw - 32px));max-width:1200px;max-height:92vh;border:1px solid #dce3d5;border-radius:16px;background:#fff;color:#20281f;padding:24px;box-shadow:0 20px 80px #0003}.detail-dialog::backdrop{background:#17201288}.detail-heading{display:flex;align-items:center;justify-content:space-between;gap:14px}.detail-heading h2{font-size:18px;letter-spacing:-.5px;margin:0}.detail-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-top:18px}.detail-grid h3{font-size:12px;margin:0 0 9px}.detail-pane{height:min(55vh,520px);overflow:auto;border:1px solid #e2e8dc;border-radius:8px;background:transparent}.detail-pane img{display:block;max-width:none;max-height:none}.detail-pane:focus-visible{outline:2px solid #658447;outline-offset:3px}
+@media(max-width:1000px){.batch-mode .controls{grid-template-columns:1fr 1fr}.batch-mode .export-control{grid-column:1 / -1;max-width:140px}.settings-summary{grid-template-columns:1fr 1fr}.settings-summary .text-button{grid-column:1 / -1;justify-self:start}}
+@media(max-width:600px){.settings-panel{margin-inline:2px}.settings-summary{gap:18px 12px}.settings-summary output{font-size:11px}.settings-summary .control-label{font-size:12px}.batch-heading{align-items:flex-start}.batch-heading .control-label{max-width:160px}.batch-summary{align-items:flex-start}.batch-summary .text-button{font-size:10px}.batch-list li{font-size:11px}.batch-actions .primary{width:100%;min-width:0}.detail-dialog{padding:16px}.detail-grid{grid-template-columns:1fr}.detail-pane{height:25vh}.detail-heading h2{font-size:16px}.batch-mode .controls{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.batch-mode .export-control{max-width:none}}
 
-@media(max-width:600px){.expert-mode.has-image .scale-buttons{gap:2px;padding:3px}.expert-mode.has-image .scale{min-width:36px;height:36px;font-size:13px}}
 
 .metadata-option{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:600;color:#405631;margin:0 0 22px;cursor:pointer}.metadata-option input{width:16px;height:16px;margin:0;accent-color:#24311d}.metadata-option:has(input:disabled){opacity:.55;cursor:default}
 
@@ -49,7 +47,7 @@ main{max-width:1168px;margin:48px auto 64px;padding:0 28px}.intro{text-align:cen
       <p data-i18n="intro">Enlarge your images with AI. Free, private, and beautifully simple.</p>
     </section>
     <section class="workspace" data-i18n-aria="workspace" aria-label="Image upscaler">
-      <input id="file" class="visually-hidden" type="file" accept="image/png,image/jpeg,image/webp">
+      <input id="file" class="visually-hidden" type="file" accept="image/png,image/jpeg,image/webp" multiple>
       <div class="preview-area">
         <button class="dropzone" id="dropzone" type="button">
           <span class="upload-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m-4 4 4-4 4 4M4 15v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4"/></svg></span>
@@ -87,15 +85,13 @@ main{max-width:1168px;margin:48px auto 64px;padding:0 28px}.intro{text-align:cen
         </div>
         <small id="format-note" hidden data-i18n="formatNote">Transparent areas will be white in JPG.</small>
       </div>
-      <div class="mode-bar"><button id="expert-toggle" class="expert-toggle" type="button" role="switch" aria-checked="false" aria-controls="expert-panel"><span data-i18n="expert">Expert</span><span class="switch-track" aria-hidden="true"></span></button></div>
-      <section id="expert-panel" class="expert-panel" hidden aria-label="Expert" data-i18n-aria="expert">
-        <div id="model-control" class="model-control"><span class="control-label" id="model-label" data-i18n="aiModel">AI model</span><div class="model-buttons" role="group" aria-labelledby="model-label"><button id="model-fast" class="model-choice active" type="button" data-model="fast" aria-pressed="true" data-i18n="modelFast">Photos</button><button id="model-illustration" class="model-choice" type="button" data-model="illustration" aria-pressed="false" data-i18n="modelIllustration" aria-describedby="model-help">Illustrations</button><button id="model-illustration-detail" class="model-choice" type="button" data-model="illustration-detail" aria-pressed="false" data-i18n="modelIllustrationDetail">Detailed illustration</button></div><p id="model-help" class="control-hint" data-i18n="illustrationHelp" hidden>Smoother outlines for cartoons and illustrations. May redraw fine details. Slower than the fast model; the first run downloads additional model files.</p></div>
+      <section id="settings-panel" class="settings-panel" aria-label="Image settings" data-i18n-aria="settings">
+        <div id="model-control" class="model-control"><span class="control-label" id="model-label" data-i18n="aiModel">AI model</span><div class="model-buttons" role="group" aria-labelledby="model-label"><button id="model-fast" class="model-choice active" type="button" data-model="fast" aria-pressed="true" data-i18n="modelFast">Photos</button><button id="model-illustration" class="model-choice" type="button" data-model="illustration" aria-pressed="false" data-i18n="modelIllustration" aria-describedby="model-help">Illustrations</button></div><p id="model-help" class="control-hint" data-i18n="illustrationHelp" hidden>Smoother outlines for cartoons and illustrations. May redraw fine details. Slower than the fast model; the first run downloads additional model files.</p></div>
         <div id="cpu-control" class="model-control" hidden><span class="control-label" id="cpu-label" data-i18n="cpuPower">CPU performance</span><div class="model-buttons" role="group" aria-labelledby="cpu-label"><button id="cpu-auto" class="model-choice active" type="button" aria-pressed="true" data-i18n="cpuAuto">Automatic</button><button id="cpu-high" class="model-choice" type="button" aria-pressed="false" aria-describedby="cpu-help" data-i18n="cpuHigh">Higher performance</button></div><p id="cpu-help" class="control-hint" data-i18n="cpuHelp">Higher performance runs up to four tasks at once, depending on your device. Uses more CPU and memory and may slow other apps. Choose before starting.</p></div>
-        <label class="metadata-option"><input id="metadata-only" type="checkbox"><span data-i18n="metadataOnly">Only change DPI / format (no enlargement)</span></label>
-        <div class="expert-summary"><div><span class="control-label" data-i18n="pixelDimensions">Output dimensions</span><output id="expert-pixels" data-i18n="chooseToMeasure">Choose an image to see its dimensions.</output></div><div><span class="control-label" data-i18n="printDimensions">Print size</span><output id="expert-print">—</output></div><button id="detail-open" class="text-button" type="button" disabled data-i18n="detail">Detail at 100%</button></div>
+        <div class="settings-summary"><div><span class="control-label" data-i18n="pixelDimensions">Output dimensions</span><output id="output-pixels" data-i18n="chooseToMeasure">Choose an image to see its dimensions.</output></div><div><span class="control-label" data-i18n="printDimensions">Print size</span><output id="output-print">—</output></div><button id="detail-open" class="text-button" type="button" disabled data-i18n="detail">Detail at 100%</button></div>
         <div id="smoothing-control" class="quality-control"><div class="dpi-heading"><label class="control-label" for="smoothing" data-i18n="smoothing">Edge smoothing</label><output id="smoothing-value" for="smoothing">50 %</output></div><input id="smoothing" type="range" min="0" max="100" step="5" value="50" aria-describedby="smoothing-help"><span class="control-hint" id="smoothing-help" data-i18n="smoothingHelp">Softens jagged edges. Higher values also soften fine detail. Set to 0 to switch off.</span></div>
         <div id="quality-control" class="quality-control" hidden><div class="dpi-heading"><label class="control-label" for="quality" data-i18n="quality">JPG quality</label><output id="quality-value" for="quality">95 %</output></div><input id="quality" type="range" min="50" max="100" step="1" value="95" aria-describedby="quality-help"><span class="control-hint" id="quality-help" data-i18n="qualityHelp">Higher quality creates a larger file.</span></div>
-        <p id="expert-export-size" class="control-hint" hidden></p>
+        <p id="export-size" class="control-hint" hidden></p>
         <div class="batch-section"><div class="batch-heading"><span class="control-label" data-i18n="batch">Process multiple images</span><button id="batch-choose" class="text-button" type="button" data-i18n="batchChoose">Choose images</button></div><p class="control-hint" data-i18n="batchHelp">Up to 10 images, 20 MB each, 100 MB total. The settings above apply to all images.</p><input id="batch-files" class="visually-hidden" type="file" accept="image/png,image/jpeg,image/webp" multiple><div id="batch-queue" hidden><div class="batch-summary"><span id="batch-count"></span><button id="batch-clear" class="text-button" type="button" data-i18n="singleImage">Back to one image</button></div><ul id="batch-list" class="batch-list"></ul><div class="batch-actions"><button id="batch-start" class="primary" type="button" data-i18n="batchStart">Process queue</button><a id="batch-download" class="primary download" hidden download data-i18n="batchZip">Download ZIP</a></div><p id="batch-status" class="control-hint" role="status" aria-live="polite"></p></div></div>
       </section>
       <div class="progress-wrap" id="progress-wrap" hidden><div class="progress-copy"><span id="progress-text" role="status" aria-live="polite" data-i18n="preparing">Preparing AI…</span><button id="cancel" type="button" class="text-button" data-i18n="cancel">Cancel</button></div><progress id="progress" max="100" value="0" data-i18n-aria="progress" aria-label="Upscaling progress"></progress></div>
@@ -122,8 +118,8 @@ const messages = {
     "headingAccent": "More detail.",
     "intro": "Enlarge your images with AI. Free, private, and beautifully simple.",
     "workspace": "Image upscaler",
-    "drop": "Drop your image here",
-    "choose": "Choose an image",
+    "drop": "Drop your images here",
+    "choose": "Choose images",
     "dropHint": "or click to browse",
     "formats": "JPG, PNG, WebP · original file up to 20 MB",
     "change": "Change image",
@@ -174,15 +170,10 @@ const messages = {
     "done": "Done",
     "validDpi": "Enter a valid DPI.",
     "pngDpi": "Could not write DPI to PNG.",
-    "expert": "Expert",
     "pixelDimensions": "Output dimensions",
     "printDimensions": "Print size",
     "chooseToMeasure": "Choose an image to see its dimensions.",
     "printAt": "at {dpi} DPI",
-    "originalSize": "Keep original pixel dimensions",
-    "prepareImage": "Prepare image",
-    "exportResult": "Output",
-    "outputAlt": "Processed image",
     "quality": "JPG quality",
     "qualityHelp": "Higher quality creates a larger file.",
     "exportSize": "File size: {size}",
@@ -190,12 +181,12 @@ const messages = {
     "detailTitle": "Compare at equal size · output at 100%",
     "detailHelp": "The output is shown at 100%. Both views have equal dimensions; the original uses standard browser interpolation. Scroll to explore.",
     "close": "Close",
-    "batch": "Process multiple images",
+    "batch": "Batch upscaling",
     "batchChoose": "Choose images",
     "batchHelp": "Up to 10 images, 20 MB each, 100 MB total. The settings above apply to all images.",
-    "batchStart": "Process queue",
+    "batchStart": "Upscale all images",
     "batchZip": "Download ZIP",
-    "batchCount": "{count} images in queue",
+    "batchCount": "{count} images selected",
     "batchLimit": "Choose up to 10 images, up to 100 MB in total.",
     "pending": "Waiting",
     "working": "Processing…",
@@ -211,8 +202,6 @@ const messages = {
     "zipName": "processed-images.zip",
     "skipped": "Skipped",
     "batchNone": "No files are ready. Check the errors next to each image.",
-    "metadataOnly": "Only change DPI / format (no enlargement)",
-    "noUpscale": "No enlargement",
     "detailSource": "Original · enlarged {scale}× for comparison",
     "smoothing": "Edge smoothing",
     "smoothingHelp": "Softens jagged edges. Higher values also soften fine detail. Set to 0 to switch off.",
@@ -233,8 +222,7 @@ const messages = {
     "cpuHigh": "Higher performance",
     "cpuHelp": "Higher performance runs up to four tasks at once, depending on your device. Uses more CPU and memory and may slow other apps. Choose before starting.",
     "illustrationCpuCount": "CPU ×{count}",
-    "modelIllustrationDetail": "Illustrations · detailed",
-    "illustrationDetailHelp": "The original, heavier illustration model. May produce different fine detail but takes much longer on CPU."
+    "settings": "Image settings"
   },
   "cs": {
     "pageTitle": "Upscale — více pixelů, více detailů",
@@ -245,8 +233,8 @@ const messages = {
     "headingAccent": "Více detailů.",
     "intro": "Zvětšete své obrázky pomocí AI. Zdarma, v soukromí a jednoduše.",
     "workspace": "Zvětšení obrázku",
-    "drop": "Přetáhněte sem obrázek",
-    "choose": "Vybrat obrázek",
+    "drop": "Přetáhněte sem obrázky",
+    "choose": "Vybrat obrázky",
     "dropHint": "nebo klikněte pro výběr",
     "formats": "JPG, PNG, WebP · nahrávaný soubor do 20 MB",
     "change": "Změnit obrázek",
@@ -297,15 +285,10 @@ const messages = {
     "done": "Hotovo",
     "validDpi": "Zadejte platné DPI.",
     "pngDpi": "Nepodařilo se zapsat DPI do PNG.",
-    "expert": "Expert",
     "pixelDimensions": "Výsledné rozměry",
     "printDimensions": "Velikost pro tisk",
     "chooseToMeasure": "Pro zobrazení rozměrů vyberte obrázek.",
     "printAt": "při {dpi} DPI",
-    "originalSize": "Zachovat původní počet pixelů",
-    "prepareImage": "Připravit obrázek",
-    "exportResult": "Výsledek",
-    "outputAlt": "Upravený obrázek",
     "quality": "Kvalita JPG",
     "qualityHelp": "Vyšší kvalita znamená větší soubor.",
     "exportSize": "Velikost souboru: {size}",
@@ -313,12 +296,12 @@ const messages = {
     "detailTitle": "Porovnání ve stejné velikosti · výstup 100 %",
     "detailHelp": "Výstup je zobrazený ve 100 %. Oba náhledy mají stejné rozměry; originál je zvětšený běžnou interpolací prohlížeče. Posouváním prohlédnete detaily.",
     "close": "Zavřít",
-    "batch": "Zpracovat více obrázků",
+    "batch": "Hromadné zvětšení",
     "batchChoose": "Vybrat obrázky",
     "batchHelp": "Nejvýše 10 obrázků, každý do 20 MB, celkem do 100 MB. Nastavení výše platí pro všechny obrázky.",
-    "batchStart": "Zpracovat frontu",
+    "batchStart": "Zvětšit všechny obrázky",
     "batchZip": "Stáhnout ZIP",
-    "batchCount": "Obrázků ve frontě: {count}",
+    "batchCount": "Vybrané obrázky: {count}",
     "batchLimit": "Vyberte nejvýše 10 obrázků o celkové velikosti do 100 MB.",
     "pending": "Čeká",
     "working": "Zpracovávám…",
@@ -334,8 +317,6 @@ const messages = {
     "zipName": "upravene-obrazky.zip",
     "skipped": "Přeskočeno",
     "batchNone": "Žádný soubor není připravený. Zkontrolujte chyby u jednotlivých obrázků.",
-    "metadataOnly": "Pouze upravit DPI / formát (bez zvětšení)",
-    "noUpscale": "Bez zvětšení",
     "detailSource": "Původní · pro porovnání zvětšený {scale}×",
     "smoothing": "Vyhlazení hran",
     "smoothingHelp": "Zjemní zubaté hrany. Vyšší hodnoty změkčí i jemné detaily. Hodnota 0 vyhlazení vypne.",
@@ -356,8 +337,7 @@ const messages = {
     "cpuHigh": "Vyšší výkon",
     "cpuHelp": "Vyšší výkon zapojí až čtyři výpočty současně podle možností zařízení. Více zatíží procesor a paměť a může zpomalit ostatní aplikace. Zvolte před spuštěním.",
     "illustrationCpuCount": "Procesor ×{count}",
-    "modelIllustrationDetail": "Ilustrace · detailní",
-    "illustrationDetailHelp": "Původní náročnější model pro ilustrace. Může jinak vykreslit drobné detaily, ale výpočet na procesoru trvá výrazně déle."
+    "settings": "Nastavení obrázku"
   }
 };
 function t(key, values = {}) {
@@ -540,7 +520,7 @@ async function writeJpegResolution(blob, dpi) {
 
 // The illustration runtime is lazy-loaded in a dedicated worker. Cancellation
 // terminates it immediately, including an in-flight WASM/GPU call or download.
-let illustrationWorker, illustrationReady, illustrationProvider, illustrationVariant;
+let illustrationWorker, illustrationReady, illustrationProvider;
 let illustrationWorkers = [];
 let illustrationCpuMode = 'auto';
 function illustrationCpuWorkerCount() {
@@ -554,7 +534,7 @@ let illustrationRequest = 0;
 const illustrationPending = new Map();
 function stopIllustration(error = new DOMException(t('cancelled'), 'AbortError')) {
   for (const worker of illustrationWorkers) worker.terminate();
-  illustrationWorkers = []; illustrationWorker = null; illustrationReady = null; illustrationProvider = null; illustrationVariant = null;
+  illustrationWorkers = []; illustrationWorker = null; illustrationReady = null; illustrationProvider = null;
   for (const request of illustrationPending.values()) request.reject(error);
   illustrationPending.clear();
 }
@@ -567,7 +547,7 @@ function illustrationMessage(message, transfer = [], worker = illustrationWorker
   });
 }
 function createIllustrationWorker(optional = false) {
-  const worker = new Worker(assetUrl('./illustration-worker.js?v=4'));
+  const worker = new Worker(assetUrl('./illustration-worker.js?v=5'));
   illustrationWorkers.push(worker);
   worker.onmessage = ({ data }) => {
     const request = illustrationPending.get(data.id);
@@ -585,19 +565,17 @@ function createIllustrationWorker(optional = false) {
   };
   return worker;
 }
-async function startIllustration(cpuOnly, variant = 'quick') {
-  if (illustrationReady && illustrationVariant !== variant) stopIllustration();
+async function startIllustration(cpuOnly) {
   if (!illustrationReady) {
-    illustrationVariant = variant;
     illustrationWorker = createIllustrationWorker();
-    illustrationReady = illustrationMessage({ type: 'init', cpuOnly, variant }).then(async result => {
+    illustrationReady = illustrationMessage({ type: 'init', cpuOnly }).then(async result => {
       illustrationProvider = result.provider;
       // Separate CPU workers use real cores without depending on response
       // headers that static hosting cannot provide. Keep the pool bounded.
       const count = illustrationProvider === 'wasm' ? illustrationCpuWorkerCount() : 1;
       while (illustrationWorkers.length < count) {
         const extra = createIllustrationWorker(true);
-        try { await illustrationMessage({ type: 'init', cpuOnly: true, variant }, [], extra); }
+        try { await illustrationMessage({ type: 'init', cpuOnly: true }, [], extra); }
         catch (error) {
           extra.terminate(); illustrationWorkers = illustrationWorkers.filter(worker => worker !== extra);
           if (!illustrationWorker) throw error;
@@ -656,13 +634,13 @@ async function enhanceIllustration(image, factor, options) {
     throw error;
   } finally { signal.removeEventListener('abort', abort); }
 }
-async function renderIllustration(image, factor, { signal, progress, model = 'quick' }, cpuOnly) {
+async function renderIllustration(image, factor, { signal, progress }, cpuOnly) {
   check(signal); progress(0, t('illustrationLoading'));
-  await startIllustration(cpuOnly, model); check(signal);
+  await startIllustration(cpuOnly); check(signal);
   const { width, height } = validateSize(image.naturalWidth, image.naturalHeight, factor);
-  // Keep GPU tensors within common storage-buffer limits. CPU tiles can be
-  // larger, reducing duplicated context while retaining the same model/padding.
-  const core = model === 'quick' ? 192 : illustrationProvider === 'wasm' ? 128 : 96, padding = 32, stride = core - 16, side = core + padding * 2;
+  // The compact model keeps intermediate tensors at input resolution. Smaller
+  // inputs use smaller tiles to avoid spending time on unnecessary padding.
+  const core = Math.min(192, Math.max(32, Math.ceil(Math.max(image.naturalWidth, image.naturalHeight) / 16) * 16)), padding = 32, stride = core - 16, side = core + padding * 2;
   const xs = illustrationOrigins(image.naturalWidth, core, stride), ys = illustrationOrigins(image.naturalHeight, core, stride);
   const backend = illustrationProvider === 'webgpu' ? t('illustrationGpu') : t('illustrationCpuCount', { count: illustrationWorkers.length });
   const workers = illustrationWorkers.length;
@@ -876,21 +854,6 @@ function validateUpload(file) {
 function validateInput(image) {
   if (!image.naturalWidth || image.naturalWidth * image.naturalHeight > 12000000 || Math.max(image.naturalWidth, image.naturalHeight) > 12000) throw new Error(t('inputSize'));
 }
-async function originalPixels(image, file, signal) {
-  if (signal.aborted) throw new DOMException(t('cancelled'), 'AbortError');
-  if (file.type === 'image/png') return { blob: file, width: image.naturalWidth, height: image.naturalHeight };
-  const canvas = document.createElement('canvas');
-  canvas.width = image.naturalWidth; canvas.height = image.naturalHeight;
-  try {
-    const context = canvas.getContext('2d');
-    if (!context) throw new Error(t('browserMemory'));
-    context.drawImage(image, 0, 0);
-    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-    if (!blob) throw new Error(t('saveFailed'));
-    if (signal.aborted) throw new DOMException(t('cancelled'), 'AbortError');
-    return { blob, width: canvas.width, height: canvas.height };
-  } finally { canvas.width = canvas.height = 1; }
-}
 async function encodeExport(raw, stats, { format, quality, dpi }) {
   if (format === 'png') return writePngResolution(raw, dpi);
   const image = new Image(), url = URL.createObjectURL(raw);
@@ -1016,7 +979,7 @@ const $ = id => document.getElementById(id);
 let sourceImage, sourceFile, sourceURL, outputURL, previewURL, sourceDpi = null, rawOutput = null, outputStats;
 let exportController, processedOutput, processedRaw, processedStrength, previewBlob;
 let exportRevision = 0, exportPending = false, exportTimer, pointerSliding = false;
-let scale = 2, lastUpscale = 2, busy = false, controller, loadRevision = 0, expert = false;
+let scale = 2, busy = false, controller, loadRevision = 0;
 let aiModel = 'fast';
 let queueMode = false, queue = [], batchURL;
 const scales = [...document.querySelectorAll('.scale')];
@@ -1036,44 +999,38 @@ function exportDpi() {
   return { x: value, y: value };
 }
 function exportSettings() {
-  return { dpi: exportDpi(), format: $('format').value, quality: expert ? Number($('quality').value) : 95, smoothing: scale === 1 ? 0 : (expert ? Number($('smoothing').value) : 50) };
+  return { dpi: exportDpi(), format: $('format').value, quality: Number($('quality').value), smoothing: Number($('smoothing').value) };
 }
 function updateDpiLabel() {
   $('dpi-value').value = `${$('dpi').value} DPI`;
   $('dpi').setAttribute('aria-valuetext', `${$('dpi').value} DPI`);
   $('dpi').style.setProperty('--fill', `${(Number($('dpi').value) - 72) / 528 * 100}%`);
-  updateExpert();
+  updateSettings();
 }
 function updateFormatNote() {
   syncFormatControl();
   $('format-note').textContent = t(queueMode ? 'batchFormatNote' : 'formatNote');
   $('format-note').hidden = $('format').value !== 'jpeg' || (!queueMode && sourceFile?.type === 'image/jpeg');
-  updateExpert();
+  updateSettings();
 }
-function updateExpert() {
-  $('model-control').hidden = scale === 1;
+function updateSettings() {
   $('model-help').hidden = aiModel === 'fast';
-  $('model-help').textContent = t(aiModel === 'illustration-detail' ? 'illustrationDetailHelp' : 'illustrationHelp');
-  $('cpu-control').hidden = scale === 1 || aiModel === 'fast';
-  $('smoothing-control').hidden = scale === 1;
+  $('model-help').textContent = t('illustrationHelp');
+  $('cpu-control').hidden = aiModel === 'fast';
   $('smoothing-value').value = `${$('smoothing').value} %`;
-  $('metadata-only').checked = scale === 1;
-  $('scale-buttons').hidden = scale === 1;
-  $('scale-label').textContent = t(scale === 1 ? 'noUpscale' : 'scale');
-  $('scale-hint').textContent = t(scale === 1 ? 'originalSize' : 'scaleHint');
-  $('quality-control').hidden = !expert || $('format').value !== 'jpeg';
+  $('quality-control').hidden = $('format').value !== 'jpeg';
   $('quality-value').value = `${$('quality').value} %`;
   $('detail-open').disabled = busy || !rawOutput || !outputURL || exportPending || queueMode;
   if (queueMode) {
-    $('expert-pixels').textContent = t('batchDimensions'); $('expert-print').textContent = '—';
+    $('output-pixels').textContent = t('batchDimensions'); $('output-print').textContent = '—';
   } else if (sourceImage) {
     const w = sourceImage.naturalWidth * scale, h = sourceImage.naturalHeight * scale;
-    $('expert-pixels').textContent = `${pretty(sourceImage.naturalWidth)} × ${pretty(sourceImage.naturalHeight)} → ${pretty(w)} × ${pretty(h)} px`;
+    $('output-pixels').textContent = `${pretty(sourceImage.naturalWidth)} × ${pretty(sourceImage.naturalHeight)} → ${pretty(w)} × ${pretty(h)} px`;
     const dpi = Number($('dpi').value) || 300;
     const cm = value => (value / dpi * 2.54).toLocaleString(locale, { maximumFractionDigits: 2 });
-    $('expert-print').textContent = `${cm(w)} × ${cm(h)} cm · ${t('printAt', { dpi })}`;
+    $('output-print').textContent = `${cm(w)} × ${cm(h)} cm · ${t('printAt', { dpi })}`;
   } else {
-    $('expert-pixels').textContent = t('chooseToMeasure'); $('expert-print').textContent = '—';
+    $('output-pixels').textContent = t('chooseToMeasure'); $('output-print').textContent = '—';
   }
 }
 function closeDetail() {
@@ -1090,8 +1047,8 @@ async function refreshExport() {
   const abortExport = () => localController.abort();
   if (inferenceController?.signal.aborted) localController.abort();
   else inferenceController?.signal.addEventListener('abort', abortExport, { once: true });
-  exportPending = true; $('download').setAttribute('aria-disabled', 'true'); updateExpert();
-  $('expert-export-size').textContent = t('encoding');
+  exportPending = true; $('download').setAttribute('aria-disabled', 'true'); updateSettings();
+  $('export-size').textContent = t('encoding');
   try {
     const filtered = processedRaw === input && processedStrength === settings.smoothing && processedOutput
       ? processedOutput
@@ -1120,9 +1077,9 @@ async function refreshExport() {
     $('download-label').textContent = t('download', { format: extension.toUpperCase() });
     $('download').setAttribute('aria-disabled', 'false');
     $('output-info').textContent = `${pretty(stats.width)} × ${pretty(stats.height)} px · ${exportBytes(blob.size)} · ${formatDpi(settings.dpi)} DPI`;
-    $('expert-export-size').textContent = t('exportSize', { size: exportBytes(blob.size) });
-    $('expert-export-size').hidden = false;
-  } finally { inferenceController?.signal.removeEventListener('abort', abortExport); if (exportController === localController) exportController = null; if (revision === exportRevision) { exportPending = false; updateExpert(); } }
+    $('export-size').textContent = t('exportSize', { size: exportBytes(blob.size) });
+    $('export-size').hidden = false;
+  } finally { inferenceController?.signal.removeEventListener('abort', abortExport); if (exportController === localController) exportController = null; if (revision === exportRevision) { exportPending = false; updateSettings(); } }
 }
 function invalidateBatch() {
   if (batchURL) URL.revokeObjectURL(batchURL);
@@ -1132,10 +1089,10 @@ function invalidateBatch() {
 }
 function scheduleExport(immediate = false) {
   clearTimeout(exportTimer); exportController?.abort(); showError('');
-  if (queueMode) { invalidateBatch(); updateExpert(); return; }
+  if (queueMode) { invalidateBatch(); updateSettings(); return; }
   if (!rawOutput || busy) return;
   exportRevision++; exportPending = true;
-  $('download').setAttribute('aria-disabled', 'true'); updateExpert();
+  $('download').setAttribute('aria-disabled', 'true'); updateSettings();
   exportTimer = setTimeout(() => refreshExport().catch(error => { if (error.name !== 'AbortError') showError(error.message); }), immediate ? 0 : 220);
 }
 function clearOutput() {
@@ -1147,23 +1104,23 @@ function clearOutput() {
   exportRevision++; exportPending = false;
   $('original').style.clipPath = 'none';
   $('result').removeAttribute('src'); $('download').removeAttribute('href');
-  for (const id of ['result-layer', 'compare-labels', 'divider', 'compare', 'result-meta', 'download', 'expert-export-size']) $(id).hidden = true;
-  $('upscale').hidden = false; updateExpert();
+  for (const id of ['result-layer', 'compare-labels', 'divider', 'compare', 'result-meta', 'download', 'export-size']) $(id).hidden = true;
+  $('upscale').hidden = false; updateSettings();
 }
 function setBusy(value) {
   busy = value; document.body.classList.toggle('busy', value);
   if (value) closeFormatMenu();
-  for (const id of ['dpi', 'format', 'format-toggle', 'quality', 'change', 'dropzone', 'expert-toggle', 'batch-choose', 'batch-start', 'batch-clear', 'file', 'batch-files', 'metadata-only', 'smoothing', 'model-fast', 'model-illustration', 'model-illustration-detail', 'cpu-auto', 'cpu-high']) $(id).disabled = value;
+  for (const id of ['dpi', 'format', 'format-toggle', 'quality', 'change', 'dropzone', 'batch-choose', 'batch-start', 'batch-clear', 'file', 'batch-files', 'smoothing', 'model-fast', 'model-illustration', 'cpu-auto', 'cpu-high']) $(id).disabled = value;
   $('upscale').disabled = value || !sourceImage || queueMode;
   for (const button of scales) button.disabled = value;
-  $('progress-wrap').hidden = !value; $('cancel').disabled = false; updateExpert();
+  $('progress-wrap').hidden = !value; $('cancel').disabled = false; updateSettings();
 }
 function selectScale(value) {
-  if (busy || scale === value) return;
-  scale = value; if (value > 1) lastUpscale = value;
+  if (busy || ![2, 4].includes(value) || scale === value) return;
+  scale = value;
   scales.forEach(item => { item.classList.toggle('active', Number(item.dataset.scale) === scale); item.setAttribute('aria-pressed', String(Number(item.dataset.scale) === scale)); });
-  $('upscale-label').textContent = t(scale === 1 ? 'prepareImage' : 'upscale');
-  clearOutput(); if (queueMode) invalidateBatch(); showError(''); updateExpert();
+  $('upscale-label').textContent = t('upscale');
+  clearOutput(); if (queueMode) invalidateBatch(); showError(''); updateSettings();
 }
 function restoreSingle() {
   if (busy) return;
@@ -1172,7 +1129,7 @@ function restoreSingle() {
   $('dropzone').hidden = Boolean(sourceImage); $('editor').hidden = !sourceImage;
   $('print-settings').hidden = !sourceImage; document.body.classList.toggle('has-image', Boolean(sourceImage));
   $('source-dpi').textContent = t('sourceDpi', { value: sourceDpi ? formatDpi(sourceDpi) : t('unknown') });
-  $('upscale').disabled = !sourceImage; updateFormatNote(); updateExpert();
+  $('upscale').disabled = !sourceImage; updateFormatNote(); updateSettings();
 }
 async function loadFile(file) {
   if (!file || busy) return;
@@ -1195,13 +1152,13 @@ async function loadFile(file) {
     $('original').src = url; $('filename').textContent = file.name;
     $('dimensions').textContent = `${pretty(img.naturalWidth)} × ${pretty(img.naturalHeight)} px · ${bytes(file.size)}`;
     $('dropzone').hidden = true; $('editor').hidden = false; $('upscale').disabled = false;
-    updateExpert(); $('upscale').focus({ preventScroll: true });
+    updateSettings(); $('upscale').focus({ preventScroll: true });
   } catch (error) {
     URL.revokeObjectURL(url); showError(error.message === t('inputSize') ? error.message : t('fileOpen'));
   }
 }
 function enterQueue(files) {
-  if (busy || !expert || !files.length) return;
+  if (busy || !files.length) return;
   if (files.length > 10 || files.reduce((sum, file) => sum + file.size, 0) > 100 * 1048576) return showError(t('batchLimit'));
   try { for (const file of files) validateUpload(file); } catch (error) { showError(error.message); return; }
   loadRevision++; clearOutput(); invalidateBatch(); showError('');
@@ -1216,11 +1173,11 @@ function enterQueue(files) {
   $('dropzone').hidden = $('editor').hidden = true; $('print-settings').hidden = false;
   $('format').value = files[0].type === 'image/jpeg' ? 'jpeg' : 'png';
   $('source-dpi').textContent = t('batchDpi'); $('upscale').disabled = true;
-  updateFormatNote(); updateExpert();
+  updateFormatNote(); updateSettings();
 }
 function acceptFiles(files) {
   const list = [...files];
-  if (expert && list.length > 1) enterQueue(list); else loadFile(list[0]);
+  if (list.length > 1) enterQueue(list); else loadFile(list[0]);
 }
 $('dropzone').addEventListener('click', () => $('file').click());
 $('change').addEventListener('click', () => $('file').click());
@@ -1286,21 +1243,21 @@ formatOptions.forEach((option, index) => {
 document.addEventListener('pointerdown', event => { if (!$('format-control').contains(event.target)) closeFormatMenu(); });
 document.addEventListener('keydown', event => { if (event.key === 'Escape' && !$('format-menu').hidden) { event.preventDefault(); closeFormatMenu(true); } });
 
-$('smoothing').addEventListener('input', () => { updateExpert(); scheduleExport(); });
+$('smoothing').addEventListener('input', () => { updateSettings(); scheduleExport(); });
 $('smoothing').addEventListener('change', () => scheduleExport(true));
-$('quality').addEventListener('input', () => { updateExpert(); scheduleExport(); });
+$('quality').addEventListener('input', () => { updateSettings(); scheduleExport(); });
 $('quality').addEventListener('change', () => scheduleExport(true));
 $('download').addEventListener('click', event => { if (exportPending || $('download').getAttribute('aria-disabled') === 'true' || !$('dpi').validity.valid) event.preventDefault(); });
 function selectModel(value) {
-  if (busy || !['fast', 'illustration', 'illustration-detail'].includes(value) || aiModel === value) return;
+  if (busy || !['fast', 'illustration'].includes(value) || aiModel === value) return;
   aiModel = value;
   stopIllustration();
-  for (const name of ['fast', 'illustration', 'illustration-detail']) {
+  for (const name of ['fast', 'illustration']) {
     $('model-' + name).classList.toggle('active', value === name);
     $('model-' + name).setAttribute('aria-pressed', String(value === name));
   }
   $('smoothing').value = value === 'fast' ? '50' : '0';
-  clearOutput(); if (queueMode) invalidateBatch(); showError(''); updateExpert();
+  clearOutput(); if (queueMode) invalidateBatch(); showError(''); updateSettings();
 }
 function selectCpuMode(value) {
   if (busy || !['auto', 'high'].includes(value) || illustrationCpuMode === value) return;
@@ -1314,33 +1271,19 @@ $('cpu-auto').addEventListener('click', () => selectCpuMode('auto'));
 $('cpu-high').addEventListener('click', () => selectCpuMode('high'));
 $('model-fast').addEventListener('click', () => selectModel('fast'));
 $('model-illustration').addEventListener('click', () => selectModel('illustration'));
-$('model-illustration-detail').addEventListener('click', () => selectModel('illustration-detail'));
-$('expert-toggle').addEventListener('click', () => {
-  if (busy) return;
-  expert = !expert; document.body.classList.toggle('expert-mode', expert); $('expert-toggle').setAttribute('aria-checked', String(expert)); $('expert-panel').hidden = !expert;
-  $('file').multiple = expert;
-  if (!expert) {
-    selectModel('fast');
-    if (queueMode) restoreSingle();
-    if (scale === 1) selectScale(lastUpscale);
-    $('quality').value = '95'; $('smoothing').value = '50'; closeDetail(); scheduleExport(true);
-  }
-  updateExpert();
-});
-$('metadata-only').addEventListener('change', () => selectScale($('metadata-only').checked ? 1 : lastUpscale));
 $('batch-choose').addEventListener('click', () => $('batch-files').click());
 $('batch-files').addEventListener('change', event => { enterQueue([...event.target.files]); event.target.value = ''; });
 $('batch-clear').addEventListener('click', restoreSingle);
 $('detail-open').addEventListener('click', () => {
-  if (!expert || busy || !outputStats || !outputURL || exportPending) return;
+  if (busy || !outputStats || !outputURL || exportPending) return;
   $('detail-original').src = sourceURL; $('detail-result').src = outputURL;
-  $('detail-source-label').textContent = scale === 1 ? t('original') : t('detailSource', { scale });
+  $('detail-source-label').textContent = t('detailSource', { scale });
   const dims = `${pretty(outputStats.width)} × ${pretty(outputStats.height)} px`;
   $('detail-help').textContent = t('detailHelp') + ' ' + dims;
-  const format = $('format').value === 'jpeg' ? `JPG · ${expert ? $('quality').value : 95} %` : 'PNG';
+  const format = $('format').value === 'jpeg' ? `JPG · ${$('quality').value} %` : 'PNG';
   for (const id of ['detail-original', 'detail-result']) { $(id).style.width = `${outputStats.width}px`; $(id).style.height = `${outputStats.height}px`; }
-  $('detail-result-label').textContent = `${t(scale === 1 ? 'exportResult' : 'result')} · ${format}`;
-  $('detail-result').alt = t(scale === 1 ? 'outputAlt' : 'resultAlt');
+  $('detail-result-label').textContent = `${t('result')} · ${format}`;
+  $('detail-result').alt = t('resultAlt');
   $('detail-dialog').showModal();
   for (const id of ['detail-original-pane', 'detail-result-pane']) { $(id).scrollLeft = 0; $(id).scrollTop = 0; }
 });
@@ -1349,7 +1292,7 @@ for (const [from, to] of [['detail-original-pane', 'detail-result-pane'], ['deta
   $(from).addEventListener('scroll', () => { if ($(to).scrollLeft !== $(from).scrollLeft) $(to).scrollLeft = $(from).scrollLeft; if ($(to).scrollTop !== $(from).scrollTop) $(to).scrollTop = $(from).scrollTop; });
 }
 $('cancel').addEventListener('click', () => { controller?.abort(); $('cancel').disabled = true; $('progress-text').textContent = t('cancelling'); });
-const processImage = (image, file, factor, options) => factor === 1 ? originalPixels(image, file, options.signal) : (expert && aiModel !== 'fast' ? enhanceIllustration(image, factor, { ...options, model: aiModel === 'illustration-detail' ? 'detail' : 'quick' }) : enhance(image, factor, options));
+const processImage = (image, file, factor, options) => aiModel === 'illustration' ? enhanceIllustration(image, factor, options) : enhance(image, factor, options);
 function friendlyError(error) {
   if (isKnownMessage(error.message)) return error.message;
   return /memory|texture|WebGL|allocation|context lost/i.test(error.message) ? t('memory') : t('failed');
@@ -1359,14 +1302,14 @@ $('upscale').addEventListener('click', async () => {
   showError('');
   try { validateSize(sourceImage.naturalWidth, sourceImage.naturalHeight, scale); exportDpi(); } catch (error) { showError(error.message); return; }
   clearOutput(); controller = new AbortController(); setBusy(true); $('progress').value = 0;
-  $('progress-text').textContent = t(scale === 1 ? 'encoding' : 'preparing');
+  $('progress-text').textContent = t('preparing');
   let succeeded = false;
   try {
     const result = await processImage(sourceImage, sourceFile, scale, { signal: controller.signal, progress: (value, text) => { if (!controller.signal.aborted) { $('progress').value = value * .95; $('progress-text').textContent = text; } } });
     if (controller.signal.aborted) throw new DOMException(t('cancelled'), 'AbortError');
     rawOutput = result.blob; outputStats = { width: result.width, height: result.height }; await refreshExport();
     if (controller.signal.aborted) throw new DOMException(t('cancelled'), 'AbortError');
-    $('result-label').textContent = t(scale === 1 ? 'exportResult' : 'result'); $('result').alt = t(scale === 1 ? 'outputAlt' : 'resultAlt');
+    $('result-label').textContent = t('result'); $('result').alt = t('resultAlt');
     $('original').style.clipPath = 'inset(0 50% 0 0)'; $('compare').value = 50; $('divider').style.left = '50%'; $('result-layer').style.clipPath = 'inset(0 0 0 50%)';
     for (const id of ['result-layer', 'compare-labels', 'divider', 'compare', 'result-meta', 'download']) $(id).hidden = false;
     $('upscale').hidden = true; succeeded = true;
@@ -1374,7 +1317,7 @@ $('upscale').addEventListener('click', async () => {
   finally { setBusy(false); controller = null; if (succeeded) $('download').focus({ preventScroll: true }); }
 });
 $('batch-start').addEventListener('click', async () => {
-  if (!expert || busy || !queueMode || !queue.length) return;
+  if (busy || !queueMode || !queue.length) return;
   let settings; try { settings = exportSettings(); } catch (error) { showError(error.message); return; }
   const factor = scale, completed = []; let totalBytes = 0, stoppedForLimit = false;
   invalidateBatch(); showError(''); controller = new AbortController(); setBusy(true); $('progress').value = 0;
@@ -1384,7 +1327,7 @@ $('batch-start').addEventListener('click', async () => {
       const item = queue[index], url = URL.createObjectURL(item.file), image = new Image(); image.src = url; item.status.textContent = t('working');
       const report = (value, message) => { $('progress').value = (index * 100 + value) / queue.length; $('progress-text').textContent = t('batchProgress', { current: index + 1, total: queue.length, message }); };
       try {
-        report(0, t(factor === 1 ? 'encoding' : 'preparing')); await image.decode(); validateInput(image); validateSize(image.naturalWidth, image.naturalHeight, factor);
+        report(0, t('preparing')); await image.decode(); validateInput(image); validateSize(image.naturalWidth, image.naturalHeight, factor);
         const result = await processImage(image, item.file, factor, { signal: controller.signal, progress: (value, message) => report(value * .95, message) });
         if (controller.signal.aborted) break;
         const filtered = await smoothResult(result.blob, result, settings.smoothing, controller.signal, fraction => report(95 + fraction * 4, t('smoothingProgress')));
@@ -1410,7 +1353,7 @@ $('batch-start').addEventListener('click', async () => {
   finally { setBusy(false); controller = null; }
 });
 syncFormatControl();
-updateExpert();
+updateSettings();
 
 </script>
 </body>
