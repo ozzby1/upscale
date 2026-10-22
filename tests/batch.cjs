@@ -37,7 +37,7 @@ async function zipEntries(app){const url=app.document.getElementById('batch-down
 async function runCase(language,model,factor,format){
  const a=app(language),files=[fixture('stejné.png',12,10),fixture('stejné.jpg',15,11,'image/jpeg'),fixture('třetí.png',9,14)];a.ctx.files=files;a.ctx.selection=model;a.ctx.factor=factor;
  try{
-  assert.equal(a.document.getElementById('expert-toggle'),null);assert.equal(a.document.getElementById('metadata-only'),null);assert.equal(a.document.getElementById('model-illustration-detail'),null);assert.equal(a.document.getElementById('settings-panel').hidden,false);assert.ok(a.document.getElementById('file').hasAttribute('multiple'));
+  assert.equal(a.document.getElementById('expert-toggle'),null);assert.equal(a.document.getElementById('metadata-only'),null);assert.equal(a.document.getElementById('model-illustration-detail'),null);assert.equal(a.document.getElementById('settings-panel').hidden,false);assert.equal(a.document.getElementById('print-settings').hidden,false);assert.equal(a.document.getElementById('scale-hint'),null);assert.equal(a.document.getElementById('smoothing-help'),null);assert.ok(a.document.getElementById('file').hasAttribute('multiple'));
   vm.runInContext('selectModel(selection); selectScale(factor); acceptFiles(files)',a.ctx);a.document.getElementById('format').value=format;a.document.getElementById('dpi').value='300';a.document.getElementById('quality').value='85';a.document.getElementById('smoothing').value='20';
   await a.click('batch-start');assert.equal(vm.runInContext('busy',a.ctx),false);assert.equal(a.document.getElementById('batch-download').hidden,false);
   const {entries,zip}=await zipEntries(a);assert.equal(entries.length,3);
@@ -48,6 +48,20 @@ async function runCase(language,model,factor,format){
  }finally{await a.cleanup()}
 }
 (async()=>{await tf.setBackend('cpu');await tf.ready();for(const language of ['en','cs'])for(const model of ['fast','illustration'])await runCase(language,model,(model==='fast')===(language==='en')?2:4,language==='en'?'jpeg':'png');
+ const prepared=app('cs');try{
+  const d=prepared.document;
+  assert.equal(d.getElementById('output-pixels').textContent,'— px');assert.equal(d.getElementById('output-print').textContent,'— cm');
+  assert.equal(d.getElementById('output-pixels').parentElement.parentElement,d.getElementById('output-print').parentElement.parentElement);
+  d.getElementById('dpi').value='150';for(const handler of prepared.events.get('dpi:input'))handler();
+  await prepared.click('format-jpeg');assert.equal(d.getElementById('quality-control').hidden,false);
+  prepared.ctx.preparedFile=fixture('prepared.png',12,10);await vm.runInContext('loadFile(preparedFile)',prepared.ctx);
+  assert.equal(d.getElementById('dpi').value,'150');assert.equal(d.getElementById('format').value,'jpeg');
+  assert.equal(d.getElementById('output-pixels').textContent,'24 × 20 px');assert.equal(d.getElementById('output-print').textContent,'0,41 × 0,34 cm');
+  vm.runInContext('selectScale(4)',prepared.ctx);assert.equal(d.getElementById('output-pixels').textContent,'48 × 40 px');assert.equal(d.getElementById('output-print').textContent,'0,81 × 0,68 cm');
+  prepared.ctx.preparedFiles=[fixture('batch.png',12,10),fixture('another.png',9,14)];vm.runInContext('acceptFiles(preparedFiles);restoreSingle()',prepared.ctx);
+  assert.equal(d.getElementById('format').value,'jpeg');assert.equal(d.getElementById('dpi').value,'150');assert.equal(d.getElementById('print-settings').hidden,false);
+  console.log('PASS: settings visible before upload, chosen DPI/format retained, paired px/cm dimensions update');
+ }finally{await prepared.cleanup()}
  const a=app('cs');try{a.ctx.files=[fixture('první.png',12,10),new File(['bad image bytes'],'chybný.png',{type:'image/png'}),fixture('poslední.png',9,10)];vm.runInContext("selectModel('illustration');acceptFiles(files)",a.ctx);a.document.getElementById('smoothing').value='0';await a.click('batch-start');assert.equal((await zipEntries(a)).entries.length,2);assert.ok(a.document.getElementById('batch-list').children[1].classList.contains('failed'));console.log('PASS: invalid middle image is reported and remaining images finish');
  vm.runInContext('restoreSingle();',a.ctx);a.ctx.files=[fixture('one.png',10,10),fixture('two.png',10,10),fixture('three.png',10,10)];vm.runInContext("acceptFiles(files);let calls=0;const realIllustration=enhanceIllustration;enhanceIllustration=async (...args)=>{if(++calls===2){controller.abort();throw new DOMException('Cancelled','AbortError')}return realIllustration(...args)}",a.ctx);await a.click('batch-start');assert.equal((await zipEntries(a)).entries.length,1);assert.equal(vm.runInContext('busy',a.ctx),false);assert.match(a.document.getElementById('batch-list').children[2].textContent,/Zrušeno/);console.log('PASS: cancellation retains completed files in ZIP and skips remaining files');
  vm.runInContext('restoreSingle()',a.ctx);a.ctx.files=Array.from({length:11},(_,i)=>fixture(i+'.png',1,1));vm.runInContext('acceptFiles(files)',a.ctx);assert.equal(vm.runInContext('queueMode',a.ctx),false);assert.match(a.document.getElementById('message').textContent,/10/);console.log('PASS: batch input limit enforced');
