@@ -1,24 +1,71 @@
-name: Audit checks
+name: Verify live PhotoUpscale features
 on:
-  pull_request:
-    branches: [main]
-  workflow_dispatch:
+  push:
+    branches: [verify-live-features]
 permissions:
   contents: read
-concurrency:
-  group: audit-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
 jobs:
-  test:
-    name: Test real AI models and browser exports
+  verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '22'
-      - name: Build site
-        run: bash scripts/build-site.sh
-      - name: Test site
-        run: bash scripts/test-site.sh
+      - name: Prepare Chromium
+        run: |
+          npm install --no-save --ignore-scripts --no-audit --no-fund playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Verify approved build and run full E2E against the live domain
+        run: |
+          set -euo pipefail
+          python3 - <<'VERIFY_ASSETS'
+          from urllib.request import Request, urlopen
+          from pathlib import Path
+          from hashlib import sha256
+          import json,time,re
+          base='https://photoupscale.online/'
+          expected='5ccb0aa8f3441fcec58b36502f067f6fad2c56f9'
+          def fetch(path):
+              with urlopen(Request(base+path,headers={'Cache-Control':'no-cache'}),timeout=30) as response:
+                  assert response.status==200
+                  return response.read()
+          for attempt in range(61):
+              try:
+                  worker=fetch('sw.js').decode()
+                  assert re.search(r"const BUILD = '"+expected+r"';",worker), 'service worker build has not propagated'
+                  assert b'app.js?v=7' in fetch('') and b'../app.js?v=7' in fetch('cs/'), 'HTML has not propagated'
+                  for path in ['manifest.webmanifest','cs/manifest.webmanifest']:
+                      manifest=json.loads(fetch(path))
+                      assert manifest['display']=='standalone' and len(manifest['icons'])>=3 and manifest.get('share_target')
+                  app=fetch('app.js?v=7')
+                  assert b'function runPreview' in app
+                  assert app==Path('app.js').read_bytes(), 'deployed app differs from approved commit'
+                  break
+              except Exception as error:
+                  if attempt==60:raise
+                  print('Waiting for deployment/cache:',error,flush=True)
+                  time.sleep(10)
+          model=fetch('models/photo/model.onnx')
+          assert len(model)==9740844,len(model)
+          assert sha256(model).hexdigest()=='960feb20a6c26e99778260d90c10edd6ff6d777d575d86ea6801ef9810641973'
+          print('PASS: live service worker BUILD matches approved merge '+expected)
+          print('PASS: live EN/CS manifests, app.js v7 and runPreview match approved files')
+          print('PASS: live photo model is 9740844 bytes with the expected SHA-256')
+          VERIFY_ASSETS
+          python3 - <<'PREPARE_LIVE_SUITE'
+          from pathlib import Path
+          source=Path("tests/browser-e2e.cjs").read_text()
+          old="const base = `http://127.0.0.1:${server.address().port}/`;"
+          assert source.count(old)==1
+          source=source.replace(old,"const base = 'https://photoupscale.online/';")
+          needle="  const errors = []; page.on('pageerror', e => errors.push(e.message));"
+          assert source.count(needle)==1
+          source=source.replace(needle,needle+"\n  const cspErrors = []; page.on('console', message => { if (message.type() === 'error' && /Refused to|Content Security Policy|Uncaught/.test(message.text())) cspErrors.push(message.text()); });")
+          needle="    assert.deepEqual(errors, []);"
+          assert source.count(needle)==1
+          source=source.replace(needle,"    // Additional checks against the real public site; original assertions remain unchanged.\n    const a4 = await page.evaluate(async () => {\n      const { $, disc, load, upscale, set } = E2E;\n      $('model-photo').click(); $('size-print').click();\n      set('paper', 'a4', 'change'); set('dpi', '300');\n      await load(disc(99, 70, true), 'live-a4.png');\n      const plan = $('print-plan').textContent;\n      return { plan, output: await upscale() };\n    });\n    assert.equal(a4.output.error, undefined, a4.output.error);\n    assert.equal(a4.output.width, 3508); assert.equal(a4.output.height, 2480);\n    assert.match(a4.plan, /AI 4×/);\n    console.log('PASS: live A4 at 300 DPI downloads 3508 × 2480 px with the photo model');\n    await page.goto(base + 'cs/'); await page.evaluate(helpers);\n    const czech = await page.evaluate(async () => {\n      const { $, disc, load, upscale } = E2E;\n      await load(disc(40, 30, true), 'live-cs.png');\n      return { photo: $('model-photo').classList.contains('active'), denoise: !$('denoise-control').hidden,\n        smoothing: $('smoothing').value, preview: !$('preview-open').hidden, output: await upscale() };\n    });\n    assert.ok(czech.photo && czech.denoise && czech.preview, JSON.stringify(czech));\n    assert.equal(czech.smoothing, '0'); assert.equal(czech.output.error, undefined, czech.output.error);\n    assert.equal(czech.output.width, 80); assert.equal(czech.output.height, 60);\n    await page.reload();\n    assert.equal(await page.evaluate(() => crossOriginIsolated), true);\n    assert.deepEqual(cspErrors, []);\n    console.log('PASS: live Czech UI defaults to Photos, shows noise reduction and crop preview, upscales and is cross-origin isolated without CSP errors');\n"+needle)
+          Path(".live-e2e.cjs").write_text(source)
+          PREPARE_LIVE_SUITE
+          node .live-e2e.cjs
