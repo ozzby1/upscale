@@ -1,0 +1,30 @@
+# Photoupscale.online
+
+> Free AI image upscaler that processes photos and illustrations locally in a web browser. No account or watermark. English and Czech interfaces.
+
+Photoupscale.online enlarges JPG, PNG and WebP images by 2× or 4× and exports PNG or JPEG. It is a browser application, not a server-side image-processing API. User-selected image pixels are not uploaded to a processing server. An internet connection is needed initially to load the application and AI assets.
+
+## Pages
+
+- [English image upscaler](https://photoupscale.online/): The application, with photo noise reduction, crop comparisons, batch exports and print-size settings.
+- [Image upscaling guide and FAQ](https://photoupscale.online/info/): How to choose a model, upscale photos, preserve transparency, process a batch, and understand pixels versus print DPI.
+- [Czech image upscaler](https://photoupscale.online/cs/): Czech interface for the same application.
+- [Source code](https://github.com/ozzby1/upscale): Public source, model conversion and automated browser tests.
+
+## Capabilities and limits
+
+- Photos (default): Real-ESRGAN general x4v3 with adjustable noise reduction. More demanding than the Fast model.
+- Illustrations: Real-ESRGAN model for drawings and graphic artwork.
+- Fast: ESRGAN-slim for quicker enlargement. Model names describe options, not guaranteed quality rankings.
+- Compare models on a selected crop before processing the whole image.
+- Input: JPG, PNG or WebP; up to 20 MB, 12 megapixels and 12,000 pixels on either side per image.
+- Batch: up to 10 images and 100 MB total; download results in a ZIP.
+- Output: PNG or JPEG. PNG can retain transparency; JPEG uses a white background. Output dimensions and memory limits depend on the device, with a maximum of 8,192 pixels per side.
+- In scale mode, 2× or 4× changes pixel dimensions; DPI alone changes print-size metadata. In print-format mode, paper size and DPI determine the target pixel dimensions, with automatic AI scaling followed by resampling to fit the original aspect ratio.
+- Installable web app. Offline use requires the app and the assets for the selected model to have been downloaded and retained by the browser; installation alone does not download every model.
+- Runtime depends on image size, selected model, device memory and available browser acceleration. CPU processing can take minutes. There is no guaranteed processing time or unlimited image size.
+- AI estimates detail and may alter textures, faces or text. It cannot guarantee recovery of missing original detail. Check results at 100% before printing or using them for factual purposes.
+
+## Optional
+
+- [Sitemap](https://photoupscale.online/sitemap.xml): Canonical public page URLs.
