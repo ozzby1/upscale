@@ -34,7 +34,7 @@ main{max-width:1168px;margin:48px auto 64px;padding:0 28px}.intro{text-align:cen
 
 .export-control{position:relative}.format-trigger{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;height:50px;min-height:50px;padding:0 15px 0 16px;border:1px solid #4a4a4a;border-radius:10px;background:#4a4a4a;color:white;font-size:14px;font-weight:750;cursor:pointer;transition:background .18s,border-color .18s}.format-trigger svg{width:16px;height:16px;stroke-width:2;transition:transform .15s}.format-trigger:hover:not(:disabled){background:#595959;border-color:#595959}.format-trigger[aria-expanded=true] svg{transform:rotate(180deg)}.format-trigger:focus{outline:none}.format-trigger:focus-visible{outline:2px solid #969b92;outline-offset:3px}.format-trigger:disabled{opacity:.5;cursor:default}.format-menu{position:absolute;top:calc(100% + 7px);right:0;z-index:30;min-width:120px;width:100%;margin:0;padding:5px;list-style:none;background:#fff;border:1px solid #dce1d7;border-radius:11px;box-shadow:0 10px 30px #20281f22}.format-option{display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:40px;padding:9px 11px;border-radius:7px;color:#374130;font-size:13px;font-weight:600;cursor:pointer;user-select:none}.format-option:hover,.format-option:focus{background:#e9ece6;outline:none}.format-option[aria-selected=true]{color:#242d20;font-weight:750}.format-check{width:15px;height:15px;visibility:hidden;stroke-width:2}.format-option[aria-selected=true] .format-check{visibility:visible}
 
-.model-control{margin:0 0 24px}.model-buttons{display:flex;gap:8px;margin-top:12px}.model-choice{height:42px;min-width:110px;padding:0 20px;background:#eceee9;color:#444;border:1px solid #dde1d7;border-radius:8px;font:inherit;font-size:13px;font-weight:650}.model-choice:hover{background:#e1e5dc}.model-choice.active{background:#202020;color:#fff;border-color:#202020}.model-choice:disabled{opacity:.5;cursor:wait}.model-control .control-hint{max-width:540px;margin:10px 0 0;line-height:1.6}.model-choice:focus-visible{outline:2px solid #969b92;outline-offset:3px}
+.model-control{margin:0 0 24px}.model-buttons{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.model-choice{height:42px;min-width:110px;padding:0 20px;background:#eceee9;color:#444;border:1px solid #dde1d7;border-radius:8px;font:inherit;font-size:13px;font-weight:650}.model-choice:hover{background:#e1e5dc}.model-choice.active{background:#202020;color:#fff;border-color:#202020}.model-choice:disabled{opacity:.5;cursor:wait}.model-control .control-hint{max-width:540px;margin:10px 0 0;line-height:1.6}.model-choice:focus-visible{outline:2px solid #969b92;outline-offset:3px}
 </style>
   
 </head>
@@ -89,7 +89,8 @@ main{max-width:1168px;margin:48px auto 64px;padding:0 28px}.intro{text-align:cen
       </div>
       <div class="mode-bar"><button id="expert-toggle" class="expert-toggle" type="button" role="switch" aria-checked="false" aria-controls="expert-panel"><span data-i18n="expert">Expert</span><span class="switch-track" aria-hidden="true"></span></button></div>
       <section id="expert-panel" class="expert-panel" hidden aria-label="Expert" data-i18n-aria="expert">
-        <div id="model-control" class="model-control"><span class="control-label" id="model-label" data-i18n="aiModel">AI model</span><div class="model-buttons" role="group" aria-labelledby="model-label"><button id="model-fast" class="model-choice active" type="button" data-model="fast" aria-pressed="true" data-i18n="modelFast">Fast</button><button id="model-illustration" class="model-choice" type="button" data-model="illustration" aria-pressed="false" data-i18n="modelIllustration" aria-describedby="model-help">Illustrations</button></div><p id="model-help" class="control-hint" data-i18n="illustrationHelp" hidden>Smoother outlines for cartoons and illustrations. May redraw fine details. Slower than the fast model; the first run downloads additional model files.</p></div>
+        <div id="model-control" class="model-control"><span class="control-label" id="model-label" data-i18n="aiModel">AI model</span><div class="model-buttons" role="group" aria-labelledby="model-label"><button id="model-fast" class="model-choice active" type="button" data-model="fast" aria-pressed="true" data-i18n="modelFast">Fast</button><button id="model-illustration" class="model-choice" type="button" data-model="illustration" aria-pressed="false" data-i18n="modelIllustration" aria-describedby="model-help">Illustrations</button><button id="model-illustration-detail" class="model-choice" type="button" data-model="illustration-detail" aria-pressed="false" data-i18n="modelIllustrationDetail">Detailed illustration</button></div><p id="model-help" class="control-hint" data-i18n="illustrationHelp" hidden>Smoother outlines for cartoons and illustrations. May redraw fine details. Slower than the fast model; the first run downloads additional model files.</p></div>
+        <div id="cpu-control" class="model-control" hidden><span class="control-label" id="cpu-label" data-i18n="cpuPower">CPU performance</span><div class="model-buttons" role="group" aria-labelledby="cpu-label"><button id="cpu-auto" class="model-choice active" type="button" aria-pressed="true" data-i18n="cpuAuto">Automatic</button><button id="cpu-high" class="model-choice" type="button" aria-pressed="false" aria-describedby="cpu-help" data-i18n="cpuHigh">Higher performance</button></div><p id="cpu-help" class="control-hint" data-i18n="cpuHelp">Higher performance runs up to four tasks at once, depending on your device. Uses more CPU and memory and may slow other apps. Choose before starting.</p></div>
         <label class="metadata-option"><input id="metadata-only" type="checkbox"><span data-i18n="metadataOnly">Only change DPI / format (no enlargement)</span></label>
         <div class="expert-summary"><div><span class="control-label" data-i18n="pixelDimensions">Output dimensions</span><output id="expert-pixels" data-i18n="chooseToMeasure">Choose an image to see its dimensions.</output></div><div><span class="control-label" data-i18n="printDimensions">Print size</span><output id="expert-print">—</output></div><button id="detail-open" class="text-button" type="button" disabled data-i18n="detail">Detail at 100%</button></div>
         <div id="smoothing-control" class="quality-control"><div class="dpi-heading"><label class="control-label" for="smoothing" data-i18n="smoothing">Edge smoothing</label><output id="smoothing-value" for="smoothing">50 %</output></div><input id="smoothing" type="range" min="0" max="100" step="5" value="50" aria-describedby="smoothing-help"><span class="control-hint" id="smoothing-help" data-i18n="smoothingHelp">Softens jagged edges. Higher values also soften fine detail. Set to 0 to switch off.</span></div>
@@ -219,14 +220,21 @@ const messages = {
     "aiModel": "AI model",
     "modelFast": "Fast",
     "modelIllustration": "Illustrations",
-    "illustrationHelp": "Smoother outlines for cartoons and illustrations. May redraw fine details. Slower than the fast model; the first run downloads additional model files.",
+    "illustrationHelp": "A compact AI model for smooth outlines in cartoons and illustrations. Recommended for everyday use. May change fine details.",
     "illustrationLoading": "Loading illustration model…",
     "illustrationFailed": "The illustration model could not start. Try again or choose Fast.",
     "illustrationGpu": "GPU",
     "illustrationCpu": "CPU (slower)",
     "illustrationEta": " · about {time} left",
     "illustrationSeconds": "{count} s",
-    "illustrationMinutes": "{count} min"
+    "illustrationMinutes": "{count} min",
+    "cpuPower": "CPU performance",
+    "cpuAuto": "Automatic",
+    "cpuHigh": "Higher performance",
+    "cpuHelp": "Higher performance runs up to four tasks at once, depending on your device. Uses more CPU and memory and may slow other apps. Choose before starting.",
+    "illustrationCpuCount": "CPU ×{count}",
+    "modelIllustrationDetail": "Illustrations · detailed",
+    "illustrationDetailHelp": "The original, heavier illustration model. May produce different fine detail but takes much longer on CPU."
   },
   "cs": {
     "pageTitle": "Upscale — více pixelů, více detailů",
@@ -335,14 +343,21 @@ const messages = {
     "aiModel": "AI model",
     "modelFast": "Rychlý",
     "modelIllustration": "Ilustrace",
-    "illustrationHelp": "Hladší obrysy pro kresby a ilustrace. Může překreslit jemné detaily. Je pomalejší než rychlý model; při prvním použití se stáhnou další soubory modelu.",
+    "illustrationHelp": "Úspornější AI model pro hladké obrysy kreseb a ilustrací. Doporučený pro běžné použití. Může změnit jemné detaily.",
     "illustrationLoading": "Načítám model pro ilustrace…",
     "illustrationFailed": "Model pro ilustrace se nepodařilo spustit. Zkuste to znovu nebo zvolte Rychlý.",
     "illustrationGpu": "Grafika",
     "illustrationCpu": "Procesor (pomalejší)",
     "illustrationEta": " · zbývá přibližně {time}",
     "illustrationSeconds": "{count} s",
-    "illustrationMinutes": "{count} min"
+    "illustrationMinutes": "{count} min",
+    "cpuPower": "Výkon procesoru",
+    "cpuAuto": "Automaticky",
+    "cpuHigh": "Vyšší výkon",
+    "cpuHelp": "Vyšší výkon zapojí až čtyři výpočty současně podle možností zařízení. Více zatíží procesor a paměť a může zpomalit ostatní aplikace. Zvolte před spuštěním.",
+    "illustrationCpuCount": "Procesor ×{count}",
+    "modelIllustrationDetail": "Ilustrace · detailní",
+    "illustrationDetailHelp": "Původní náročnější model pro ilustrace. Může jinak vykreslit drobné detaily, ale výpočet na procesoru trvá výrazně déle."
   }
 };
 function t(key, values = {}) {
@@ -525,26 +540,34 @@ async function writeJpegResolution(blob, dpi) {
 
 // The illustration runtime is lazy-loaded in a dedicated worker. Cancellation
 // terminates it immediately, including an in-flight WASM/GPU call or download.
-let illustrationWorker, illustrationReady, illustrationProvider;
+let illustrationWorker, illustrationReady, illustrationProvider, illustrationVariant;
 let illustrationWorkers = [];
+let illustrationCpuMode = 'auto';
+function illustrationCpuWorkerCount() {
+  const cores = Math.max(1, navigator.hardwareConcurrency || 2);
+  const memory = navigator.deviceMemory;
+  const limit = memory && memory < 4 ? 1 : memory && memory <= 4 ? 2 : 4;
+  const target = illustrationCpuMode === 'high' ? 4 : cores >= 4 ? 2 : 1;
+  return Math.min(cores, target, limit);
+}
 let illustrationRequest = 0;
 const illustrationPending = new Map();
 function stopIllustration(error = new DOMException(t('cancelled'), 'AbortError')) {
   for (const worker of illustrationWorkers) worker.terminate();
-  illustrationWorkers = []; illustrationWorker = null; illustrationReady = null; illustrationProvider = null;
+  illustrationWorkers = []; illustrationWorker = null; illustrationReady = null; illustrationProvider = null; illustrationVariant = null;
   for (const request of illustrationPending.values()) request.reject(error);
   illustrationPending.clear();
 }
 function illustrationMessage(message, transfer = [], worker = illustrationWorker) {
   return new Promise((resolve, reject) => {
     const id = ++illustrationRequest;
-    illustrationPending.set(id, { resolve, reject });
+    illustrationPending.set(id, { resolve, reject, worker });
     try { worker.postMessage({ ...message, id }, transfer); }
     catch (error) { illustrationPending.delete(id); reject(error); }
   });
 }
-function createIllustrationWorker() {
-  const worker = new Worker(assetUrl('./illustration-worker.js?v=3'));
+function createIllustrationWorker(optional = false) {
+  const worker = new Worker(assetUrl('./illustration-worker.js?v=4'));
   illustrationWorkers.push(worker);
   worker.onmessage = ({ data }) => {
     const request = illustrationPending.get(data.id);
@@ -552,20 +575,34 @@ function createIllustrationWorker() {
     illustrationPending.delete(data.id);
     if (data.error) request.reject(Object.assign(new Error(data.error), { illustrationInit: data.initializing, gpuAttempt: data.gpuAttempt })); else request.resolve(data);
   };
-  worker.onerror = () => stopIllustration(new Error(t('illustrationFailed')));
+  worker.onerror = () => {
+    const error = new Error(t('illustrationFailed'));
+    if (!optional) { stopIllustration(error); return; }
+    worker.terminate(); illustrationWorkers = illustrationWorkers.filter(item => item !== worker);
+    for (const [id, request] of illustrationPending) if (request.worker === worker) {
+      illustrationPending.delete(id); request.reject(error);
+    }
+  };
   return worker;
 }
-async function startIllustration(cpuOnly) {
+async function startIllustration(cpuOnly, variant = 'quick') {
+  if (illustrationReady && illustrationVariant !== variant) stopIllustration();
   if (!illustrationReady) {
+    illustrationVariant = variant;
     illustrationWorker = createIllustrationWorker();
-    illustrationReady = illustrationMessage({ type: 'init', cpuOnly }).then(async result => {
+    illustrationReady = illustrationMessage({ type: 'init', cpuOnly, variant }).then(async result => {
       illustrationProvider = result.provider;
       // Separate CPU workers use real cores without depending on response
       // headers that static hosting cannot provide. Keep the pool bounded.
-      if (illustrationProvider === 'wasm' && (navigator.hardwareConcurrency || 2) >= 4 && (navigator.deviceMemory || 4) >= 4) {
-        const extra = createIllustrationWorker();
-        try { await illustrationMessage({ type: 'init', cpuOnly: true }, [], extra); }
-        catch { extra.terminate(); illustrationWorkers = illustrationWorkers.filter(worker => worker !== extra); }
+      const count = illustrationProvider === 'wasm' ? illustrationCpuWorkerCount() : 1;
+      while (illustrationWorkers.length < count) {
+        const extra = createIllustrationWorker(true);
+        try { await illustrationMessage({ type: 'init', cpuOnly: true, variant }, [], extra); }
+        catch (error) {
+          extra.terminate(); illustrationWorkers = illustrationWorkers.filter(worker => worker !== extra);
+          if (!illustrationWorker) throw error;
+          break;
+        }
       }
     }).catch(error => { stopIllustration(error); throw error; });
   }
@@ -619,15 +656,15 @@ async function enhanceIllustration(image, factor, options) {
     throw error;
   } finally { signal.removeEventListener('abort', abort); }
 }
-async function renderIllustration(image, factor, { signal, progress }, cpuOnly) {
+async function renderIllustration(image, factor, { signal, progress, model = 'quick' }, cpuOnly) {
   check(signal); progress(0, t('illustrationLoading'));
-  await startIllustration(cpuOnly); check(signal);
+  await startIllustration(cpuOnly, model); check(signal);
   const { width, height } = validateSize(image.naturalWidth, image.naturalHeight, factor);
   // Keep GPU tensors within common storage-buffer limits. CPU tiles can be
   // larger, reducing duplicated context while retaining the same model/padding.
-  const core = illustrationProvider === 'wasm' ? 128 : 96, padding = 32, stride = core - 16, side = core + padding * 2;
+  const core = model === 'quick' ? 192 : illustrationProvider === 'wasm' ? 128 : 96, padding = 32, stride = core - 16, side = core + padding * 2;
   const xs = illustrationOrigins(image.naturalWidth, core, stride), ys = illustrationOrigins(image.naturalHeight, core, stride);
-  const backend = t(illustrationProvider === 'webgpu' ? 'illustrationGpu' : 'illustrationCpu');
+  const backend = illustrationProvider === 'webgpu' ? t('illustrationGpu') : t('illustrationCpuCount', { count: illustrationWorkers.length });
   const workers = illustrationWorkers.length;
   const started = performance.now();
   const canvas = document.createElement('canvas'); canvas.width = canvas.height = side;
@@ -1015,7 +1052,9 @@ function updateFormatNote() {
 }
 function updateExpert() {
   $('model-control').hidden = scale === 1;
-  $('model-help').hidden = aiModel !== 'illustration';
+  $('model-help').hidden = aiModel === 'fast';
+  $('model-help').textContent = t(aiModel === 'illustration-detail' ? 'illustrationDetailHelp' : 'illustrationHelp');
+  $('cpu-control').hidden = scale === 1 || aiModel === 'fast';
   $('smoothing-control').hidden = scale === 1;
   $('smoothing-value').value = `${$('smoothing').value} %`;
   $('metadata-only').checked = scale === 1;
@@ -1114,7 +1153,7 @@ function clearOutput() {
 function setBusy(value) {
   busy = value; document.body.classList.toggle('busy', value);
   if (value) closeFormatMenu();
-  for (const id of ['dpi', 'format', 'format-toggle', 'quality', 'change', 'dropzone', 'expert-toggle', 'batch-choose', 'batch-start', 'batch-clear', 'file', 'batch-files', 'metadata-only', 'smoothing', 'model-fast', 'model-illustration']) $(id).disabled = value;
+  for (const id of ['dpi', 'format', 'format-toggle', 'quality', 'change', 'dropzone', 'expert-toggle', 'batch-choose', 'batch-start', 'batch-clear', 'file', 'batch-files', 'metadata-only', 'smoothing', 'model-fast', 'model-illustration', 'model-illustration-detail', 'cpu-auto', 'cpu-high']) $(id).disabled = value;
   $('upscale').disabled = value || !sourceImage || queueMode;
   for (const button of scales) button.disabled = value;
   $('progress-wrap').hidden = !value; $('cancel').disabled = false; updateExpert();
@@ -1253,18 +1292,29 @@ $('quality').addEventListener('input', () => { updateExpert(); scheduleExport();
 $('quality').addEventListener('change', () => scheduleExport(true));
 $('download').addEventListener('click', event => { if (exportPending || $('download').getAttribute('aria-disabled') === 'true' || !$('dpi').validity.valid) event.preventDefault(); });
 function selectModel(value) {
-  if (busy || !['fast', 'illustration'].includes(value) || aiModel === value) return;
+  if (busy || !['fast', 'illustration', 'illustration-detail'].includes(value) || aiModel === value) return;
   aiModel = value;
-  if (value === 'fast') stopIllustration();
-  for (const name of ['fast', 'illustration']) {
+  stopIllustration();
+  for (const name of ['fast', 'illustration', 'illustration-detail']) {
     $('model-' + name).classList.toggle('active', value === name);
     $('model-' + name).setAttribute('aria-pressed', String(value === name));
   }
-  $('smoothing').value = value === 'illustration' ? '0' : '50';
+  $('smoothing').value = value === 'fast' ? '50' : '0';
   clearOutput(); if (queueMode) invalidateBatch(); showError(''); updateExpert();
 }
+function selectCpuMode(value) {
+  if (busy || !['auto', 'high'].includes(value) || illustrationCpuMode === value) return;
+  illustrationCpuMode = value; stopIllustration();
+  for (const mode of ['auto', 'high']) {
+    $('cpu-' + mode).classList.toggle('active', mode === value);
+    $('cpu-' + mode).setAttribute('aria-pressed', String(mode === value));
+  }
+}
+$('cpu-auto').addEventListener('click', () => selectCpuMode('auto'));
+$('cpu-high').addEventListener('click', () => selectCpuMode('high'));
 $('model-fast').addEventListener('click', () => selectModel('fast'));
 $('model-illustration').addEventListener('click', () => selectModel('illustration'));
+$('model-illustration-detail').addEventListener('click', () => selectModel('illustration-detail'));
 $('expert-toggle').addEventListener('click', () => {
   if (busy) return;
   expert = !expert; document.body.classList.toggle('expert-mode', expert); $('expert-toggle').setAttribute('aria-checked', String(expert)); $('expert-panel').hidden = !expert;
@@ -1299,7 +1349,7 @@ for (const [from, to] of [['detail-original-pane', 'detail-result-pane'], ['deta
   $(from).addEventListener('scroll', () => { if ($(to).scrollLeft !== $(from).scrollLeft) $(to).scrollLeft = $(from).scrollLeft; if ($(to).scrollTop !== $(from).scrollTop) $(to).scrollTop = $(from).scrollTop; });
 }
 $('cancel').addEventListener('click', () => { controller?.abort(); $('cancel').disabled = true; $('progress-text').textContent = t('cancelling'); });
-const processImage = (image, file, factor, options) => factor === 1 ? originalPixels(image, file, options.signal) : (expert && aiModel === 'illustration' ? enhanceIllustration(image, factor, options) : enhance(image, factor, options));
+const processImage = (image, file, factor, options) => factor === 1 ? originalPixels(image, file, options.signal) : (expert && aiModel !== 'fast' ? enhanceIllustration(image, factor, { ...options, model: aiModel === 'illustration-detail' ? 'detail' : 'quick' }) : enhance(image, factor, options));
 function friendlyError(error) {
   if (isKnownMessage(error.message)) return error.message;
   return /memory|texture|WebGL|allocation|context lost/i.test(error.message) ? t('memory') : t('failed');
