@@ -45,6 +45,7 @@ jobs:
           curl --retry 3 -fsSL https://huggingface.co/skillsafe-ai/realesr-animevideov3/resolve/185e9142d439d17e3fb99395600fb7d08af09de5/model.onnx -o _site/models/illustration-quick/model.onnx
           echo "78baa685a1a92cac6e14ab2af2a8ad0ef56fa48629563b1414e3a7acc54d86e2  _site/models/illustration-quick/model.onnx" | sha256sum --check
           cp _site/models/illustration/LICENSE-Real-ESRGAN.txt _site/models/illustration-quick/LICENSE-Real-ESRGAN.txt
+          node tests/cpu-performance.cjs
           node tests/browser-runtime.cjs _site
           touch _site/.nojekyll
       - uses: actions/configure-pages@v5
