@@ -2,18 +2,25 @@
 let session, provider;
 const base = new URL('./', self.location.href);
 async function init(cpuOnly) {
-  importScripts(new URL('vendor/ort/ort.webgpu.min.js', base).href);
+  provider = 'wasm';
+  if (!cpuOnly && self.navigator.gpu) {
+    const adapter = await self.navigator.gpu.requestAdapter({ powerPreference: 'high-performance' });
+    if (adapter && !adapter.info?.isFallbackAdapter) provider = 'webgpu';
+  }
+  const gpu = provider === 'webgpu';
+  importScripts(new URL(gpu ? 'vendor/ort/ort.webgpu.min.js' : 'vendor/ort/ort.wasm.min.js', base).href);
+  const runtime = 'ort-wasm-simd-threaded' + (gpu ? '.asyncify' : '');
   ort.env.wasm.wasmPaths = {
-    mjs: new URL('vendor/ort/ort-wasm-simd-threaded.asyncify.mjs?v=1.30.0', base).href,
-    wasm: new URL('vendor/ort/ort-wasm-simd-threaded.asyncify.wasm?v=1.30.0', base).href,
+    mjs: new URL(`vendor/ort/${runtime}.mjs?v=1.30.0`, base).href,
+    wasm: new URL(`vendor/ort/${runtime}.wasm?v=1.30.0`, base).href,
   };
   ort.env.wasm.numThreads = 1;
+  if (gpu) ort.env.webgpu.powerPreference = 'high-performance';
   const model = new URL('models/illustration/model.onnx', base).href;
-  provider = !cpuOnly && self.navigator.gpu ? 'webgpu' : 'wasm';
-  // A failed WASM initialization poisons this runtime instance. Let the main
-  // thread retry in a fresh worker rather than reusing a failed instance.
+  // Request a single provider: a rejected GPU must not silently become a CPU
+  // session labelled as GPU. The main thread retries in a fresh CPU worker.
   session = await ort.InferenceSession.create(model, {
-    executionProviders: provider === 'webgpu' ? ['webgpu', 'wasm'] : ['wasm'],
+    executionProviders: [provider],
   });
   return { provider };
 }
