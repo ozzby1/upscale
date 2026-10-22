@@ -154,6 +154,27 @@ const helpers = () => {
     const sharedName = await page.evaluate(() => E2E.waitFor(() => E2E.$('filename').textContent, 10000));
     assert.equal(sharedName, 'shared-photo.png');
     console.log('PASS: share target hands shared images to the app');
+    // SEO metadata must survive localization; the guide must work without app JS.
+    for (const route of ['', 'cs/', 'info/']) {
+      await page.goto(base + route);
+      if (route !== 'info/') await page.waitForFunction(() => document.documentElement.lang && document.querySelector('.brand'));
+      const metadata = await page.evaluate(() => ({ title: document.title, canonical: document.querySelector('link[rel="canonical"]').href, socialTitle: document.querySelector('meta[property="og:title"]').content, description: document.querySelector('meta[name="description"]').content, socialDescription: document.querySelector('meta[property="og:description"]').content }));
+      assert.equal(metadata.title, metadata.socialTitle);
+      assert.equal(metadata.description, metadata.socialDescription);
+      assert.equal(metadata.canonical, 'https://photoupscale.online/' + route);
+      for (const width of [277, 320, 375, 1280]) {
+        await page.setViewportSize({ width, height: 850 });
+        const layout = await page.evaluate(() => {
+          const brand = document.querySelector('.brand').getBoundingClientRect(), languages = document.querySelector('.languages').getBoundingClientRect(), main = document.querySelector('main').getBoundingClientRect();
+          return { overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth, overlap: brand.right > languages.left, headerRight: languages.right, contentRight: main.right - parseFloat(getComputedStyle(document.querySelector('main')).paddingRight) };
+        });
+        assert.equal(layout.overflow, false, route + ' overflow at ' + width);
+        assert.equal(layout.overlap, false, route + ' header overlap at ' + width);
+        assert.ok(Math.abs(layout.headerRight - layout.contentRight) < 1, JSON.stringify(layout));
+      }
+    }
+    assert.equal(await page.locator('.faq-item').count(), 9);
+    console.log('PASS: localized SEO metadata and English guide render correctly; header aligns without overflow at 277, 320, 375 and 1280 px');
     assert.deepEqual(errors, []);
   } finally { await browser.close(); server.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });
