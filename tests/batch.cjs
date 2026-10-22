@@ -21,7 +21,7 @@ const modelRoot=path.join(process.env.UPSCALE_TEST_DEPS||root,'node_modules/@ups
 const loadLayersModel=async url=>{const scale=new URL(url).pathname.match(/\/x([24])\//)[1],dir=path.join(modelRoot,'x'+scale),json=JSON.parse(fs.readFileSync(path.join(dir,'model.json'))),weights=Buffer.concat(json.weightsManifest.flatMap(group=>group.paths.map(file=>fs.readFileSync(path.join(dir,file)))));return tf.loadLayersModel(tf.io.fromMemory({modelTopology:json.modelTopology,weightSpecs:json.weightsManifest.flatMap(group=>group.weights),weightData:weights.buffer.slice(weights.byteOffset,weights.byteOffset+weights.byteLength)}))};
 const tfAdapter=new Proxy(tf,{get(target,key){if(key==='loadLayersModel')return loadLayersModel;if(key==='browser')return {...tf.browser,fromPixels:(input,channels)=>{const pixels=input.getContext('2d').getImageData(0,0,input.width,input.height);return tf.browser.fromPixels({data:new Uint8Array(pixels.data),width:input.width,height:input.height},channels)}};return target[key]}});
 function app(language){
- const html=fs.readFileSync(language==='cs'?'cs/index.html':'index.html','utf8'),code=html.split('<script type="module">')[1].split('</script>')[0];
+ const html=fs.readFileSync(language==='cs'?'cs/index.html':'index.html','utf8'),code=fs.readFileSync('app.js','utf8');
  const {window}=parseHTML(html),document=window.document,events=new Map();
  for(const element of document.querySelectorAll('*'))Object.defineProperty(element,'dataset',{value:new Proxy({},{get:(_,key)=>element.getAttribute('data-'+String(key).replace(/[A-Z]/g,c=>'-'+c.toLowerCase()))})});
  const createElement=document.createElement.bind(document);document.createElement=name=>name==='canvas'?canvas():createElement(name);
