@@ -1,7 +1,7 @@
 /* Real-ESRGAN x4plus anime 6B. All inference stays in this dedicated worker. */
 let session, provider;
 const base = new URL('./', self.location.href);
-async function init(cpuOnly) {
+async function init(cpuOnly, variant) {
   provider = 'wasm';
   if (!cpuOnly && self.navigator.gpu) {
     const adapter = await self.navigator.gpu.requestAdapter({ powerPreference: 'high-performance' });
@@ -16,7 +16,7 @@ async function init(cpuOnly) {
   };
   ort.env.wasm.numThreads = 1;
   if (gpu) ort.env.webgpu.powerPreference = 'high-performance';
-  const model = new URL('models/illustration/model.onnx', base).href;
+  const model = new URL(variant === 'detail' ? 'models/illustration/model.onnx' : 'models/illustration-quick/model.onnx', base).href;
   // Request a single provider: a rejected GPU must not silently become a CPU
   // session labelled as GPU. The main thread retries in a fresh CPU worker.
   session = await ort.InferenceSession.create(model, {
@@ -48,7 +48,7 @@ function illustrationPixels(data, side, padding, core, factor) {
 self.onmessage = async ({ data: message }) => {
   const { id, type } = message;
   try {
-    if (type === 'init') { self.postMessage({ id, ...await init(message.cpuOnly) }); return; }
+    if (type === 'init') { self.postMessage({ id, ...await init(message.cpuOnly, message.variant) }); return; }
     if (type !== 'tile' || !session) throw new Error('Illustration session is not ready.');
     const { rgba, side, padding, core, factor } = message;
     const plane = side * side, values = new Float32Array(plane * 3);
