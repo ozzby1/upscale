@@ -17,16 +17,18 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '22'
       - name: Prepare static files and local AI models
         run: |
-          npm install --no-save --ignore-scripts --no-audit --no-fund @tensorflow/tfjs@4.11.0 @tensorflow/tfjs-backend-wasm@4.11.0 @upscalerjs/esrgan-slim@1.0.0 onnxruntime-web@1.30.0 linkedom@0.18.12 @napi-rs/canvas@0.1.80
+          npm install --no-save --ignore-scripts --no-audit --no-fund @tensorflow/tfjs@4.11.0 @tensorflow/tfjs-backend-wasm@4.11.0 @upscalerjs/esrgan-slim@1.0.0 onnxruntime-web@1.30.0 linkedom@0.18.12 @napi-rs/canvas@0.1.80 playwright@1.56.1
+          npx playwright install --with-deps chromium
           mkdir -p _site/cs _site/tests _site/vendor/ort _site/models/x2 _site/models/x4 _site/models/illustration-quick
           cp index.html _site/index.html
           cp cs/index.html _site/cs/index.html
+          cp app.js _site/app.js
           cp node_modules/@tensorflow/tfjs/dist/tf.min.js _site/vendor/
           cp node_modules/@tensorflow/tfjs-backend-wasm/dist/tf-backend-wasm.min.js _site/vendor/
           cp node_modules/@tensorflow/tfjs-backend-wasm/dist/*.wasm _site/vendor/
@@ -45,11 +47,12 @@ jobs:
           node tests/cpu-performance.cjs
           node tests/browser-runtime.cjs _site
           node tests/batch.cjs _site
+          node tests/browser-e2e.cjs _site
           touch _site/.nojekyll
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
+      - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
         with:
           path: _site
       - name: Deploy
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
