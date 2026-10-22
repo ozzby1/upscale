@@ -99,7 +99,8 @@ const messages = {
     "smoothing": "Edge smoothing",
     "smoothingProgress": "Smoothing edges…",
     "aiModel": "AI model",
-    "modelFast": "Photos",
+    "modelFast": "Fast",
+    "modelPhoto": "Photos",
     "modelIllustration": "Illustrations",
     "illustrationHelp": "For drawings, cartoons and graphics with clean outlines. Not suited to photos, where it can smooth away fine detail. The model always computes 4×, so 2× takes about as long as 4×.",
     "illustrationLoading": "Loading illustration model…",
@@ -116,7 +117,35 @@ const messages = {
     "illustrationCpuCount": "CPU ×{count}",
     "settings": "Image settings",
     "batchUpdating": "Updating ZIP with the new settings… {current}/{total}",
-    "batchUpdated": "ZIP updated with the new settings."
+    "batchUpdated": "ZIP updated with the new settings.",
+    "photoHelp": "Real-ESRGAN for photos: adds detail and removes noise and JPEG artefacts. More demanding – without a graphics card it takes longer; the first run downloads about 10 MB.",
+    "fastHelp": "The lightest model. Fastest on weaker devices, but adds less detail.",
+    "photoLoading": "Loading photo model…",
+    "photoFailed": "The photo model could not start. Try again or choose Fast.",
+    "denoise": "Noise reduction",
+    "sizeMode": "Output size",
+    "sizeScale": "Scale 2× / 4×",
+    "sizePrint": "Print format",
+    "paper": "Format",
+    "paperCustom": "Custom size",
+    "paperWidth": "Width (cm)",
+    "paperHeight": "Height (cm)",
+    "paperInvalid": "Enter a width and height between 1 and 300 cm.",
+    "printPlan": "AI {factor}× and resampling to {width} × {height} px.",
+    "printLow": "The image is too small for this format: after AI 4× it reaches only about {dpi} DPI; the rest is ordinary resampling.",
+    "printEnough": "The image already has enough pixels; AI 2× adds detail and is then reduced.",
+    "printBatch": "Each image is fitted to {paper} at the chosen DPI.",
+    "printTooLarge": "This format and DPI would exceed the output limit ({mp} MP, 8,192 px per side). Choose a smaller format or lower DPI.",
+    "printRescale": "The new format or DPI needs a different AI scale. Click Upscale again.",
+    "previewOpen": "Compare models on a crop",
+    "previewHint": "Click the image to choose the area for the model comparison.",
+    "previewTitle": "Model comparison · {size} px crop · {scale}×",
+    "previewHelp": "Each model processes only the selected area (without edge smoothing). Choose the one you like and upscale the whole image.",
+    "previewSource": "Original (browser enlargement)",
+    "previewUse": "Use this model",
+    "previewProgress": "Preview: {model} ({current}/{total})",
+    "previewTime": "{seconds} s",
+    "previewDone": "Done. Choose a model for the whole image."
   },
   "cs": {
     "pageTitle": "Upscale — více pixelů, více detailů",
@@ -212,7 +241,8 @@ const messages = {
     "smoothing": "Vyhlazení hran",
     "smoothingProgress": "Vyhlazuji hrany…",
     "aiModel": "AI model",
-    "modelFast": "Fotografie",
+    "modelFast": "Rychlý",
+    "modelPhoto": "Fotografie",
     "modelIllustration": "Ilustrace",
     "illustrationHelp": "Pro kresby, komiksy a grafiku s čistými obrysy. Na fotografie se nehodí – může vyhladit jemné detaily. Model vždy počítá 4×, proto 2× trvá zhruba stejně dlouho jako 4×.",
     "illustrationLoading": "Načítám model pro ilustrace…",
@@ -229,7 +259,35 @@ const messages = {
     "illustrationCpuCount": "Procesor ×{count}",
     "settings": "Nastavení obrázku",
     "batchUpdating": "Aktualizuji ZIP podle nového nastavení… {current}/{total}",
-    "batchUpdated": "ZIP je aktualizovaný podle nového nastavení."
+    "batchUpdated": "ZIP je aktualizovaný podle nového nastavení.",
+    "photoHelp": "Real-ESRGAN pro fotografie: doplní detaily a potlačí šum a JPEG artefakty. Náročnější – bez grafické karty počítá déle; první spuštění stáhne asi 10 MB.",
+    "fastHelp": "Nejúspornější model. Nejrychlejší na slabších zařízeních, detaily ale doplní méně.",
+    "photoLoading": "Načítám model pro fotografie…",
+    "photoFailed": "Model pro fotografie se nepodařilo spustit. Zkuste to znovu nebo zvolte Rychlý.",
+    "denoise": "Potlačení šumu",
+    "sizeMode": "Výstupní velikost",
+    "sizeScale": "Měřítko 2× / 4×",
+    "sizePrint": "Tiskový formát",
+    "paper": "Formát",
+    "paperCustom": "Vlastní rozměr",
+    "paperWidth": "Šířka (cm)",
+    "paperHeight": "Výška (cm)",
+    "paperInvalid": "Zadejte šířku a výšku od 1 do 300 cm.",
+    "printPlan": "AI {factor}× a přepočet na {width} × {height} px.",
+    "printLow": "Obrázek na tento formát nestačí: po AI 4× vychází jen asi {dpi} DPI, zbytek dopočítá běžné převzorkování.",
+    "printEnough": "Obrázek už má dost pixelů; AI 2× doplní detaily a výsledek se zmenší.",
+    "printBatch": "Každý obrázek se přizpůsobí formátu {paper} při zvoleném DPI.",
+    "printTooLarge": "Tento formát a DPI by překročily limit výstupu ({mp} Mpx, 8 192 px na stranu). Zvolte menší formát nebo nižší DPI.",
+    "printRescale": "Nový formát nebo DPI vyžaduje jiné AI zvětšení. Klikněte znovu na Zvětšit obrázek.",
+    "previewOpen": "Porovnat modely na výřezu",
+    "previewHint": "Kliknutím do obrázku zvolíte oblast pro porovnání modelů.",
+    "previewTitle": "Porovnání modelů · výřez {size} px · {scale}×",
+    "previewHelp": "Každý model zpracuje jen vybranou oblast (bez vyhlazení hran). Vyberte, který se vám líbí, a zvětšete celý obrázek.",
+    "previewSource": "Původní (zvětšení prohlížečem)",
+    "previewUse": "Použít tento model",
+    "previewProgress": "Náhled: {model} ({current}/{total})",
+    "previewTime": "{seconds} s",
+    "previewDone": "Hotovo. Vyberte model pro celý obrázek."
   }
 };
 function t(key, values = {}) {
@@ -452,17 +510,33 @@ async function writeJpegResolution(blob, dpi) {
 
 // The illustration runtime is lazy-loaded in a dedicated worker. Cancellation
 // terminates it immediately, including an in-flight WASM/GPU call or download.
-let illustrationWorker, illustrationReady, illustrationProvider;
+// The same worker pool runs both ONNX models (Photos and Illustrations).
+const onnxModels = {
+  illustration: { padding: 32, loading: 'illustrationLoading', failed: 'illustrationFailed' },
+  // 34 conv layers: larger receptive field, so more context around each tile.
+  photo: { padding: 40, loading: 'photoLoading', failed: 'photoFailed' },
+};
+let illustrationWorker, illustrationReady, illustrationProvider, illustrationModel = null;
 let illustrationWorkers = [];
 let illustrationCpuMode = 'auto';
+let illustrationThreads = 1, illustrationRequestedThreads = 1, illustrationThreadsBroken = false;
+// sw.js adds COOP/COEP headers; once the page is cross-origin isolated, each
+// worker can run multi-threaded WASM and fewer workers are needed.
+const crossOriginReady = () => typeof crossOriginIsolated !== 'undefined' && crossOriginIsolated === true && !illustrationThreadsBroken;
 function illustrationCpuWorkerCount() {
   const cores = Math.max(1, navigator.hardwareConcurrency || 2);
   const memory = navigator.deviceMemory;
-  // Each worker is single-threaded (static hosting cannot enable cross-origin
-  // isolation), so parallelism comes from the pool size. ~150 MB per worker.
+  // ~150 MB per worker.
   const limit = memory && memory < 4 ? 1 : memory && memory <= 4 ? 2 : 6;
+  if (crossOriginReady()) return Math.max(1, Math.min(limit, cores >= 8 ? 2 : 1));
   const target = illustrationCpuMode === 'high' ? Math.max(2, cores - 1) : cores >= 8 ? 4 : cores >= 4 ? 2 : 1;
   return Math.max(1, Math.min(cores, target, limit));
+}
+function illustrationThreadCount(workers) {
+  if (!crossOriginReady()) return 1;
+  const cores = Math.max(1, navigator.hardwareConcurrency || 2);
+  const budget = illustrationCpuMode === 'high' ? cores - 1 : Math.ceil(cores / 2);
+  return Math.max(1, Math.min(8, Math.floor(budget / workers)));
 }
 let illustrationRequest = 0;
 const illustrationPending = new Map();
@@ -472,7 +546,7 @@ const ILLUSTRATION_IDLE_MS = 60000;
 function stopIllustration(error = new DOMException(t('cancelled'), 'AbortError')) {
   clearTimeout(illustrationIdleTimer); illustrationIdleTimer = null;
   for (const worker of illustrationWorkers) worker.terminate();
-  illustrationWorkers = []; illustrationWorker = null; illustrationReady = null; illustrationProvider = null;
+  illustrationWorkers = []; illustrationWorker = null; illustrationReady = null; illustrationProvider = null; illustrationModel = null;
   for (const request of illustrationPending.values()) request.reject(error);
   illustrationPending.clear();
 }
@@ -485,7 +559,7 @@ function illustrationMessage(message, transfer = [], worker = illustrationWorker
   });
 }
 function createIllustrationWorker(optional = false) {
-  const worker = new Worker(assetUrl('./illustration-worker.js?v=5'));
+  const worker = new Worker(assetUrl('./illustration-worker.js?v=6'));
   illustrationWorkers.push(worker);
   worker.onmessage = ({ data }) => {
     const request = illustrationPending.get(data.id);
@@ -494,7 +568,7 @@ function createIllustrationWorker(optional = false) {
     if (data.error) request.reject(Object.assign(new Error(data.error), { illustrationInit: data.initializing, gpuAttempt: data.gpuAttempt })); else request.resolve(data);
   };
   worker.onerror = () => {
-    const error = new Error(t('illustrationFailed'));
+    const error = Object.assign(new Error(t(onnxModels[illustrationModel]?.failed || 'illustrationFailed')), { illustrationInit: !illustrationProvider });
     if (!optional) { stopIllustration(error); return; }
     worker.terminate(); illustrationWorkers = illustrationWorkers.filter(item => item !== worker);
     for (const [id, request] of illustrationPending) if (request.worker === worker) {
@@ -503,17 +577,20 @@ function createIllustrationWorker(optional = false) {
   };
   return worker;
 }
-async function startIllustration(cpuOnly) {
+async function startIllustration(cpuOnly, model = 'illustration') {
+  if (illustrationReady && illustrationModel !== model) stopIllustration();
   if (!illustrationReady) {
+    illustrationModel = model;
+    const count = illustrationCpuWorkerCount(), threads = illustrationThreadCount(count);
+    illustrationRequestedThreads = threads;
     illustrationWorker = createIllustrationWorker();
-    illustrationReady = illustrationMessage({ type: 'init', cpuOnly }).then(async result => {
-      illustrationProvider = result.provider;
-      // Separate CPU workers use real cores without depending on response
-      // headers that static hosting cannot provide. Keep the pool bounded.
-      const count = illustrationProvider === 'wasm' ? illustrationCpuWorkerCount() : 1;
-      while (illustrationWorkers.length < count) {
+    illustrationReady = illustrationMessage({ type: 'init', cpuOnly, model, threads }).then(async result => {
+      illustrationProvider = result.provider; illustrationThreads = result.threads || 1;
+      // Separate CPU workers use real cores; keep the pool bounded.
+      const target = illustrationProvider === 'wasm' ? count : 1;
+      while (illustrationWorkers.length < target) {
         const extra = createIllustrationWorker(true);
-        try { await illustrationMessage({ type: 'init', cpuOnly: true }, [], extra); }
+        try { await illustrationMessage({ type: 'init', cpuOnly: true, model, threads }, [], extra); }
         catch (error) {
           extra.terminate(); illustrationWorkers = illustrationWorkers.filter(worker => worker !== extra);
           if (!illustrationWorker) throw error;
@@ -522,7 +599,15 @@ async function startIllustration(cpuOnly) {
       }
     }).catch(error => { stopIllustration(error); throw error; });
   }
-  await illustrationReady;
+  try { await illustrationReady; }
+  catch (error) {
+    // Multi-threaded WASM is new; if it cannot start, fall back to single-threaded workers.
+    if (illustrationRequestedThreads > 1 && !illustrationThreadsBroken && error.name !== 'AbortError') {
+      illustrationThreadsBroken = true; console.warn('Multi-threaded WASM unavailable; using single-threaded workers.', error);
+      return startIllustration(cpuOnly, model);
+    }
+    throw error;
+  }
 }
 function illustrationOrigins(length, core, stride) {
   const count = Math.max(1, Math.ceil((length - core) / stride) + 1);
@@ -569,16 +654,17 @@ async function enhanceIllustration(image, factor, options) {
     }
   } catch (error) {
     stopIllustration(error);
-    if (error.illustrationInit && error.name !== 'AbortError') throw new Error(t('illustrationFailed'));
+    if (error.illustrationInit && error.name !== 'AbortError') throw new Error(t(onnxModels[options.model || 'illustration'].failed));
     throw error;
   } finally {
     signal.removeEventListener('abort', abort);
     if (illustrationWorkers.length) illustrationIdleTimer = setTimeout(() => stopIllustration(), ILLUSTRATION_IDLE_MS);
   }
 }
-async function renderIllustration(image, factor, { signal, progress }, cpuOnly) {
-  check(signal); progress(0, t('illustrationLoading'));
-  await startIllustration(cpuOnly); check(signal);
+async function renderIllustration(image, factor, { signal, progress, model = 'illustration', denoise = 0.5 }, cpuOnly) {
+  const config = onnxModels[model];
+  check(signal); progress(0, t(config.loading));
+  await startIllustration(cpuOnly, model); check(signal);
   const { width, height } = validateSize(image.naturalWidth, image.naturalHeight, factor);
   const sourceWidth = image.naturalWidth, sourceHeight = image.naturalHeight;
   // The compact model keeps intermediate tensors at input resolution. Smaller
@@ -586,10 +672,10 @@ async function renderIllustration(image, factor, { signal, progress }, cpuOnly) 
   // CPU a larger tile wastes less work on the 32 px context (~25 % less per pixel);
   // WebGPU keeps the smaller tile to bound GPU buffer sizes.
   const maxCore = illustrationProvider === 'webgpu' ? 192 : 256;
-  const core = Math.min(maxCore, Math.max(32, Math.ceil(Math.max(sourceWidth, sourceHeight) / 16) * 16)), padding = 32, stride = core - 16, side = core + padding * 2;
+  const core = Math.min(maxCore, Math.max(32, Math.ceil(Math.max(sourceWidth, sourceHeight) / 16) * 16)), padding = config.padding, stride = core - 16, side = core + padding * 2;
   const xs = illustrationOrigins(sourceWidth, core, stride), ys = illustrationOrigins(sourceHeight, core, stride);
   const workers = illustrationWorkers.slice();
-  const backend = illustrationProvider === 'webgpu' ? t('illustrationGpu') : t('illustrationCpuCount', { count: workers.length });
+  const backend = illustrationProvider === 'webgpu' ? t('illustrationGpu') : t('illustrationCpuCount', { count: workers.length * illustrationThreads });
   const started = performance.now();
   const canvas = document.createElement('canvas'); canvas.width = canvas.height = side;
   const ctx = canvas.getContext('2d', { willReadFrequently: true });
@@ -623,7 +709,7 @@ async function renderIllustration(image, factor, { signal, progress }, cpuOnly) 
       while (!failure && next < total) {
         if (next - consumed >= lookahead) { await changed(); continue; }
         const index = next++, rgba = render(tiles[index]);
-        const result = await illustrationMessage({ type: 'tile', rgba, side, padding, core, factor }, [rgba.buffer], worker);
+        const result = await illustrationMessage({ type: 'tile', rgba, side, padding, core, factor, denoise }, [rgba.buffer], worker);
         results[index] = result.pixels; finished++; notify();
       }
     };
@@ -1010,11 +1096,11 @@ async function smoothResult(blob, stats, strength, signal, onProgress = () => {}
 localize();
 const $ = id => document.getElementById(id);
 let sourceImage, sourceFile, sourceURL, outputURL, previewURL, sourceDpi = null, rawOutput = null, outputStats;
-let exportController, processedOutput, processedRaw, processedStrength, previewBlob;
+let exportController, processedOutput, processedRaw, processedStrength, processedSize, previewBlob, rawFactor = 2, finalStats;
 let exportRevision = 0, exportPending = false, exportTimer, pointerSliding = false;
 let scale = 2, busy = false, controller, loadRevision = 0;
 let dpiChosen = false, formatChosen = false;
-let aiModel = 'fast';
+let aiModel = 'photo', sizeMode = 'scale', cropCenter = null;
 let queueMode = false, queue = [], batchURL, batchTimer, batchExportController, batchRevision = 0;
 const scales = [...document.querySelectorAll('.scale')];
 const formatOptions = [...document.querySelectorAll('.format-option')];
@@ -1033,8 +1119,65 @@ function exportDpi() {
   return { x: value, y: value };
 }
 function exportSettings() {
-  return { dpi: exportDpi(), format: $('format').value, quality: Number($('quality').value), smoothing: Number($('smoothing').value) };
+  return { dpi: exportDpi(), format: $('format').value, quality: Number($('quality').value), smoothing: Number($('smoothing').value), size: sizeSettings() };
 }
+const denoiseValue = () => Number($('denoise').value) / 100;
+// Print formats in centimetres (portrait). Orientation follows the image.
+const papers = { a5: [14.8, 21, 'A5'], a4: [21, 29.7, 'A4'], a3: [29.7, 42, 'A3'], a2: [42, 59.4, 'A2'], p10x15: [10, 15, '10x15cm'], p13x18: [13, 18, '13x18cm'], p20x30: [20, 30, '20x30cm'] };
+function sizeSettings() {
+  if (sizeMode !== 'print') return null;
+  const key = $('paper').value;
+  if (key !== 'custom') { const [width, height, label] = papers[key] || papers.a4; return { width, height, label }; }
+  const width = Number($('paper-width').value), height = Number($('paper-height').value);
+  if (!(width >= 1 && width <= 300 && height >= 1 && height <= 300)) throw new Error(t('paperInvalid'));
+  return { width, height, label: `${width}x${height}cm` };
+}
+// Pixel size that fills the paper at the chosen DPI (contain), and the AI scale
+// needed to get there: AI 2× or 4×, then high-quality resampling to the target.
+function printTarget(width, height, settings) {
+  const size = settings.size;
+  if (!size) return null;
+  const dpi = settings.dpi.x;
+  let paperWidth = size.width, paperHeight = size.height;
+  if ((width >= height) !== (paperWidth >= paperHeight)) [paperWidth, paperHeight] = [paperHeight, paperWidth];
+  const ratio = Math.min(paperWidth / 2.54 * dpi / width, paperHeight / 2.54 * dpi / height);
+  return {
+    width: Math.max(1, Math.round(width * ratio)), height: Math.max(1, Math.round(height * ratio)),
+    ratio, factor: ratio <= 2 ? 2 : 4, effectiveDpi: ratio > 4 ? Math.floor(dpi * 4 / ratio) : dpi, label: size.label,
+  };
+}
+function checkTarget(target) {
+  if (target && (target.width > 8192 || target.height > 8192 || target.width * target.height > maxOutputPixels)) {
+    throw new Error(t('printTooLarge', { mp: Math.floor(maxOutputPixels / 1e6) }));
+  }
+}
+// Resample the AI output to the exact print size. Large reductions go in halving
+// steps so fine detail does not alias.
+async function resizeResult(blob, stats, target, signal) {
+  if (!target || (target.width === stats.width && target.height === stats.height)) return { blob, width: stats.width, height: stats.height };
+  const url = URL.createObjectURL(blob), image = new Image(), canvases = [];
+  try {
+    image.src = url; await image.decode(); check(signal);
+    let source = image, width = stats.width, height = stats.height;
+    while (width / 2 > target.width && height / 2 > target.height) {
+      const step = document.createElement('canvas'); canvases.push(step);
+      step.width = Math.round(width / 2); step.height = Math.round(height / 2);
+      const context = step.getContext('2d'); if (!context) throw new Error(t('browserMemory'));
+      context.imageSmoothingEnabled = true; context.imageSmoothingQuality = 'high';
+      context.drawImage(source, 0, 0, step.width, step.height);
+      source = step; width = step.width; height = step.height;
+    }
+    const canvas = document.createElement('canvas'); canvases.push(canvas);
+    canvas.width = target.width; canvas.height = target.height;
+    const context = canvas.getContext('2d'); if (!context) throw new Error(t('browserMemory'));
+    context.imageSmoothingEnabled = true; context.imageSmoothingQuality = 'high';
+    context.drawImage(source, 0, 0, target.width, target.height);
+    const output = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+    check(signal); if (!output) throw new Error(t('saveFailed'));
+    return { blob: output, width: target.width, height: target.height };
+  } finally { URL.revokeObjectURL(url); for (const canvas of canvases) canvas.width = canvas.height = 1; }
+}
+const rescaleError = () => Object.assign(new Error(t('printRescale')), { rescale: true });
 function updateDpiLabel() {
   $('dpi-value').value = `${$('dpi').value} DPI`;
   $('dpi').setAttribute('aria-valuetext', `${$('dpi').value} DPI`);
@@ -1048,9 +1191,19 @@ function updateFormatNote() {
   updateSettings();
 }
 function updateSettings() {
-  $('model-help').hidden = aiModel === 'fast';
-  $('model-help').textContent = t('illustrationHelp');
+  $('model-help').hidden = false;
+  $('model-help').textContent = t({ photo: 'photoHelp', illustration: 'illustrationHelp', fast: 'fastHelp' }[aiModel]);
   $('cpu-control').hidden = aiModel === 'fast';
+  $('denoise-control').hidden = aiModel !== 'photo';
+  $('denoise-value').value = `${$('denoise').value} %`;
+  $('print-target').hidden = sizeMode !== 'print';
+  $('custom-size').hidden = $('paper').value !== 'custom';
+  document.querySelector('.scale-control').classList.toggle('inactive', sizeMode === 'print');
+  for (const button of scales) button.disabled = busy || sizeMode === 'print';
+  const previewAvailable = Boolean(sourceImage && !queueMode);
+  $('preview-open').hidden = !previewAvailable; $('preview-open').disabled = busy || !previewAvailable;
+  $('preview-hint').hidden = !previewAvailable || Boolean(rawOutput);
+  updateCropBox();
   $('smoothing-value').value = `${$('smoothing').value} %`;
   $('quality-control').hidden = $('format').value !== 'jpeg';
   $('quality-value').value = `${$('quality').value} %`;
@@ -1060,13 +1213,27 @@ function updateSettings() {
   if (queueMode) {
     $('output-pixels').textContent = t('batchDimensions'); $('output-print').textContent = t('batchDimensions');
   } else if (sourceImage) {
-    const w = sourceImage.naturalWidth * scale, h = sourceImage.naturalHeight * scale;
-    $('output-pixels').textContent = `${pretty(w)} × ${pretty(h)} px`;
+    let w = sourceImage.naturalWidth * scale, h = sourceImage.naturalHeight * scale;
     const dpi = Number($('dpi').value) || 300;
+    if (sizeMode === 'print') {
+      try {
+        const target = printTarget(sourceImage.naturalWidth, sourceImage.naturalHeight, { dpi: { x: dpi }, size: sizeSettings() });
+        w = target.width; h = target.height;
+        let plan = t('printPlan', { factor: target.factor, width: pretty(w), height: pretty(h) });
+        if (target.ratio > 4) plan += ' ' + t('printLow', { dpi: target.effectiveDpi });
+        else if (target.ratio < 1) plan += ' ' + t('printEnough');
+        $('print-plan').textContent = plan;
+      } catch (error) { $('print-plan').textContent = error.message; }
+    }
+    $('output-pixels').textContent = `${pretty(w)} × ${pretty(h)} px`;
     const cm = value => (value / dpi * 2.54).toLocaleString(locale, { maximumFractionDigits: 2 });
     $('output-print').textContent = `${cm(w)} × ${cm(h)} cm`;
   } else {
     $('output-pixels').textContent = '— px'; $('output-print').textContent = '— cm';
+  }
+  if (sizeMode === 'print' && (queueMode || !sourceImage)) {
+    try { $('print-plan').textContent = t('printBatch', { paper: sizeSettings().label.replace('x', ' × ').replace('cm', ' cm') }); }
+    catch (error) { $('print-plan').textContent = error.message; }
   }
 }
 function closeDetail() {
@@ -1075,8 +1242,12 @@ function closeDetail() {
 }
 async function refreshExport() {
   if (!rawOutput || !outputStats) return;
-  const revision = ++exportRevision, stats = outputStats, settings = exportSettings();
-  const input = rawOutput, name = sourceFile.name, factor = scale;
+  const revision = ++exportRevision, settings = exportSettings();
+  const input = rawOutput, name = sourceFile.name, factor = rawFactor;
+  const target = printTarget(sourceImage.naturalWidth, sourceImage.naturalHeight, settings);
+  if (target && target.factor !== factor) { clearOutput(); throw rescaleError(); }
+  checkTarget(target);
+  const stats = target ? { width: target.width, height: target.height } : outputStats, sizeKey = `${stats.width}x${stats.height}`;
   exportController?.abort();
   const localController = new AbortController(); exportController = localController;
   const inferenceController = controller;
@@ -1086,9 +1257,9 @@ async function refreshExport() {
   exportPending = true; $('download').setAttribute('aria-disabled', 'true'); updateSettings();
   $('export-size').textContent = t('encoding');
   try {
-    const filtered = processedRaw === input && processedStrength === settings.smoothing && processedOutput
+    const filtered = processedRaw === input && processedStrength === settings.smoothing && processedSize === sizeKey && processedOutput
       ? processedOutput
-      : await smoothResult(input, stats, settings.smoothing, localController.signal, fraction => {
+      : await smoothResult((await resizeResult(input, outputStats, target, localController.signal)).blob, stats, settings.smoothing, localController.signal, fraction => {
         if (revision === exportRevision && busy) { $('progress-text').textContent = t('smoothingProgress'); $('progress').value = 97 + fraction * 2; }
       });
     if (revision !== exportRevision || localController.signal.aborted) return;
@@ -1102,14 +1273,14 @@ async function refreshExport() {
       if (previewURL) URL.revokeObjectURL(previewURL);
       previewURL = nextPreview; previewBlob = filtered; $('result').src = previewURL;
     }
-    processedOutput = filtered; processedRaw = input; processedStrength = settings.smoothing;
+    processedOutput = filtered; processedRaw = input; processedStrength = settings.smoothing; processedSize = sizeKey; finalStats = stats;
     if (revision !== exportRevision) return;
     closeDetail();
     if (outputURL) URL.revokeObjectURL(outputURL);
     outputURL = URL.createObjectURL(blob);
     $('download').href = outputURL;
     const extension = settings.format === 'jpeg' ? 'jpg' : 'png';
-    $('download').download = `${name.replace(/\.[^.]+$/, '')}-${factor}x.${extension}`;
+    $('download').download = `${name.replace(/\.[^.]+$/, '')}-${target ? `${target.label}-${settings.dpi.x}dpi` : `${factor}x`}.${extension}`;
     $('download-label').textContent = t('download', { format: extension.toUpperCase() });
     $('download').setAttribute('aria-disabled', 'false');
     $('output-info').textContent = `${pretty(stats.width)} × ${pretty(stats.height)} px · ${exportBytes(blob.size)} · ${formatDpi(settings.dpi)} DPI`;
@@ -1129,10 +1300,15 @@ function invalidateBatch(keepResults = false) {
   for (const item of queue) { item.result = null; item.status.textContent = t('pending'); item.row.classList.remove('failed'); }
 }
 const batchLimitBytes = 100 * 1048576;
-const batchFileName = (index, file, factor, format) => `${String(index + 1).padStart(2, '0')}-${file.name.replace(/\.[^.]+$/, '')}-${factor}x.${format === 'jpeg' ? 'jpg' : 'png'}`;
+const batchFileName = (index, file, suffix, format) => `${String(index + 1).padStart(2, '0')}-${file.name.replace(/\.[^.]+$/, '')}-${suffix}.${format === 'jpeg' ? 'jpg' : 'png'}`;
+const batchSuffix = (result, settings) => { const target = printTarget(result.sourceWidth, result.sourceHeight, settings); return target ? `${target.label}-${settings.dpi.x}dpi` : `${result.factor}x`; };
 async function exportBatchItem(result, settings, signal, onProgress) {
-  const filtered = await smoothResult(result.blob, result, settings.smoothing, signal, onProgress);
-  return encodeExport(filtered, result, settings);
+  const target = printTarget(result.sourceWidth, result.sourceHeight, settings);
+  if (target && target.factor !== result.factor) throw rescaleError();
+  checkTarget(target);
+  const resized = await resizeResult(result.blob, result, target, signal);
+  const filtered = await smoothResult(resized.blob, resized, settings.smoothing, signal, onProgress);
+  return encodeExport(filtered, resized, settings);
 }
 async function publishBatchZip(completed, revision = batchRevision) {
   const zip = await makeZip(completed);
@@ -1145,7 +1321,11 @@ function scheduleBatchExport() {
   invalidateBatch(true);
   const total = queue.filter(item => item.result).length;
   $('batch-status').textContent = t('batchUpdating', { current: 0, total });
-  batchTimer = setTimeout(() => rebuildBatch().catch(error => { if (error.name !== 'AbortError') showError(friendlyError(error)); }), 400);
+  batchTimer = setTimeout(() => rebuildBatch().catch(error => {
+    if (error.name === 'AbortError') return;
+    if (error.rescale) invalidateBatch();
+    showError(friendlyError(error));
+  }), 400);
 }
 async function rebuildBatch() {
   const revision = batchRevision, local = new AbortController(); batchExportController = local;
@@ -1158,7 +1338,7 @@ async function rebuildBatch() {
     const blob = await exportBatchItem(item.result, settings, local.signal);
     if (revision !== batchRevision || local.signal.aborted) return;
     if (totalBytes + blob.size > batchLimitBytes) { showError(t('zipLimit')); item.status.textContent = t('skipped'); continue; }
-    completed.push({ name: batchFileName(index, item.file, item.result.factor, settings.format), blob }); totalBytes += blob.size;
+    completed.push({ name: batchFileName(index, item.file, batchSuffix(item.result, settings), settings.format), blob }); totalBytes += blob.size;
     item.status.textContent = `${t('done')} · ${exportBytes(blob.size)}`;
   }
   if (revision !== batchRevision) return;
@@ -1172,11 +1352,11 @@ function scheduleExport(immediate = false) {
   if (!rawOutput || busy) return;
   exportRevision++; exportPending = true;
   $('download').setAttribute('aria-disabled', 'true'); updateSettings();
-  exportTimer = setTimeout(() => refreshExport().catch(error => { if (error.name !== 'AbortError') showError(error.message); }), immediate ? 0 : 220);
+  exportTimer = setTimeout(() => refreshExport().catch(error => { if (error.name !== 'AbortError') showError(friendlyError(error)); }), immediate ? 0 : 220);
 }
 function clearOutput() {
   clearTimeout(exportTimer); exportController?.abort(); exportController = null; closeDetail();
-  processedOutput = processedRaw = processedStrength = previewBlob = null;
+  processedOutput = processedRaw = processedStrength = processedSize = previewBlob = finalStats = null;
   if (outputURL) URL.revokeObjectURL(outputURL);
   if (previewURL) URL.revokeObjectURL(previewURL);
   outputURL = previewURL = rawOutput = outputStats = null;
@@ -1189,9 +1369,9 @@ function clearOutput() {
 function setBusy(value) {
   busy = value; document.body.classList.toggle('busy', value);
   if (value) closeFormatMenu();
-  for (const id of ['dpi', 'format', 'format-toggle', 'quality', 'change', 'dropzone', 'batch-choose', 'batch-start', 'batch-clear', 'file', 'batch-files', 'smoothing', 'model-fast', 'model-illustration', 'cpu-auto', 'cpu-high']) $(id).disabled = value;
+  for (const id of ['dpi', 'format', 'format-toggle', 'quality', 'change', 'dropzone', 'batch-choose', 'batch-start', 'batch-clear', 'file', 'batch-files', 'smoothing', 'model-photo', 'model-fast', 'model-illustration', 'cpu-auto', 'cpu-high', 'denoise', 'size-scale', 'size-print', 'paper', 'paper-width', 'paper-height']) $(id).disabled = value;
   $('upscale').disabled = value || !sourceImage || queueMode;
-  for (const button of scales) button.disabled = value;
+  for (const button of scales) button.disabled = value || sizeMode === 'print';
   $('progress-wrap').hidden = !value; $('cancel').disabled = false; updateSettings();
 }
 function selectScale(value) {
@@ -1224,7 +1404,7 @@ async function loadFile(file) {
     if (queueMode) restoreSingle();
     clearOutput();
     if (sourceURL) URL.revokeObjectURL(sourceURL);
-    sourceImage = img; sourceFile = file; sourceURL = url; sourceDpi = dpi;
+    sourceImage = img; sourceFile = file; sourceURL = url; sourceDpi = dpi; cropCenter = null;
     $('source-dpi').textContent = t('sourceDpi', { value: dpi ? formatDpi(dpi) : t('unknown') });
     if (!dpiChosen) $('dpi').value = String(Math.max(72, Math.min(600, Math.round(dpi?.x || 300))));
     updateDpiLabel();
@@ -1332,11 +1512,12 @@ $('smoothing').addEventListener('change', () => scheduleExport(true));
 $('quality').addEventListener('input', () => { updateSettings(); scheduleExport(); });
 $('quality').addEventListener('change', () => scheduleExport(true));
 $('download').addEventListener('click', event => { if (exportPending || $('download').getAttribute('aria-disabled') === 'true' || !$('dpi').validity.valid) event.preventDefault(); });
+const modelNames = ['photo', 'illustration', 'fast'];
 function selectModel(value) {
-  if (busy || !['fast', 'illustration'].includes(value) || aiModel === value) return;
+  if (busy || !modelNames.includes(value) || aiModel === value) return;
   aiModel = value;
   stopIllustration();
-  for (const name of ['fast', 'illustration']) {
+  for (const name of modelNames) {
     $('model-' + name).classList.toggle('active', value === name);
     $('model-' + name).setAttribute('aria-pressed', String(value === name));
   }
@@ -1353,18 +1534,34 @@ function selectCpuMode(value) {
 $('cpu-auto').addEventListener('click', () => selectCpuMode('auto'));
 $('cpu-high').addEventListener('click', () => selectCpuMode('high'));
 $('model-fast').addEventListener('click', () => selectModel('fast'));
+$('model-photo').addEventListener('click', () => selectModel('photo'));
+// Noise reduction changes the AI result itself, so finished results are discarded.
+$('denoise').addEventListener('input', () => { if (rawOutput) clearOutput(); if (queueMode) invalidateBatch(); updateSettings(); });
+function selectSizeMode(value) {
+  if (busy || !['scale', 'print'].includes(value) || sizeMode === value) return;
+  sizeMode = value;
+  for (const mode of ['scale', 'print']) {
+    $('size-' + mode).classList.toggle('active', mode === value);
+    $('size-' + mode).setAttribute('aria-pressed', String(mode === value));
+  }
+  clearOutput(); if (queueMode) invalidateBatch(); showError(''); updateSettings();
+}
+$('size-scale').addEventListener('click', () => selectSizeMode('scale'));
+$('size-print').addEventListener('click', () => selectSizeMode('print'));
+for (const id of ['paper', 'paper-width', 'paper-height']) $(id).addEventListener(id === 'paper' ? 'change' : 'input', () => { updateSettings(); scheduleExport(); });
 $('model-illustration').addEventListener('click', () => selectModel('illustration'));
 $('batch-choose').addEventListener('click', () => $('batch-files').click());
 $('batch-files').addEventListener('change', event => { enterQueue([...event.target.files]); event.target.value = ''; });
 $('batch-clear').addEventListener('click', restoreSingle);
 $('detail-open').addEventListener('click', () => {
-  if (busy || !outputStats || !outputURL || exportPending) return;
+  const stats = finalStats || outputStats;
+  if (busy || !stats || !outputURL || exportPending) return;
   $('detail-original').src = sourceURL; $('detail-result').src = outputURL;
-  $('detail-source-label').textContent = t('detailSource', { scale });
-  const dims = `${pretty(outputStats.width)} × ${pretty(outputStats.height)} px`;
+  $('detail-source-label').textContent = t('detailSource', { scale: +(stats.width / sourceImage.naturalWidth).toFixed(2) });
+  const dims = `${pretty(stats.width)} × ${pretty(stats.height)} px`;
   $('detail-help').textContent = t('detailHelp') + ' ' + dims;
   const format = $('format').value === 'jpeg' ? `JPG · ${$('quality').value} %` : 'PNG';
-  for (const id of ['detail-original', 'detail-result']) { $(id).style.width = `${outputStats.width}px`; $(id).style.height = `${outputStats.height}px`; }
+  for (const id of ['detail-original', 'detail-result']) { $(id).style.width = `${stats.width}px`; $(id).style.height = `${stats.height}px`; }
   $('detail-result-label').textContent = `${t('result')} · ${format}`;
   $('detail-result').alt = t('resultAlt');
   $('detail-dialog').showModal();
@@ -1375,7 +1572,10 @@ for (const [from, to] of [['detail-original-pane', 'detail-result-pane'], ['deta
   $(from).addEventListener('scroll', () => { if ($(to).scrollLeft !== $(from).scrollLeft) $(to).scrollLeft = $(from).scrollLeft; if ($(to).scrollTop !== $(from).scrollTop) $(to).scrollTop = $(from).scrollTop; });
 }
 $('cancel').addEventListener('click', () => { controller?.abort(); $('cancel').disabled = true; $('progress-text').textContent = t('cancelling'); });
-const processImage = (image, file, factor, options) => aiModel === 'illustration' ? enhanceIllustration(image, factor, options) : enhance(image, factor, options);
+const runModel = (model, image, factor, options) => model === 'fast'
+  ? enhance(image, factor, options)
+  : enhanceIllustration(image, factor, { ...options, model, denoise: denoiseValue() });
+const processImage = (image, file, factor, options) => runModel(aiModel, image, factor, options);
 function friendlyError(error) {
   if (isKnownMessage(error.message)) return error.message;
   return /memory|texture|WebGL|allocation|context lost/i.test(error.message) ? t('memory') : t('failed');
@@ -1383,14 +1583,19 @@ function friendlyError(error) {
 $('upscale').addEventListener('click', async () => {
   if (busy || !sourceImage || queueMode) return;
   showError('');
-  try { validateSize(sourceImage.naturalWidth, sourceImage.naturalHeight, scale); exportDpi(); } catch (error) { showError(error.message); return; }
+  let factor = scale;
+  try {
+    const target = printTarget(sourceImage.naturalWidth, sourceImage.naturalHeight, exportSettings());
+    if (target) { factor = target.factor; checkTarget(target); }
+    validateSize(sourceImage.naturalWidth, sourceImage.naturalHeight, factor);
+  } catch (error) { showError(error.message); return; }
   clearOutput(); controller = new AbortController(); setBusy(true); $('progress').value = 0;
   $('progress-text').textContent = t('preparing');
   let succeeded = false;
   try {
-    const result = await processImage(sourceImage, sourceFile, scale, { signal: controller.signal, progress: (value, text) => { if (!controller.signal.aborted) { $('progress').value = value * .95; $('progress-text').textContent = text; } } });
+    const result = await processImage(sourceImage, sourceFile, factor, { signal: controller.signal, progress: (value, text) => { if (!controller.signal.aborted) { $('progress').value = value * .95; $('progress-text').textContent = text; } } });
     if (controller.signal.aborted) throw new DOMException(t('cancelled'), 'AbortError');
-    rawOutput = result.blob; outputStats = { width: result.width, height: result.height }; await refreshExport();
+    rawOutput = result.blob; rawFactor = factor; outputStats = { width: result.width, height: result.height }; await refreshExport();
     if (controller.signal.aborted) throw new DOMException(t('cancelled'), 'AbortError');
     $('result-label').textContent = t('result'); $('result').alt = t('resultAlt');
     $('original').style.clipPath = 'inset(0 50% 0 0)'; $('compare').value = 50; $('divider').style.left = '50%'; $('result-layer').style.clipPath = 'inset(0 0 0 50%)';
@@ -1402,7 +1607,7 @@ $('upscale').addEventListener('click', async () => {
 $('batch-start').addEventListener('click', async () => {
   if (busy || !queueMode || !queue.length) return;
   let settings; try { settings = exportSettings(); } catch (error) { showError(error.message); return; }
-  const factor = scale, completed = []; let totalBytes = 0, stoppedForLimit = false;
+  const completed = []; let totalBytes = 0, stoppedForLimit = false;
   invalidateBatch(); showError(''); controller = new AbortController(); setBusy(true); $('progress').value = 0;
   try {
     for (let index = 0; index < queue.length; index++) {
@@ -1410,14 +1615,17 @@ $('batch-start').addEventListener('click', async () => {
       const item = queue[index], url = URL.createObjectURL(item.file), image = new Image(); item.status.textContent = t('working');
       const report = (value, message) => { $('progress').value = (index * 100 + value) / queue.length; $('progress-text').textContent = t('batchProgress', { current: index + 1, total: queue.length, message }); };
       try {
-        report(0, t('preparing')); await validateHeader(item.file); image.src = url; await image.decode(); validateInput(image); validateSize(image.naturalWidth, image.naturalHeight, factor);
+        report(0, t('preparing')); await validateHeader(item.file); image.src = url; await image.decode(); validateInput(image);
+        const target = printTarget(image.naturalWidth, image.naturalHeight, settings), factor = target ? target.factor : scale;
+        checkTarget(target); validateSize(image.naturalWidth, image.naturalHeight, factor);
         const result = await processImage(image, item.file, factor, { signal: controller.signal, progress: (value, message) => report(value * .95, message) });
         if (controller.signal.aborted) break;
-        const blob = await exportBatchItem(result, settings, controller.signal, fraction => report(95 + fraction * 4, t('smoothingProgress')));
+        const kept = { blob: result.blob, width: result.width, height: result.height, factor, sourceWidth: image.naturalWidth, sourceHeight: image.naturalHeight };
+        const blob = await exportBatchItem(kept, settings, controller.signal, fraction => report(95 + fraction * 4, t('smoothingProgress')));
         if (controller.signal.aborted) break;
         if (totalBytes + blob.size > batchLimitBytes) { stoppedForLimit = true; showError(t('zipLimit')); break; }
-        item.result = { blob: result.blob, width: result.width, height: result.height, factor };
-        completed.push({ name: batchFileName(index, item.file, factor, settings.format), blob }); totalBytes += blob.size;
+        item.result = kept;
+        completed.push({ name: batchFileName(index, item.file, batchSuffix(kept, settings), settings.format), blob }); totalBytes += blob.size;
         item.status.textContent = `${t('done')} · ${exportBytes(blob.size)}`; report(100, t('done'));
       } catch (error) {
         if (error.name === 'AbortError') break;
@@ -1434,6 +1642,155 @@ $('batch-start').addEventListener('click', async () => {
   } catch (error) { showError(friendlyError(error)); }
   finally { setBusy(false); controller = null; }
 });
+// Model comparison on a crop: runs every model on a small area with real context
+// around it, so the user can choose before spending minutes on the whole image.
+const previewSize = 128, previewMargin = 48;
+const modelLabels = { photo: 'modelPhoto', illustration: 'modelIllustration', fast: 'modelFast' };
+let previewURLs = [];
+function cropRect() {
+  const width = sourceImage.naturalWidth, height = sourceImage.naturalHeight, size = Math.min(previewSize, width, height);
+  const center = cropCenter || { x: width / 2, y: height / 2 };
+  return {
+    x: Math.round(Math.min(width - size, Math.max(0, center.x - size / 2))),
+    y: Math.round(Math.min(height - size, Math.max(0, center.y - size / 2))), size,
+  };
+}
+function updateCropBox() {
+  const box = $('crop-box');
+  if (!sourceImage || queueMode || rawOutput) { box.hidden = true; return; }
+  const { x, y, size } = cropRect(), width = sourceImage.naturalWidth, height = sourceImage.naturalHeight;
+  box.style.left = `${x / width * 100}%`; box.style.top = `${y / height * 100}%`;
+  box.style.width = `${size / width * 100}%`; box.style.height = `${size / height * 100}%`;
+  box.hidden = false;
+}
+$('comparison').addEventListener('click', event => {
+  if (busy || !sourceImage || queueMode || rawOutput) return;
+  const rect = $('original').getBoundingClientRect();
+  if (!rect.width || !rect.height) return;
+  cropCenter = { x: (event.clientX - rect.left) / rect.width * sourceImage.naturalWidth, y: (event.clientY - rect.top) / rect.height * sourceImage.naturalHeight };
+  updateCropBox();
+});
+async function canvasBlob(source, x, y, width, height) {
+  const canvas = document.createElement('canvas'); canvas.width = width; canvas.height = height;
+  try {
+    const context = canvas.getContext('2d'); if (!context) throw new Error(t('browserMemory'));
+    context.drawImage(source, -x, -y);
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+    if (!blob) throw new Error(t('saveFailed'));
+    return blob;
+  } finally { canvas.width = canvas.height = 1; }
+}
+async function blobImage(blob) {
+  const url = URL.createObjectURL(blob), image = new Image();
+  try { image.src = url; await image.decode(); return image; } finally { URL.revokeObjectURL(url); }
+}
+function clearPreview() {
+  for (const url of previewURLs) URL.revokeObjectURL(url);
+  previewURLs = []; $('preview-grid').replaceChildren();
+}
+function previewCard(title, size, model) {
+  const card = document.createElement('figure'), heading = document.createElement('figcaption'), frame = document.createElement('div');
+  const image = document.createElement('img'), status = document.createElement('span');
+  card.className = 'preview-card'; frame.className = 'preview-frame'; status.className = 'control-hint';
+  heading.textContent = title; image.alt = title; image.width = size; image.height = size; image.hidden = true;
+  frame.append(image); card.append(heading, frame, status);
+  // Scroll all crops together so the same detail stays side by side.
+  frame.addEventListener('scroll', () => {
+    for (const other of $('preview-grid').querySelectorAll('.preview-frame')) if (other !== frame && (other.scrollLeft !== frame.scrollLeft || other.scrollTop !== frame.scrollTop)) { other.scrollLeft = frame.scrollLeft; other.scrollTop = frame.scrollTop; }
+  });
+  if (model) {
+    const use = document.createElement('button');
+    use.type = 'button'; use.className = 'text-button'; use.textContent = t('previewUse'); use.disabled = true;
+    use.addEventListener('click', () => { closePreview(); selectModel(model); $('upscale').focus({ preventScroll: true }); });
+    card.append(use); card.use = use;
+  }
+  card.image = image; card.status = status;
+  $('preview-grid').append(card);
+  return card;
+}
+function showPreviewImage(card, blob) {
+  const url = URL.createObjectURL(blob); previewURLs.push(url);
+  card.image.src = url; card.image.hidden = false;
+}
+function closePreview() {
+  if (busy && controller) controller.abort();
+  if ($('preview-dialog').open) $('preview-dialog').close();
+}
+async function runPreview() {
+  if (busy || !sourceImage || queueMode) return;
+  showError('');
+  let settings, factor = scale;
+  try {
+    settings = exportSettings();
+    const target = printTarget(sourceImage.naturalWidth, sourceImage.naturalHeight, settings);
+    if (target) factor = target.factor;
+  } catch (error) { showError(error.message); return; }
+  const width = sourceImage.naturalWidth, height = sourceImage.naturalHeight, { x, y, size } = cropRect();
+  const left = Math.max(0, x - previewMargin), top = Math.max(0, y - previewMargin);
+  const right = Math.min(width, x + size + previewMargin), bottom = Math.min(height, y + size + previewMargin);
+  clearPreview();
+  $('preview-title').textContent = t('previewTitle', { size, scale: factor });
+  const original = previewCard(t('previewSource'), size * factor);
+  const cards = Object.fromEntries(modelNames.map(model => [model, previewCard(t(modelLabels[model]), size * factor, model)]));
+  for (const card of Object.values(cards)) card.status.textContent = t('pending');
+  $('preview-dialog').showModal();
+  controller = new AbortController(); setBusy(true); $('progress').value = 0;
+  const signal = controller.signal;
+  // Run the currently selected model last so its workers stay ready for the full image.
+  const order = [...modelNames.filter(model => model !== aiModel), aiModel];
+  try {
+    showPreviewImage(original, await canvasBlob(sourceImage, x, y, size, size));
+    const context = await blobImage(await canvasBlob(sourceImage, left, top, right - left, bottom - top));
+    for (const [index, model] of order.entries()) {
+      check(signal);
+      const card = cards[model], started = performance.now();
+      card.status.textContent = t('working');
+      const report = (value, message) => {
+        if (signal.aborted) return;
+        $('progress').value = (index * 100 + value) / order.length;
+        const text = t('previewProgress', { model: t(modelLabels[model]), current: index + 1, total: order.length }) + ' · ' + message;
+        $('progress-text').textContent = text; $('preview-status').textContent = text;
+      };
+      try {
+        const result = await runModel(model, context, factor, { signal, progress: report });
+        check(signal);
+        const output = await blobImage(result.blob);
+        showPreviewImage(card, await canvasBlob(output, (x - left) * factor, (y - top) * factor, size * factor, size * factor));
+        card.status.textContent = t('previewTime', { seconds: ((performance.now() - started) / 1000).toLocaleString(locale, { maximumFractionDigits: 1 }) });
+        card.use.disabled = false;
+      } catch (error) {
+        if (error.name === 'AbortError') throw error;
+        console.error('Preview:', error); card.status.textContent = friendlyError(error);
+      }
+    }
+    $('preview-status').textContent = t('previewDone');
+  } catch (error) {
+    if (error.name !== 'AbortError') { console.error('Preview:', error); $('preview-status').textContent = friendlyError(error); }
+    else { for (const card of Object.values(cards)) if (card.image.hidden) card.status.textContent = t('cancelledShort'); $('preview-status').textContent = t('cancelled'); }
+  } finally { setBusy(false); controller = null; for (const card of Object.values(cards)) if (card.use && !card.image.hidden) card.use.disabled = false; }
+}
+$('preview-open').addEventListener('click', runPreview);
+$('preview-close').addEventListener('click', closePreview);
+$('preview-dialog').addEventListener('close', () => { if (busy && controller) controller.abort(); clearPreview(); });
+
+// Installable, offline-capable app. sw.js caches the app and models after first
+// use and adds the headers that enable multi-threaded WASM.
+if (navigator.serviceWorker && /^https?:$/.test(location.protocol || '')) {
+  navigator.serviceWorker.register(assetUrl('./sw.js')).catch(error => console.warn('Service worker registration failed.', error));
+}
+// Android share target: sw.js stores shared images and redirects here with ?shared.
+async function importSharedFiles() {
+  if (!new URLSearchParams(location.search || '').has('shared') || typeof caches === 'undefined') return;
+  history.replaceState(null, '', location.pathname);
+  const cache = await caches.open('upscale-share'), files = [];
+  for (const request of await cache.keys()) {
+    const response = await cache.match(request), blob = await response.blob();
+    files.push(new File([blob], decodeURIComponent(response.headers.get('x-file-name') || 'image'), { type: blob.type }));
+    await cache.delete(request);
+  }
+  if (files.length) acceptFiles(files.slice(0, 10));
+}
+importSharedFiles().catch(error => console.warn('Shared files could not be opened.', error));
 syncFormatControl();
 updateSettings();
 
