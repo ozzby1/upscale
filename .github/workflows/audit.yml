@@ -69,3 +69,35 @@ jobs:
           Path(".live-e2e.cjs").write_text(source)
           PREPARE_LIVE_SUITE
           node .live-e2e.cjs
+      - name: Check live PWA installability in Chromium
+        run: |
+          cat > .live-install.cjs <<'INSTALL_TEST'
+          const assert = require('node:assert/strict');
+          const fs = require('node:fs'), os = require('node:os'), path = require('node:path');
+          const {chromium} = require('playwright');
+          (async () => {
+            const profile = fs.mkdtempSync(path.join(os.tmpdir(), 'photoupscale-install-'));
+            const context = await chromium.launchPersistentContext(profile, {headless: true});
+            try {
+              const page = await context.newPage();
+              for (const locale of ['', 'cs/']) {
+                await page.goto('https://photoupscale.online/' + locale);
+                await page.evaluate(() => navigator.serviceWorker.ready);
+                await page.reload();
+                await page.waitForTimeout(2000);
+                const session = await context.newCDPSession(page);
+                const manifest = await session.send('Page.getAppManifest');
+                assert.deepEqual(manifest.errors, [], JSON.stringify(manifest.errors));
+                const install = await session.send('Page.getInstallabilityErrors');
+                assert.deepEqual(install.installabilityErrors, [], JSON.stringify(install.installabilityErrors));
+                assert.equal(await page.evaluate(() => crossOriginIsolated), true);
+                console.log('PASS: live ' + (locale ? 'CS' : 'EN') + ' PWA has no Chromium manifest/installability errors and is cross-origin isolated');
+                await session.detach();
+              }
+            } finally {
+              await context.close();
+              fs.rmSync(profile, {recursive: true, force: true});
+            }
+          })().catch(error => {console.error(error); process.exitCode = 1;});
+          INSTALL_TEST
+          node .live-install.cjs
