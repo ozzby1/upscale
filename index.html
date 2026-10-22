@@ -221,7 +221,12 @@ const messages = {
     "modelIllustration": "Illustrations",
     "illustrationHelp": "Smoother outlines for cartoons and illustrations. May redraw fine details. Slower than the fast model; the first run downloads additional model files.",
     "illustrationLoading": "Loading illustration model…",
-    "illustrationFailed": "The illustration model could not start. Try again or choose Fast."
+    "illustrationFailed": "The illustration model could not start. Try again or choose Fast.",
+    "illustrationGpu": "GPU",
+    "illustrationCpu": "CPU (slower)",
+    "illustrationEta": " · about {time} left",
+    "illustrationSeconds": "{count} s",
+    "illustrationMinutes": "{count} min"
   },
   "cs": {
     "pageTitle": "Upscale — více pixelů, více detailů",
@@ -332,7 +337,12 @@ const messages = {
     "modelIllustration": "Ilustrace",
     "illustrationHelp": "Hladší obrysy pro kresby a ilustrace. Může překreslit jemné detaily. Je pomalejší než rychlý model; při prvním použití se stáhnou další soubory modelu.",
     "illustrationLoading": "Načítám model pro ilustrace…",
-    "illustrationFailed": "Model pro ilustrace se nepodařilo spustit. Zkuste to znovu nebo zvolte Rychlý."
+    "illustrationFailed": "Model pro ilustrace se nepodařilo spustit. Zkuste to znovu nebo zvolte Rychlý.",
+    "illustrationGpu": "Grafika",
+    "illustrationCpu": "Procesor (pomalejší)",
+    "illustrationEta": " · zbývá přibližně {time}",
+    "illustrationSeconds": "{count} s",
+    "illustrationMinutes": "{count} min"
   }
 };
 function t(key, values = {}) {
@@ -516,34 +526,54 @@ async function writeJpegResolution(blob, dpi) {
 // The illustration runtime is lazy-loaded in a dedicated worker. Cancellation
 // terminates it immediately, including an in-flight WASM/GPU call or download.
 let illustrationWorker, illustrationReady, illustrationProvider;
+let illustrationWorkers = [];
 let illustrationRequest = 0;
 const illustrationPending = new Map();
 function stopIllustration(error = new DOMException(t('cancelled'), 'AbortError')) {
-  illustrationWorker?.terminate(); illustrationWorker = null; illustrationReady = null; illustrationProvider = null;
+  for (const worker of illustrationWorkers) worker.terminate();
+  illustrationWorkers = []; illustrationWorker = null; illustrationReady = null; illustrationProvider = null;
   for (const request of illustrationPending.values()) request.reject(error);
   illustrationPending.clear();
 }
-function illustrationMessage(message, transfer = []) {
+function illustrationMessage(message, transfer = [], worker = illustrationWorker) {
   return new Promise((resolve, reject) => {
     const id = ++illustrationRequest;
     illustrationPending.set(id, { resolve, reject });
-    try { illustrationWorker.postMessage({ ...message, id }, transfer); }
+    try { worker.postMessage({ ...message, id }, transfer); }
     catch (error) { illustrationPending.delete(id); reject(error); }
   });
 }
+function createIllustrationWorker() {
+  const worker = new Worker(assetUrl('./illustration-worker.js?v=3'));
+  illustrationWorkers.push(worker);
+  worker.onmessage = ({ data }) => {
+    const request = illustrationPending.get(data.id);
+    if (!request) return;
+    illustrationPending.delete(data.id);
+    if (data.error) request.reject(Object.assign(new Error(data.error), { illustrationInit: data.initializing, gpuAttempt: data.gpuAttempt })); else request.resolve(data);
+  };
+  worker.onerror = () => stopIllustration(new Error(t('illustrationFailed')));
+  return worker;
+}
 async function startIllustration(cpuOnly) {
   if (!illustrationReady) {
-    illustrationWorker = new Worker(assetUrl('./illustration-worker.js?v=2'));
-    illustrationWorker.onmessage = ({ data }) => {
-      const request = illustrationPending.get(data.id);
-      if (!request) return;
-      illustrationPending.delete(data.id);
-      if (data.error) request.reject(Object.assign(new Error(data.error), { illustrationInit: data.initializing, gpuAttempt: data.gpuAttempt })); else request.resolve(data);
-    };
-    illustrationWorker.onerror = () => stopIllustration(new Error(t('illustrationFailed')));
-    illustrationReady = illustrationMessage({ type: 'init', cpuOnly }).then(result => { illustrationProvider = result.provider; }).catch(error => { stopIllustration(error); throw error; });
+    illustrationWorker = createIllustrationWorker();
+    illustrationReady = illustrationMessage({ type: 'init', cpuOnly }).then(async result => {
+      illustrationProvider = result.provider;
+      // Separate CPU workers use real cores without depending on response
+      // headers that static hosting cannot provide. Keep the pool bounded.
+      if (illustrationProvider === 'wasm' && (navigator.hardwareConcurrency || 2) >= 4 && (navigator.deviceMemory || 4) >= 4) {
+        const extra = createIllustrationWorker();
+        try { await illustrationMessage({ type: 'init', cpuOnly: true }, [], extra); }
+        catch { extra.terminate(); illustrationWorkers = illustrationWorkers.filter(worker => worker !== extra); }
+      }
+    }).catch(error => { stopIllustration(error); throw error; });
   }
   await illustrationReady;
+}
+function illustrationOrigins(length, core, stride) {
+  const count = Math.max(1, Math.ceil((length - core) / stride) + 1);
+  return Array.from({ length: count }, (_, index) => index * stride);
 }
 
 // Weighted overlap with a bounded row band. Never allocate a full floating-point
@@ -593,7 +623,13 @@ async function renderIllustration(image, factor, { signal, progress }, cpuOnly) 
   check(signal); progress(0, t('illustrationLoading'));
   await startIllustration(cpuOnly); check(signal);
   const { width, height } = validateSize(image.naturalWidth, image.naturalHeight, factor);
-  const core = 96, padding = 32, stride = 80, side = core + padding * 2;
+  // Keep GPU tensors within common storage-buffer limits. CPU tiles can be
+  // larger, reducing duplicated context while retaining the same model/padding.
+  const core = illustrationProvider === 'wasm' ? 128 : 96, padding = 32, stride = core - 16, side = core + padding * 2;
+  const xs = illustrationOrigins(image.naturalWidth, core, stride), ys = illustrationOrigins(image.naturalHeight, core, stride);
+  const backend = t(illustrationProvider === 'webgpu' ? 'illustrationGpu' : 'illustrationCpu');
+  const workers = illustrationWorkers.length;
+  const started = performance.now();
   const canvas = document.createElement('canvas'); canvas.width = canvas.height = side;
   const ctx = canvas.getContext('2d', { willReadFrequently: true });
   const output = document.createElement('canvas'); output.width = width; output.height = height;
@@ -602,10 +638,11 @@ async function renderIllustration(image, factor, { signal, progress }, cpuOnly) 
   let band;
   try {
     band = new Float32Array(width * core * factor * 4);
-    const total = Math.ceil(image.naturalWidth / stride) * Math.ceil(image.naturalHeight / stride);
+    const total = xs.length * ys.length;
     let completed = 0;
-    for (let y = 0; y < image.naturalHeight; y += stride) {
-      for (let x = 0; x < image.naturalWidth; x += stride) {
+    for (const y of ys) {
+      for (let index = 0; index < xs.length; index += workers) {
+        const jobs = xs.slice(index, index + workers).map((x, slot) => {
         check(signal);
         ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, side, side);
         ctx.drawImage(image, padding - x, padding - y);
@@ -616,16 +653,21 @@ async function renderIllustration(image, factor, { signal, progress }, cpuOnly) 
         if (right < side) ctx.drawImage(canvas, Math.max(0, right - 1), 0, 1, side, right, 0, side - right, side);
         if (bottom < side) ctx.drawImage(canvas, 0, Math.max(0, bottom - 1), side, 1, 0, bottom, side, side - bottom);
         const rgba = ctx.getImageData(0, 0, side, side).data;
-        const result = await illustrationMessage({ type: 'tile', rgba, side, padding, core, factor }, [rgba.buffer]);
+          return illustrationMessage({ type: 'tile', rgba, side, padding, core, factor }, [rgba.buffer], illustrationWorkers[slot]).then(result => ({ x, pixels: result.pixels }));
+        });
+        const results = await Promise.all(jobs);
         check(signal);
-        blendIllustrationTile(band, width, height, result.pixels, x, y, core, stride, factor);
-        completed++;
-        progress(5 + Math.round(completed / total * 92), t('processing', { percent: Math.round(completed / total * 100) }));
+        for (const result of results) blendIllustrationTile(band, width, height, result.pixels, result.x, y, core, stride, factor);
+        completed += results.length;
+        const percent = Math.round(completed / total * 100);
+        const seconds = Math.max(1, Math.ceil((performance.now() - started) / completed * (total - completed) / 1000));
+        const eta = completed < total ? t('illustrationEta', { time: seconds < 60 ? t('illustrationSeconds', { count: seconds }) : t('illustrationMinutes', { count: Math.ceil(seconds / 60) }) }) : '';
+        progress(5 + Math.round(completed / total * 92), t('processing', { percent }) + ' · ' + backend + eta);
         await pause();
       }
-      const rows = Math.min(stride * factor, height - y * factor);
+      const rows = y === ys[ys.length - 1] ? height - y * factor : stride * factor;
       out.putImageData(new ImageData(illustrationBandPixels(band, width, rows), width, rows), 0, y * factor);
-      band.copyWithin(0, rows * width * 4); band.fill(0, band.length - rows * width * 4);
+      band.copyWithin(0, rows * width * 4); band.fill(0, Math.max(0, band.length - rows * width * 4));
     }
     check(signal);
     out.globalCompositeOperation = 'destination-in'; out.imageSmoothingEnabled = true; out.imageSmoothingQuality = 'high';
