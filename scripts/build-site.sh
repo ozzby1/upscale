@@ -9,10 +9,11 @@ npm install --no-save --ignore-scripts --no-audit --no-fund \
   onnxruntime-web@1.30.0 linkedom@0.18.12 @napi-rs/canvas@0.1.80 playwright@1.56.1
 
 rm -rf _site
-mkdir -p _site/cs _site/tests _site/icons _site/vendor/ort _site/models/x2 _site/models/x4 _site/models/illustration-quick _site/models/photo
+mkdir -p _site/info _site/cs _site/tests _site/icons _site/vendor/ort _site/models/x2 _site/models/x4 _site/models/illustration-quick _site/models/photo
 
 # App
-cp index.html app.js sw.js manifest.webmanifest illustration-worker.js _site/
+cp index.html app.js sw.js manifest.webmanifest illustration-worker.js robots.txt sitemap.xml llms.txt _site/
+cp info/index.html _site/info/
 cp cs/index.html cs/manifest.webmanifest _site/cs/
 cp icons/*.png _site/icons/
 cp tests/browser-performance.html tests/batch-fixtures.html _site/tests/
