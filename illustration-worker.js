@@ -1,7 +1,14 @@
-/* Real-ESRGAN compact anime v3. All inference stays in this dedicated worker. */
+/* ONNX super-resolution worker (Real-ESRGAN compact models). All inference stays here.
+ * Models: `illustration` – realesr-animevideov3; `photo` – realesr-general-x4v3 blended
+ * with its weak-denoise variant (input `denoise`). Both output 4× and are downsampled for 2×. */
 let session, provider;
 const base = new URL('./', self.location.href);
-async function init(cpuOnly) {
+const MODELS = {
+  illustration: 'models/illustration-quick/model.onnx',
+  photo: 'models/photo/model.onnx',
+};
+async function init(cpuOnly, model = 'illustration', threads = 1) {
+  if (!MODELS[model]) throw new Error('Unknown model.');
   provider = 'wasm';
   if (!cpuOnly && self.navigator.gpu) {
     const adapter = await self.navigator.gpu.requestAdapter({ powerPreference: 'high-performance' });
@@ -14,15 +21,15 @@ async function init(cpuOnly) {
     mjs: new URL(`vendor/ort/${runtime}.mjs?v=1.30.0`, base).href,
     wasm: new URL(`vendor/ort/${runtime}.wasm?v=1.30.0`, base).href,
   };
-  ort.env.wasm.numThreads = 1;
+  // Multi-threaded WASM needs cross-origin isolation (provided by sw.js headers).
+  ort.env.wasm.numThreads = !gpu && self.crossOriginIsolated ? Math.max(1, Math.min(8, threads | 0)) : 1;
   if (gpu) ort.env.webgpu.powerPreference = 'high-performance';
-  const model = new URL('models/illustration-quick/model.onnx', base).href;
   // Request a single provider: a rejected GPU must not silently become a CPU
   // session labelled as GPU. The main thread retries in a fresh CPU worker.
-  session = await ort.InferenceSession.create(model, {
+  session = await ort.InferenceSession.create(new URL(MODELS[model], base).href, {
     executionProviders: [provider],
   });
-  return { provider };
+  return { provider, model, threads: ort.env.wasm.numThreads };
 }
 
 // Crop away contextual padding, then area-downsample the native 4x output for 2x.
@@ -48,21 +55,27 @@ function illustrationPixels(data, side, padding, core, factor) {
 self.onmessage = async ({ data: message }) => {
   const { id, type } = message;
   try {
-    if (type === 'init') { self.postMessage({ id, ...await init(message.cpuOnly) }); return; }
-    if (type !== 'tile' || !session) throw new Error('Illustration session is not ready.');
+    if (type === 'init') { self.postMessage({ id, ...await init(message.cpuOnly, message.model, message.threads) }); return; }
+    if (type !== 'tile' || !session) throw new Error('Model session is not ready.');
     const { rgba, side, padding, core, factor } = message;
     const plane = side * side, values = new Float32Array(plane * 3);
     for (let p = 0; p < plane; p++) for (let c = 0; c < 3; c++) values[c * plane + p] = rgba[p * 4 + c] / 255;
     const input = new ort.Tensor('float32', values, [1, 3, side, side]);
+    const feeds = { [session.inputNames[0]]: input };
+    let strength;
+    if (session.inputNames.includes('denoise')) {
+      strength = new ort.Tensor('float32', new Float32Array([Math.min(1, Math.max(0, Number(message.denoise ?? 0.5)))]), [1]);
+      feeds.denoise = strength;
+    }
     let outputs;
     try {
-      outputs = await session.run({ [session.inputNames[0]]: input });
+      outputs = await session.run(feeds);
       const output = outputs[session.outputNames[0]];
-      if (output.dims.join(',') !== `1,3,${side * 4},${side * 4}`) throw new Error('Unexpected illustration model dimensions.');
+      if (output.dims.join(',') !== `1,3,${side * 4},${side * 4}`) throw new Error('Unexpected model output dimensions.');
       const pixels = illustrationPixels(await output.getData(), side, padding, core, factor);
       self.postMessage({ id, pixels, provider }, [pixels.buffer]);
     } finally {
-      input.dispose();
+      input.dispose(); strength?.dispose();
       if (outputs) for (const output of Object.values(outputs)) output.dispose();
     }
   } catch (error) { self.postMessage({ id, error: error.message, provider, initializing: type === 'init', gpuAttempt: type === 'init' && !message.cpuOnly && !!self.navigator.gpu }); }
