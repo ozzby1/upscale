@@ -4,6 +4,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 node tests/seo.cjs _site
 npx playwright install --with-deps chromium
+node tests/usage-counter.cjs
 node tests/cpu-performance.cjs
 node tests/browser-runtime.cjs _site
 node tests/batch.cjs _site
