@@ -47,7 +47,7 @@ async function runCase(language,model,factor,format){
   vm.runInContext('restoreSingle()',a.ctx);assert.equal(vm.runInContext('queueMode',a.ctx),false);assert.equal(a.document.getElementById('batch-queue').hidden,true);
  }finally{await a.cleanup()}
 }
-(async()=>{await tf.setBackend('cpu');await tf.ready();for(const language of ['en','cs'])for(const model of ['fast','illustration'])await runCase(language,model,(model==='fast')===(language==='en')?2:4,language==='en'?'jpeg':'png');
+(async()=>{await tf.setBackend('cpu');await tf.ready();for(const language of ['en','cs'])for(const model of ['photo','illustration'])await runCase(language,model,(model==='photo')===(language==='en')?2:4,language==='en'?'jpeg':'png');
  const prepared=app('cs');try{
   const d=prepared.document;
   assert.equal(d.getElementById('detail-open').hidden,true);assert.equal(d.getElementById('detail-open').disabled,true);

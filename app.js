@@ -38,7 +38,7 @@ const messages = {
     "preparing": "Preparing AI…",
     "cancel": "Cancel",
     "progress": "Upscaling progress",
-    "privacy": "Your image stays on your device. Nothing is uploaded.",
+    "privacy": "Your image stays on your device. No image is uploaded.",
     "footer": "No sign-up. No watermark.",
     "dpiInvalid": "Choose a DPI between 72 and 600.",
     "jpegMemory": "Could not save JPG. Try a smaller image.",
@@ -99,12 +99,11 @@ const messages = {
     "smoothing": "Edge smoothing",
     "smoothingProgress": "Smoothing edges…",
     "aiModel": "AI model",
-    "modelFast": "Fast",
-    "modelPhoto": "Photos",
-    "modelIllustration": "Illustrations",
+    "modelPhoto": "Photo",
+    "modelIllustration": "Illustration",
     "illustrationHelp": "For drawings, cartoons and graphics with clean outlines. Not suited to photos, where it can smooth away fine detail. The model always computes 4×, so 2× takes about as long as 4×.",
     "illustrationLoading": "Loading illustration model…",
-    "illustrationFailed": "The illustration model could not start. Try again or choose Photos.",
+    "illustrationFailed": "The illustration model could not start. Try again or choose Photo.",
     "illustrationGpu": "GPU",
     "illustrationCpu": "CPU (slower)",
     "illustrationEta": " · about {time} left",
@@ -119,9 +118,8 @@ const messages = {
     "batchUpdating": "Updating ZIP with the new settings… {current}/{total}",
     "batchUpdated": "ZIP updated with the new settings.",
     "photoHelp": "Real-ESRGAN for photos: adds detail and removes noise and JPEG artefacts. More demanding – without a graphics card it takes longer; the first run downloads about 10 MB.",
-    "fastHelp": "The lightest model. Fastest on weaker devices, but adds less detail.",
     "photoLoading": "Loading photo model…",
-    "photoFailed": "The photo model could not start. Try again or choose Fast.",
+    "photoFailed": "The photo model could not start. Try again or choose Illustration.",
     "denoise": "Noise reduction",
     "sizeMode": "Output size",
     "sizeScale": "Scale 2× / 4×",
@@ -138,7 +136,6 @@ const messages = {
     "printTooLarge": "This format and DPI would exceed the output limit ({mp} MP, 8,192 px per side). Choose a smaller format or lower DPI.",
     "printRescale": "The new format or DPI needs a different AI scale. Click Upscale again.",
     "previewOpen": "Compare models on a crop",
-    "previewHint": "Click the image to choose the area for the model comparison.",
     "previewTitle": "Model comparison · {size} px crop · {scale}×",
     "previewHelp": "Each model processes only the selected area (without edge smoothing). Choose the one you like and upscale the whole image.",
     "previewSource": "Original (browser enlargement)",
@@ -241,7 +238,6 @@ const messages = {
     "smoothing": "Vyhlazení hran",
     "smoothingProgress": "Vyhlazuji hrany…",
     "aiModel": "AI model",
-    "modelFast": "Rychlý",
     "modelPhoto": "Fotografie",
     "modelIllustration": "Ilustrace",
     "illustrationHelp": "Pro kresby, komiksy a grafiku s čistými obrysy. Na fotografie se nehodí – může vyhladit jemné detaily. Model vždy počítá 4×, proto 2× trvá zhruba stejně dlouho jako 4×.",
@@ -261,9 +257,8 @@ const messages = {
     "batchUpdating": "Aktualizuji ZIP podle nového nastavení… {current}/{total}",
     "batchUpdated": "ZIP je aktualizovaný podle nového nastavení.",
     "photoHelp": "Real-ESRGAN pro fotografie: doplní detaily a potlačí šum a JPEG artefakty. Náročnější – bez grafické karty počítá déle; první spuštění stáhne asi 10 MB.",
-    "fastHelp": "Nejúspornější model. Nejrychlejší na slabších zařízeních, detaily ale doplní méně.",
     "photoLoading": "Načítám model pro fotografie…",
-    "photoFailed": "Model pro fotografie se nepodařilo spustit. Zkuste to znovu nebo zvolte Rychlý.",
+    "photoFailed": "Model pro fotografie se nepodařilo spustit. Zkuste to znovu nebo zvolte Ilustrace.",
     "denoise": "Potlačení šumu",
     "sizeMode": "Výstupní velikost",
     "sizeScale": "Měřítko 2× / 4×",
@@ -280,7 +275,6 @@ const messages = {
     "printTooLarge": "Tento formát a DPI by překročily limit výstupu ({mp} Mpx, 8 192 px na stranu). Zvolte menší formát nebo nižší DPI.",
     "printRescale": "Nový formát nebo DPI vyžaduje jiné AI zvětšení. Klikněte znovu na Zvětšit obrázek.",
     "previewOpen": "Porovnat modely na výřezu",
-    "previewHint": "Kliknutím do obrázku zvolíte oblast pro porovnání modelů.",
     "previewTitle": "Porovnání modelů · výřez {size} px · {scale}×",
     "previewHelp": "Každý model zpracuje jen vybranou oblast (bez vyhlazení hran). Vyberte, který se vám líbí, a zvětšete celý obrázek.",
     "previewSource": "Původní (zvětšení prohlížečem)",
@@ -1192,8 +1186,8 @@ function updateFormatNote() {
 }
 function updateSettings() {
   $('model-help').hidden = false;
-  $('model-help').textContent = t({ photo: 'photoHelp', illustration: 'illustrationHelp', fast: 'fastHelp' }[aiModel]);
-  $('cpu-control').hidden = aiModel === 'fast';
+  $('model-help').textContent = t({ photo: 'photoHelp', illustration: 'illustrationHelp' }[aiModel]);
+  $('cpu-control').hidden = false;
   $('denoise-control').hidden = aiModel !== 'photo';
   $('denoise-value').value = `${$('denoise').value} %`;
   $('print-target').hidden = sizeMode !== 'print';
@@ -1202,8 +1196,6 @@ function updateSettings() {
   for (const button of scales) button.disabled = busy || sizeMode === 'print';
   const previewAvailable = Boolean(sourceImage && !queueMode);
   $('preview-open').hidden = !previewAvailable; $('preview-open').disabled = busy || !previewAvailable;
-  $('preview-hint').hidden = !previewAvailable || Boolean(rawOutput);
-  updateCropBox();
   $('smoothing-value').value = `${$('smoothing').value} %`;
   $('quality-control').hidden = $('format').value !== 'jpeg';
   $('quality-value').value = `${$('quality').value} %`;
@@ -1369,7 +1361,7 @@ function clearOutput() {
 function setBusy(value) {
   busy = value; document.body.classList.toggle('busy', value);
   if (value) closeFormatMenu();
-  for (const id of ['dpi', 'format', 'format-toggle', 'quality', 'change', 'dropzone', 'batch-choose', 'batch-start', 'batch-clear', 'file', 'batch-files', 'smoothing', 'model-photo', 'model-fast', 'model-illustration', 'cpu-auto', 'cpu-high', 'denoise', 'size-scale', 'size-print', 'paper', 'paper-width', 'paper-height']) $(id).disabled = value;
+  for (const id of ['dpi', 'format', 'format-toggle', 'quality', 'change', 'dropzone', 'batch-choose', 'batch-start', 'batch-clear', 'file', 'batch-files', 'smoothing', 'model-photo', 'model-illustration', 'cpu-auto', 'cpu-high', 'denoise', 'size-scale', 'size-print', 'paper', 'paper-width', 'paper-height']) $(id).disabled = value;
   $('upscale').disabled = value || !sourceImage || queueMode;
   for (const button of scales) button.disabled = value || sizeMode === 'print';
   $('progress-wrap').hidden = !value; $('cancel').disabled = false; updateSettings();
@@ -1512,7 +1504,7 @@ $('smoothing').addEventListener('change', () => scheduleExport(true));
 $('quality').addEventListener('input', () => { updateSettings(); scheduleExport(); });
 $('quality').addEventListener('change', () => scheduleExport(true));
 $('download').addEventListener('click', event => { if (exportPending || $('download').getAttribute('aria-disabled') === 'true' || !$('dpi').validity.valid) event.preventDefault(); });
-const modelNames = ['photo', 'illustration', 'fast'];
+const modelNames = ['photo', 'illustration'];
 function selectModel(value) {
   if (busy || !modelNames.includes(value) || aiModel === value) return;
   aiModel = value;
@@ -1533,7 +1525,6 @@ function selectCpuMode(value) {
 }
 $('cpu-auto').addEventListener('click', () => selectCpuMode('auto'));
 $('cpu-high').addEventListener('click', () => selectCpuMode('high'));
-$('model-fast').addEventListener('click', () => selectModel('fast'));
 $('model-photo').addEventListener('click', () => selectModel('photo'));
 // Noise reduction changes the AI result itself, so finished results are discarded.
 $('denoise').addEventListener('input', () => { if (rawOutput) clearOutput(); if (queueMode) invalidateBatch(); updateSettings(); });
@@ -1572,9 +1563,7 @@ for (const [from, to] of [['detail-original-pane', 'detail-result-pane'], ['deta
   $(from).addEventListener('scroll', () => { if ($(to).scrollLeft !== $(from).scrollLeft) $(to).scrollLeft = $(from).scrollLeft; if ($(to).scrollTop !== $(from).scrollTop) $(to).scrollTop = $(from).scrollTop; });
 }
 $('cancel').addEventListener('click', () => { controller?.abort(); $('cancel').disabled = true; $('progress-text').textContent = t('cancelling'); });
-const runModel = (model, image, factor, options) => model === 'fast'
-  ? enhance(image, factor, options)
-  : enhanceIllustration(image, factor, { ...options, model, denoise: denoiseValue() });
+const runModel = (model, image, factor, options) => enhanceIllustration(image, factor, { ...options, model, denoise: denoiseValue() });
 const processImage = (image, file, factor, options) => runModel(aiModel, image, factor, options);
 function friendlyError(error) {
   if (isKnownMessage(error.message)) return error.message;
@@ -1601,6 +1590,7 @@ $('upscale').addEventListener('click', async () => {
     $('original').style.clipPath = 'inset(0 50% 0 0)'; $('compare').value = 50; $('divider').style.left = '50%'; $('result-layer').style.clipPath = 'inset(0 0 0 50%)';
     for (const id of ['result-layer', 'compare-labels', 'divider', 'compare', 'result-meta', 'download']) $(id).hidden = false;
     $('upscale').hidden = true; succeeded = true;
+    globalThis.usageCounter?.record();
   } catch (error) { clearOutput(); if (error.name !== 'AbortError') { console.error('Upscale:', error); showError(friendlyError(error)); } }
   finally { setBusy(false); controller = null; if (succeeded) $('download').focus({ preventScroll: true }); }
 });
@@ -1627,6 +1617,7 @@ $('batch-start').addEventListener('click', async () => {
         item.result = kept;
         completed.push({ name: batchFileName(index, item.file, batchSuffix(kept, settings), settings.format), blob }); totalBytes += blob.size;
         item.status.textContent = `${t('done')} · ${exportBytes(blob.size)}`; report(100, t('done'));
+        globalThis.usageCounter?.record();
       } catch (error) {
         if (error.name === 'AbortError') break;
         item.status.textContent = friendlyError(error); item.row.classList.add('failed');
@@ -1645,7 +1636,7 @@ $('batch-start').addEventListener('click', async () => {
 // Model comparison on a crop: runs every model on a small area with real context
 // around it, so the user can choose before spending minutes on the whole image.
 const previewSize = 128, previewMargin = 48;
-const modelLabels = { photo: 'modelPhoto', illustration: 'modelIllustration', fast: 'modelFast' };
+const modelLabels = { photo: 'modelPhoto', illustration: 'modelIllustration' };
 let previewURLs = [];
 function cropRect() {
   const width = sourceImage.naturalWidth, height = sourceImage.naturalHeight, size = Math.min(previewSize, width, height);
@@ -1655,21 +1646,6 @@ function cropRect() {
     y: Math.round(Math.min(height - size, Math.max(0, center.y - size / 2))), size,
   };
 }
-function updateCropBox() {
-  const box = $('crop-box');
-  if (!sourceImage || queueMode || rawOutput) { box.hidden = true; return; }
-  const { x, y, size } = cropRect(), width = sourceImage.naturalWidth, height = sourceImage.naturalHeight;
-  box.style.left = `${x / width * 100}%`; box.style.top = `${y / height * 100}%`;
-  box.style.width = `${size / width * 100}%`; box.style.height = `${size / height * 100}%`;
-  box.hidden = false;
-}
-$('comparison').addEventListener('click', event => {
-  if (busy || !sourceImage || queueMode || rawOutput) return;
-  const rect = $('original').getBoundingClientRect();
-  if (!rect.width || !rect.height) return;
-  cropCenter = { x: (event.clientX - rect.left) / rect.width * sourceImage.naturalWidth, y: (event.clientY - rect.top) / rect.height * sourceImage.naturalHeight };
-  updateCropBox();
-});
 async function canvasBlob(source, x, y, width, height) {
   const canvas = document.createElement('canvas'); canvas.width = width; canvas.height = height;
   try {

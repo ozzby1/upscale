@@ -13,10 +13,9 @@ Photoupscale.online enlarges JPG, PNG and WebP images by 2× or 4× and exports 
 
 ## Capabilities and limits
 
-- Photos (default): Real-ESRGAN general x4v3 with adjustable noise reduction. More demanding than the Fast model.
-- Illustrations: Real-ESRGAN model for drawings and graphic artwork.
-- Fast: ESRGAN-slim for quicker enlargement. Model names describe options, not guaranteed quality rankings.
-- Compare models on a selected crop before processing the whole image.
+- Photo (default): Real-ESRGAN general x4v3 with adjustable noise reduction. Can be demanding on CPU.
+- Illustration: Real-ESRGAN model for drawings and graphic artwork.
+- Compare models on a central crop before processing the whole image.
 - Input: JPG, PNG or WebP; up to 20 MB, 12 megapixels and 12,000 pixels on either side per image.
 - Batch: up to 10 images and 100 MB total; download results in a ZIP.
 - Output: PNG or JPEG. PNG can retain transparency; JPEG uses a white background. Output dimensions and memory limits depend on the device, with a maximum of 8,192 pixels per side.
