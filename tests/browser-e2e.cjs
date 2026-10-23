@@ -79,7 +79,7 @@ const helpers = () => {
 
     await page.waitForFunction(() => document.getElementById('usage-counter').textContent.endsWith(': 2'));
     assert.equal(await page.locator('#model-fast, #crop-box, #preview-hint, footer a[href*="github.com"]').count(), 0);
-    assert.deepEqual(await page.locator('#model-control button').allTextContents(), ['Illustration', 'Photo']);
+    assert.deepEqual(await page.locator('#model-control .model-buttons button').allTextContents(), ['Illustration', 'Photo']);
     assert.equal(await page.locator('#usage-counter').evaluate(el => getComputedStyle(el).color), 'rgba(0, 0, 0, 0)');
 
     // 2. Oversized image is rejected from its header, before decoding.
@@ -119,7 +119,7 @@ const helpers = () => {
       $('preview-open').click();
       await waitFor(() => $('preview-dialog').open && !document.body.classList.contains('busy') && $('preview-grid').children.length === 3, 300000);
       const cards = [...$('preview-grid').children].map(card => ({ title: card.querySelector('figcaption').textContent, width: card.querySelector('img').naturalWidth, shown: card.querySelector('img').width, ready: !card.querySelector('img').hidden, use: card.querySelector('button')?.disabled }));
-      [...$('preview-grid').children].find(card => card.querySelector('figcaption').textContent === 'Illustration').querySelector('button').click();
+      [...$('preview-grid').children].find(card => card.querySelector('.preview-card-title').textContent === 'Illustration').querySelector('button').click();
       return { cards, open: $('preview-dialog').open, illustrationActive: $('model-illustration').classList.contains('active') };
     });
     assert.ok(preview.cards.every(card => card.ready && card.shown === 240), JSON.stringify(preview.cards));
@@ -220,6 +220,7 @@ const helpers = () => {
       await page.goto(base + route);
       if (route !== 'info/') await page.waitForFunction(() => document.documentElement.lang && document.querySelector('.brand'));
       if (route !== 'info/') assert.equal(await page.locator('#model-illustration').getAttribute('aria-pressed'), 'true');
+      if (route !== 'info/') { await page.evaluate(helpers); await page.evaluate(() => E2E.load(E2E.disc(32, 24), 'toolbar.png')); }
       const metadata = await page.evaluate(() => ({ title: document.title, canonical: document.querySelector('link[rel="canonical"]').href, socialTitle: document.querySelector('meta[property="og:title"]').content, description: document.querySelector('meta[name="description"]').content, socialDescription: document.querySelector('meta[property="og:description"]').content }));
       assert.equal(metadata.title, metadata.socialTitle);
       assert.equal(metadata.description, metadata.socialDescription);
@@ -228,10 +229,13 @@ const helpers = () => {
         await page.setViewportSize({ width, height: 850 });
         const layout = await page.evaluate(() => {
           const brand = document.querySelector('.brand').getBoundingClientRect(), languages = document.querySelector('.languages').getBoundingClientRect(), main = document.querySelector('main').getBoundingClientRect();
-          return { overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth, overlap: brand.right > languages.left, headerRight: languages.right, contentRight: main.right - parseFloat(getComputedStyle(document.querySelector('main')).paddingRight) };
+          const models = document.querySelector('#model-control .model-buttons')?.getBoundingClientRect(), compare = document.getElementById('preview-open')?.getBoundingClientRect();
+          const toolbarOverlap = Boolean(models && compare && models.left < compare.right && models.right > compare.left && models.top < compare.bottom && models.bottom > compare.top);
+          return { toolbarOverlap, overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth, overlap: brand.right > languages.left, headerRight: languages.right, contentRight: main.right - parseFloat(getComputedStyle(document.querySelector('main')).paddingRight) };
         });
         assert.equal(layout.overflow, false, route + ' overflow at ' + width);
         assert.equal(layout.overlap, false, route + ' header overlap at ' + width);
+        assert.equal(layout.toolbarOverlap, false, route + ' comparison toolbar overlap at ' + width);
         assert.ok(Math.abs(layout.headerRight - layout.contentRight) < 1, JSON.stringify(layout));
       }
     }
