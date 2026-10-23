@@ -39,13 +39,30 @@ const helpers = () => {
   const base = `http://127.0.0.1:${server.address().port}/`;
   const browser = await chromium.launch();
   const context = await browser.newContext();
+  // Intercept window fetch even after the service worker controls this page;
+  // CI must never increment the public production counter.
+  let aggregateCount = 0;
+  await context.exposeBinding('__testAbacus', (_source, url) => {
+    const pathname = new URL(url).pathname;
+    assert.match(pathname, /^\/(get|hit)\/photoupscale-online-8d06bf2f\/upscaled-images$/);
+    if (pathname.startsWith('/hit/')) aggregateCount++;
+    return { value: aggregateCount };
+  });
+  await context.addInitScript(() => {
+    const originalFetch = globalThis.fetch.bind(globalThis);
+    globalThis.fetch = async (input, options) => {
+      const url = typeof input === 'string' ? input : input.url;
+      if (url.startsWith('https://abacus.jasoncameron.dev/')) return Response.json(await globalThis.__testAbacus(url));
+      return originalFetch(input, options);
+    };
+  });
   const page = await context.newPage();
   const errors = []; page.on('pageerror', e => errors.push(e.message));
   try {
     await page.goto(base); await page.evaluate(helpers);
 
     // 1. Semi-transparent edges keep their colour (no white halo) with every model.
-    for (const model of ['photo', 'fast', 'illustration']) {
+    for (const model of ['photo', 'illustration']) {
       const result = await page.evaluate(async model => {
         const { $, disc, load, upscale } = E2E;
         $('model-' + model).click(); document.querySelector('.scale[data-scale="2"]').click();
@@ -57,6 +74,11 @@ const helpers = () => {
       assert.ok(result.edge.n > 100 && result.edge.g < 40 && result.edge.b < 40, `${model}: semi-transparent edge stays dark red, got ${JSON.stringify(result.edge)}`);
       console.log(`PASS: ${model} keeps semi-transparent edge colour`, JSON.stringify(result.edge));
     }
+
+    await page.waitForFunction(() => document.getElementById('usage-counter').textContent.endsWith(': 2'));
+    assert.equal(await page.locator('#model-fast, #crop-box, #preview-hint, footer a[href*="github.com"]').count(), 0);
+    assert.deepEqual(await page.locator('#model-control button').allTextContents(), ['Photo', 'Illustration']);
+    assert.equal(await page.locator('#usage-counter').evaluate(el => getComputedStyle(el).color), 'rgba(0, 0, 0, 0)');
 
     // 2. Oversized image is rejected from its header, before decoding.
     const oversized = await page.evaluate(async () => {
@@ -70,7 +92,7 @@ const helpers = () => {
     // 3. Print format: AI scale is chosen automatically and the output fills the paper.
     const print = await page.evaluate(async () => {
       const { $, disc, load, upscale, set, waitFor } = E2E;
-      $('model-fast').click(); $('message').hidden = true;
+      $('model-photo').click(); $('message').hidden = true;
       await load(disc(64, 48, true), 'print.png');
       $('size-print').click(); set('paper', 'custom', 'change'); set('paper-width', '2'); set('paper-height', '1.5'); set('dpi', '300', 'change');
       const plan = $('print-plan').textContent, pixels = $('output-pixels').textContent;
@@ -87,13 +109,13 @@ const helpers = () => {
     assert.match(print.rescale, /different AI scale/); assert.ok(print.cleared);
     console.log('PASS: print format picks AI 4×, resamples to 236 × 177 px and asks to rerun when the AI scale changes');
 
-    // 4. Model comparison on a crop: all three models, crop at output scale, "use" switches model.
+    // 4. Model comparison on a crop: both models, crop at output scale, "use" switches model.
     const preview = await page.evaluate(async () => {
       const { $, disc, load, waitFor } = E2E;
       $('message').hidden = true; $('model-photo').click();
       await load(disc(160, 120, true), 'preview.png');
       $('preview-open').click();
-      await waitFor(() => $('preview-dialog').open && !document.body.classList.contains('busy') && $('preview-grid').children.length === 4, 300000);
+      await waitFor(() => $('preview-dialog').open && !document.body.classList.contains('busy') && $('preview-grid').children.length === 3, 300000);
       const cards = [...$('preview-grid').children].map(card => ({ title: card.querySelector('figcaption').textContent, width: card.querySelector('img').naturalWidth, shown: card.querySelector('img').width, ready: !card.querySelector('img').hidden, use: card.querySelector('button')?.disabled }));
       [...$('preview-grid').children][2].querySelector('button').click();
       return { cards, open: $('preview-dialog').open, illustrationActive: $('model-illustration').classList.contains('active') };
@@ -103,6 +125,9 @@ const helpers = () => {
     assert.ok(preview.cards.slice(1).every(card => card.use === false), JSON.stringify(preview.cards));
     assert.equal(preview.open, false); assert.ok(preview.illustrationActive);
     console.log('PASS: crop preview runs all models and "use this model" selects it');
+
+    // Previews do not count as full-image upscales.
+    assert.match(await page.locator('#usage-counter').textContent(), /: 3$/);
 
     // 5. Batch: changing DPI after processing re-exports the ZIP instead of discarding results.
     const batch = await page.evaluate(async () => {
@@ -125,6 +150,9 @@ const helpers = () => {
     assert.ok(batch.hiddenWhileUpdating && batch.signature && batch.zipBytes > 100, JSON.stringify(batch));
     assert.ok(batch.rows.every(text => /^Done/.test(text)), JSON.stringify(batch.rows));
     console.log('PASS: batch keeps AI results and re-exports ZIP after a DPI change');
+
+    await page.waitForFunction(() => document.getElementById('usage-counter').textContent.endsWith(': 5'));
+    console.log('PASS: only completed full images counted; previews and export changes do not increment');
 
     // 6. PWA: manifest, service worker, cross-origin isolation, offline use, share target.
     const manifest = await page.evaluate(async () => (await fetch(document.querySelector('link[rel=manifest]').href)).json());
