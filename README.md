@@ -13,6 +13,8 @@ Minimalistický AI upscaler. Obrázky se zpracovávají pouze v prohlížeči.
 
 ## Funkce
 
+- **Výchozí model:** Ilustrace; Fotografie zůstávají dostupné vedle něj.
+- **Velikost výstupu:** na počítači až 8 192 × 8 192 px (67,1 Mpx); při hlášené paměti do 4 GB nejvýše 24 Mpx, na iOS/iPadOS 16,7 Mpx. Skutečně dostupná paměť může být nižší.
 - **AI modely:** Fotografie (Real-ESRGAN general x4v3 s nastavitelným potlačením šumu), Ilustrace (Real-ESRGAN animevideo v3).
 - **Porovnání modelů na výřezu:** oba modely zpracují středový výřez vedle sebe.
 - **Tiskový formát:** A5–A2, fotoformáty nebo vlastní rozměr; aplikace sama zvolí AI 2×/4× a přepočítá výstup přesně na formát.
