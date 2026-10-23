@@ -12,7 +12,7 @@ rm -rf _site
 mkdir -p _site/info _site/cs _site/tests _site/icons _site/vendor/ort _site/models/x2 _site/models/x4 _site/models/illustration-quick _site/models/photo
 
 # App
-cp index.html app.js sw.js manifest.webmanifest illustration-worker.js robots.txt sitemap.xml llms.txt _site/
+cp index.html app.js usage-counter.js sw.js manifest.webmanifest illustration-worker.js robots.txt sitemap.xml llms.txt _site/
 cp info/index.html _site/info/
 cp cs/index.html cs/manifest.webmanifest _site/cs/
 cp icons/*.png _site/icons/
