@@ -60,6 +60,8 @@ const helpers = () => {
   const errors = []; page.on('pageerror', e => errors.push(e.message));
   try {
     await page.goto(base); await page.evaluate(helpers);
+    assert.equal(await page.locator('#model-illustration').getAttribute('aria-pressed'), 'true');
+    assert.equal(await page.locator('#denoise-control').isVisible(), false);
 
     // 1. Semi-transparent edges keep their colour (no white halo) with every model.
     for (const model of ['photo', 'illustration']) {
@@ -77,7 +79,7 @@ const helpers = () => {
 
     await page.waitForFunction(() => document.getElementById('usage-counter').textContent.endsWith(': 2'));
     assert.equal(await page.locator('#model-fast, #crop-box, #preview-hint, footer a[href*="github.com"]').count(), 0);
-    assert.deepEqual(await page.locator('#model-control button').allTextContents(), ['Photo', 'Illustration']);
+    assert.deepEqual(await page.locator('#model-control button').allTextContents(), ['Illustration', 'Photo']);
     assert.equal(await page.locator('#usage-counter').evaluate(el => getComputedStyle(el).color), 'rgba(0, 0, 0, 0)');
 
     // 2. Oversized image is rejected from its header, before decoding.
@@ -117,7 +119,7 @@ const helpers = () => {
       $('preview-open').click();
       await waitFor(() => $('preview-dialog').open && !document.body.classList.contains('busy') && $('preview-grid').children.length === 3, 300000);
       const cards = [...$('preview-grid').children].map(card => ({ title: card.querySelector('figcaption').textContent, width: card.querySelector('img').naturalWidth, shown: card.querySelector('img').width, ready: !card.querySelector('img').hidden, use: card.querySelector('button')?.disabled }));
-      [...$('preview-grid').children][2].querySelector('button').click();
+      [...$('preview-grid').children].find(card => card.querySelector('figcaption').textContent === 'Illustration').querySelector('button').click();
       return { cards, open: $('preview-dialog').open, illustrationActive: $('model-illustration').classList.contains('active') };
     });
     assert.ok(preview.cards.every(card => card.ready && card.shown === 240), JSON.stringify(preview.cards));
@@ -165,6 +167,37 @@ const helpers = () => {
     const threaded = await page.evaluate(async () => { const { $, disc, load, upscale } = E2E; $('model-illustration').click(); await load(disc(48, 48), 'threads.png'); return upscale(); });
     assert.equal(threaded.error, undefined, threaded.error);
     console.log('PASS: service worker controls the page, cross-origin isolated, upscale works with threaded WASM');
+    // A standard AI-sized image crossed the old 24 MP output cap at 4×.
+    const large = await page.evaluate(async () => {
+      const { $, disc, load, upscale, set } = E2E;
+      set('smoothing', '0');
+      document.querySelector('.scale[data-scale="4"]').click();
+      await load(disc(1536, 1024, true), 'ai-size.png');
+      const result = await upscale();
+      return { ...result, output: $('output-info').textContent };
+    });
+    assert.equal(large.error, undefined, large.error);
+    assert.equal(large.width, 6144); assert.equal(large.height, 4096);
+    console.log('PASS: real Illustration model completes 1536 × 1024 at 4×, exports 6144 × 4096 (25.2 MP) with DPI metadata');
+    // Exercise the full desktop canvas budget without repeating costly inference.
+    const largestExport = await page.evaluate(async () => {
+      const canvas = document.createElement('canvas'); canvas.width = canvas.height = 8192;
+      let bitmap;
+      try {
+        const g = canvas.getContext('2d');
+        g.fillStyle = '#dd6611'; g.fillRect(0, 0, 8192, 8192);
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+        bitmap = await createImageBitmap(blob);
+        const sample = new OffscreenCanvas(1, 1), pixel = sample.getContext('2d');
+        pixel.drawImage(bitmap, 8191, 8191, 1, 1, 0, 0, 1, 1);
+        return {width:bitmap.width,height:bitmap.height,pixel:[...pixel.getImageData(0,0,1,1).data],bytes:blob.size};
+      } finally {bitmap?.close(); canvas.width = canvas.height = 1;}
+    });
+    assert.equal(largestExport.width,8192);assert.equal(largestExport.height,8192);
+    assert.deepEqual(largestExport.pixel,[221,102,17,255]);assert.ok(largestExport.bytes > 1000);
+    console.log('PASS: Chromium exports and decodes the 8192² desktop canvas without blank pixels');
+
+
     await context.setOffline(true);
     await page.reload(); await page.evaluate(helpers);
     const offline = await page.evaluate(async () => { const { $, disc, load, upscale } = E2E; $('model-illustration').click(); await load(disc(48, 48), 'offline.png'); return upscale(); });
@@ -186,6 +219,7 @@ const helpers = () => {
     for (const route of ['', 'cs/', 'info/']) {
       await page.goto(base + route);
       if (route !== 'info/') await page.waitForFunction(() => document.documentElement.lang && document.querySelector('.brand'));
+      if (route !== 'info/') assert.equal(await page.locator('#model-illustration').getAttribute('aria-pressed'), 'true');
       const metadata = await page.evaluate(() => ({ title: document.title, canonical: document.querySelector('link[rel="canonical"]').href, socialTitle: document.querySelector('meta[property="og:title"]').content, description: document.querySelector('meta[name="description"]').content, socialDescription: document.querySelector('meta[property="og:description"]').content }));
       assert.equal(metadata.title, metadata.socialTitle);
       assert.equal(metadata.description, metadata.socialDescription);

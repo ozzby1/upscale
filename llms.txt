@@ -13,12 +13,12 @@ Photoupscale.online enlarges JPG, PNG and WebP images by 2× or 4× and exports 
 
 ## Capabilities and limits
 
-- Photo (default): Real-ESRGAN general x4v3 with adjustable noise reduction. Can be demanding on CPU.
-- Illustration: Real-ESRGAN model for drawings and graphic artwork.
+- Illustration (default): Real-ESRGAN model for drawings and graphic artwork.
+- Photo: Real-ESRGAN general x4v3 with adjustable noise reduction. Can be demanding on CPU.
 - Compare models on a central crop before processing the whole image.
 - Input: JPG, PNG or WebP; up to 20 MB, 12 megapixels and 12,000 pixels on either side per image.
 - Batch: up to 10 images and 100 MB total; download results in a ZIP.
-- Output: PNG or JPEG. PNG can retain transparency; JPEG uses a white background. Output dimensions and memory limits depend on the device, with a maximum of 8,192 pixels per side.
+- Output: PNG or JPEG. PNG can retain transparency; JPEG uses a white background. Output dimensions and memory limits depend on the device, with a desktop maximum of 8,192 × 8,192 pixels (67.1 MP). Devices reporting at most 4 GB of memory retain a 24 MP limit; iOS/iPadOS retain a 16.7 MP limit.
 - In scale mode, 2× or 4× changes pixel dimensions; DPI alone changes print-size metadata. In print-format mode, paper size and DPI determine the target pixel dimensions, with automatic AI scaling followed by resampling to fit the original aspect ratio.
 - Installable web app. Offline use requires the app and the assets for the selected model to have been downloaded and retained by the browser; installation alone does not download every model.
 - Runtime depends on image size, selected model, device memory and available browser acceleration. CPU processing can take minutes. There is no guaranteed processing time or unlimited image size.

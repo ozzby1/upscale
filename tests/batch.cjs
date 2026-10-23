@@ -20,7 +20,7 @@ class Worker{
 const modelRoot=path.join(process.env.UPSCALE_TEST_DEPS||root,'node_modules/@upscalerjs/esrgan-slim/models');
 const loadLayersModel=async url=>{const scale=new URL(url).pathname.match(/\/x([24])\//)[1],dir=path.join(modelRoot,'x'+scale),json=JSON.parse(fs.readFileSync(path.join(dir,'model.json'))),weights=Buffer.concat(json.weightsManifest.flatMap(group=>group.paths.map(file=>fs.readFileSync(path.join(dir,file)))));return tf.loadLayersModel(tf.io.fromMemory({modelTopology:json.modelTopology,weightSpecs:json.weightsManifest.flatMap(group=>group.weights),weightData:weights.buffer.slice(weights.byteOffset,weights.byteOffset+weights.byteLength)}))};
 const tfAdapter=new Proxy(tf,{get(target,key){if(key==='loadLayersModel')return loadLayersModel;if(key==='browser')return {...tf.browser,fromPixels:(input,channels)=>{const pixels=input.getContext('2d').getImageData(0,0,input.width,input.height);return tf.browser.fromPixels({data:new Uint8Array(pixels.data),width:input.width,height:input.height},channels)}};return target[key]}});
-function app(language){
+function app(language,navigatorOverrides={}){
  const html=fs.readFileSync(language==='cs'?'cs/index.html':'index.html','utf8'),code=fs.readFileSync('app.js','utf8');
  const {window}=parseHTML(html),document=window.document,events=new Map();
  for(const element of document.querySelectorAll('*'))Object.defineProperty(element,'dataset',{value:new Proxy({},{get:(_,key)=>element.getAttribute('data-'+String(key).replace(/[A-Z]/g,c=>'-'+c.toLowerCase()))})});
@@ -28,7 +28,7 @@ function app(language){
  const add=window.HTMLElement.prototype.addEventListener;window.HTMLElement.prototype.addEventListener=function(type,handler,options){if(this.id){const key=this.id+':'+type;events.set(key,[...(events.get(key)||[]),handler])}return add.call(this,type,handler,options)};
  for(const id of ['format']){const el=document.getElementById(id);let value=el.value;Object.defineProperty(el,'value',{get:()=>value,set:next=>{value=next}})}
  Object.defineProperty(document.getElementById('dpi'),'validity',{get:()=>({valid:true})});
- const ctx=vm.createContext({window,document,location:{pathname:language==='cs'?'/cs/':'/',origin:'https://test.invalid'},navigator:{hardwareConcurrency:4,deviceMemory:8},performance,Worker,Image:BrowserImage,ImageData,URL,URLSearchParams,Blob,File,DOMException,TextEncoder,Uint8Array,Uint8ClampedArray,Float32Array,Uint32Array,DataView,Map,console,setTimeout,clearTimeout,AbortController,tfAdapter});
+ const ctx=vm.createContext({window,document,location:{pathname:language==='cs'?'/cs/':'/',origin:'https://test.invalid'},navigator:{hardwareConcurrency:4,deviceMemory:8,...navigatorOverrides},performance,Worker,Image:BrowserImage,ImageData,URL,URLSearchParams,Blob,File,DOMException,TextEncoder,Uint8Array,Uint8ClampedArray,Float32Array,Uint32Array,DataView,Map,console,setTimeout,clearTimeout,AbortController,tfAdapter});
  vm.runInContext(code,ctx);vm.runInContext('runtime = async () => tfAdapter',ctx);
  return {ctx,document,events,async click(id){assert.ok(events.has(id+':click'),'registered handler '+id);for(const handler of events.get(id+':click'))await handler({preventDefault(){}})},async cleanup(){window.HTMLElement.prototype.addEventListener=add;await vm.runInContext('stopIllustration(); cachedModel?.dispose(); if (batchURL) URL.revokeObjectURL(batchURL)',ctx)}};
 }
@@ -47,7 +47,33 @@ async function runCase(language,model,factor,format){
   vm.runInContext('restoreSingle()',a.ctx);assert.equal(vm.runInContext('queueMode',a.ctx),false);assert.equal(a.document.getElementById('batch-queue').hidden,true);
  }finally{await a.cleanup()}
 }
-(async()=>{await tf.setBackend('cpu');await tf.ready();for(const language of ['en','cs'])for(const model of ['photo','illustration'])await runCase(language,model,(model==='photo')===(language==='en')?2:4,language==='en'?'jpeg':'png');
+(async()=>{await tf.setBackend('cpu');await tf.ready();
+for (const language of ['en','cs']) {
+ const desktop=app(language);
+ try {
+  assert.equal(vm.runInContext('aiModel',desktop.ctx),'illustration');
+  assert.equal(desktop.document.getElementById('model-illustration').getAttribute('aria-pressed'),'true');
+  assert.equal(desktop.document.getElementById('denoise-control').hidden,true);
+  for (const [w,h] of [[1536,1024],[2048,2048]]) {
+   desktop.ctx.sourceW=w;desktop.ctx.sourceH=h;
+   const result=vm.runInContext('validateSize(sourceW,sourceH,4)',desktop.ctx);
+   assert.equal(result.width,w*4);assert.equal(result.height,h*4);
+   vm.runInContext('checkTarget({width:sourceW*4,height:sourceH*4})',desktop.ctx);
+  }
+  assert.throws(()=>vm.runInContext('validateSize(2049,1024,4)',desktop.ctx),/8[ ,]192/);
+  assert.throws(()=>vm.runInContext('checkTarget({width:8193,height:4096})',desktop.ctx),/8[ ,]192/);
+ } finally {await desktop.cleanup()}
+ for (const [overrides,mp] of [[{deviceMemory:4},24],[{userAgent:'iPhone'},16],[{platform:'MacIntel',maxTouchPoints:5},16]]) {
+  const limited=app(language,overrides);
+  try {
+   assert.throws(()=>vm.runInContext('validateSize(1536,1024,4)',limited.ctx),new RegExp(String(mp)));
+   assert.throws(()=>vm.runInContext('checkTarget({width:6144,height:4096})',limited.ctx),new RegExp(String(mp)));
+   assert.doesNotThrow(()=>vm.runInContext('validateSize(1536,1024,2)',limited.ctx));
+  } finally {await limited.cleanup()}
+ }
+}
+console.log('PASS: 4× AI image sizes and print targets accepted up to 8192² on desktop; side, low-memory and iOS limits retained in EN/CS');
+for(const language of ['en','cs'])for(const model of ['photo','illustration'])await runCase(language,model,(model==='photo')===(language==='en')?2:4,language==='en'?'jpeg':'png');
  const prepared=app('cs');try{
   const d=prepared.document;
   assert.equal(d.getElementById('detail-open').hidden,true);assert.equal(d.getElementById('detail-open').disabled,true);
