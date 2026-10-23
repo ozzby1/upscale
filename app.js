@@ -14,8 +14,8 @@ const messages = {
     "headingAccent": "More detail.",
     "intro": "Free AI image upscaler for photos and illustrations. Enlarge 2× or 4×, right in your browser.",
     "workspace": "Image upscaler",
-    "drop": "Drop your images here",
-    "choose": "Choose images",
+    "drop": "Drop your image here",
+    "choose": "Choose an image",
     "dropHint": "or click to browse",
     "formats": "JPG, PNG, WebP · original file up to 20 MB",
     "change": "Change image",
@@ -135,10 +135,13 @@ const messages = {
     "printBatch": "Each image is fitted to {paper} at the chosen DPI.",
     "printTooLarge": "This format and DPI would exceed the output limit ({mp} MP, 8,192 px per side). Choose a smaller format or lower DPI.",
     "printRescale": "The new format or DPI needs a different AI scale. Click Upscale again.",
-    "previewOpen": "Compare models on a crop",
+    "previewOpen": "Compare previews",
+    "previewButtonHelp": "Preview both models on a small crop without upscaling the whole image.",
+    "previewOriginalBadge": "Without AI",
+    "previewAiBadge": "AI {scale}×",
     "previewTitle": "Model comparison · {size} px crop · {scale}×",
-    "previewHelp": "Each model processes only the selected area (without edge smoothing). Choose the one you like and upscale the whole image.",
-    "previewSource": "Original (browser enlargement)",
+    "previewHelp": "Compare the same crop at the same display size. The original uses normal browser enlargement without extra changes. AI previews do not apply edge smoothing. Choose a model for the whole image.",
+    "previewSource": "Original",
     "previewUse": "Use this model",
     "previewProgress": "Preview: {model} ({current}/{total})",
     "previewTime": "{seconds} s",
@@ -153,8 +156,8 @@ const messages = {
     "headingAccent": "Více detailů.",
     "intro": "Zvětšete fotografie a ilustrace pomocí AI 2× nebo 4×. Zdarma a přímo v prohlížeči.",
     "workspace": "Zvětšení obrázku",
-    "drop": "Přetáhněte sem obrázky",
-    "choose": "Vybrat obrázky",
+    "drop": "Přetáhněte sem obrázek",
+    "choose": "Vybrat obrázek",
     "dropHint": "nebo klikněte pro výběr",
     "formats": "JPG, PNG, WebP · nahrávaný soubor do 20 MB",
     "change": "Změnit obrázek",
@@ -274,10 +277,13 @@ const messages = {
     "printBatch": "Každý obrázek se přizpůsobí formátu {paper} při zvoleném DPI.",
     "printTooLarge": "Tento formát a DPI by překročily limit výstupu ({mp} Mpx, 8 192 px na stranu). Zvolte menší formát nebo nižší DPI.",
     "printRescale": "Nový formát nebo DPI vyžaduje jiné AI zvětšení. Klikněte znovu na Zvětšit obrázek.",
-    "previewOpen": "Porovnat modely na výřezu",
+    "previewOpen": "Porovnat náhledy",
+    "previewButtonHelp": "Náhled obou modelů na malém výřezu, bez zvětšování celého obrázku.",
+    "previewOriginalBadge": "Bez AI",
+    "previewAiBadge": "AI {scale}×",
     "previewTitle": "Porovnání modelů · výřez {size} px · {scale}×",
-    "previewHelp": "Každý model zpracuje jen vybranou oblast (bez vyhlazení hran). Vyberte, který se vám líbí, a zvětšete celý obrázek.",
-    "previewSource": "Původní (zvětšení prohlížečem)",
+    "previewHelp": "Porovnejte stejný výřez ve stejné velikosti. Originál je běžně zvětšený prohlížečem bez dalších úprav. AI náhledy nepoužívají vyhlazení hran. Vyberte model pro celý obrázek.",
+    "previewSource": "Originál",
     "previewUse": "Použít tento model",
     "previewProgress": "Náhled: {model} ({current}/{total})",
     "previewTime": "{seconds} s",
@@ -1667,11 +1673,15 @@ function clearPreview() {
   for (const url of previewURLs) URL.revokeObjectURL(url);
   previewURLs = []; $('preview-grid').replaceChildren();
 }
-function previewCard(title, size, model) {
+function previewCard(title, size, model, badgeLabel) {
   const card = document.createElement('figure'), heading = document.createElement('figcaption'), frame = document.createElement('div');
   const image = document.createElement('img'), status = document.createElement('span');
   card.className = 'preview-card'; frame.className = 'preview-frame'; status.className = 'control-hint';
-  heading.textContent = title; image.alt = title; image.width = size; image.height = size; image.hidden = true;
+  const name = document.createElement('span'), badge = document.createElement('span');
+  name.className = 'preview-card-title'; name.textContent = title;
+  badge.className = 'preview-badge'; badge.textContent = badgeLabel;
+  heading.append(name, badge); card.classList.add(model ? 'preview-card-ai' : 'preview-card-source');
+  image.alt = title; image.width = size; image.height = size; image.hidden = true;
   frame.append(image); card.append(heading, frame, status);
   // Scroll all crops together so the same detail stays side by side.
   frame.addEventListener('scroll', () => {
@@ -1711,8 +1721,8 @@ async function runPreview() {
   const right = Math.min(width, x + size + previewMargin), bottom = Math.min(height, y + size + previewMargin);
   clearPreview();
   $('preview-title').textContent = t('previewTitle', { size, scale: factor });
-  const original = previewCard(t('previewSource'), size * factor);
-  const cards = Object.fromEntries(modelNames.map(model => [model, previewCard(t(modelLabels[model]), size * factor, model)]));
+  const original = previewCard(t('previewSource'), size * factor, undefined, t('previewOriginalBadge'));
+  const cards = Object.fromEntries(modelNames.map(model => [model, previewCard(t(modelLabels[model]), size * factor, model, t('previewAiBadge', { scale: factor }))]));
   for (const card of Object.values(cards)) card.status.textContent = t('pending');
   $('preview-dialog').showModal();
   controller = new AbortController(); setBusy(true); $('progress').value = 0;
