@@ -8,7 +8,7 @@
 const BUILD = '__BUILD__';
 const SHELL = `upscale-shell-${BUILD}`, ASSETS = 'upscale-assets-v1', SHARE = 'upscale-share';
 const scope = new URL(self.registration.scope);
-const shellFiles = ['./', './cs/', './app.js?v=8', './info/', './manifest.webmanifest', './cs/manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
+const shellFiles = ['./', './cs/', './app.js?v=9', './info/', './usage-counter.js?v=2', './manifest.webmanifest', './cs/manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
 const isolationHeaders = { 'Cross-Origin-Opener-Policy': 'same-origin', 'Cross-Origin-Embedder-Policy': 'require-corp' };
 
 self.addEventListener('install', event => {
