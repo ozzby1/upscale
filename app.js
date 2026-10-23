@@ -799,7 +799,10 @@ let cachedScale;
 // iOS/iPadOS Safari refuses canvases above 16,777,216 px (4096²); larger
 // outputs would fail late with a blank canvas or a null blob.
 const canvasLimited = /iP(?:hone|ad|od)/.test(navigator.userAgent || '') || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-const maxOutputPixels = canvasLimited ? 16777216 : 24000000;
+// 8192² permits 4× exports of standard 2048² AI images on desktops.
+// Keep the conservative budget on devices reporting at most 4 GiB of RAM.
+const memoryLimited = Number(navigator.deviceMemory) > 0 && Number(navigator.deviceMemory) <= 4;
+const maxOutputPixels = canvasLimited ? 16777216 : memoryLimited ? 24000000 : 8192 ** 2;
 function validateSize(width, height, scale) {
   const w = width * scale, h = height * scale;
   if (w > 8192 || h > 8192 || w * h > maxOutputPixels) {
@@ -1094,7 +1097,7 @@ let exportController, processedOutput, processedRaw, processedStrength, processe
 let exportRevision = 0, exportPending = false, exportTimer, pointerSliding = false;
 let scale = 2, busy = false, controller, loadRevision = 0;
 let dpiChosen = false, formatChosen = false;
-let aiModel = 'photo', sizeMode = 'scale', cropCenter = null;
+let aiModel = 'illustration', sizeMode = 'scale', cropCenter = null;
 let queueMode = false, queue = [], batchURL, batchTimer, batchExportController, batchRevision = 0;
 const scales = [...document.querySelectorAll('.scale')];
 const formatOptions = [...document.querySelectorAll('.format-option')];
@@ -1504,7 +1507,7 @@ $('smoothing').addEventListener('change', () => scheduleExport(true));
 $('quality').addEventListener('input', () => { updateSettings(); scheduleExport(); });
 $('quality').addEventListener('change', () => scheduleExport(true));
 $('download').addEventListener('click', event => { if (exportPending || $('download').getAttribute('aria-disabled') === 'true' || !$('dpi').validity.valid) event.preventDefault(); });
-const modelNames = ['photo', 'illustration'];
+const modelNames = ['illustration', 'photo'];
 function selectModel(value) {
   if (busy || !modelNames.includes(value) || aiModel === value) return;
   aiModel = value;
