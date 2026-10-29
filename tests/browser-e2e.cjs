@@ -39,6 +39,7 @@ const helpers = () => {
   const base = `http://127.0.0.1:${server.address().port}/`;
   const browser = await chromium.launch();
   const context = await browser.newContext();
+  await context.route('https://vlastni-analytika-collector.jan-osoba.workers.dev/**', route => route.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: '' }));
   // Intercept window fetch even after the service worker controls this page;
   // CI must never increment the public production counter.
   let aggregateCount = 0;
