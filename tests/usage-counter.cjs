@@ -14,6 +14,7 @@ const server = http.createServer((req, res) => {
   res.end(fs.readFileSync(path.startsWith('/cs') ? 'cs/index.html' : 'index.html'));
 });
 async function setup(context) {
+  await context.route('https://vlastni-analytika-collector.jan-osoba.workers.dev/**', route => route.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: '' }));
   await context.route('https://abacus.jasoncameron.dev/**', async route => {
     const request = route.request(), path = new URL(request.url()).pathname;
     assert.ok(path === '/get/' + target || path === '/hit/' + target);
