@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval'; worker-src 'self'; connect-src 'self' blob: data:; img-src 'self' blob: data:; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval' https://vlastni-analytika-collector.jan-osoba.workers.dev; worker-src 'self'; connect-src 'self' blob: data: https://vlastni-analytika-collector.jan-osoba.workers.dev; img-src 'self' blob: data:; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self'; form-action 'none'">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f7f8f5">
   <meta name="description" content="Learn how to upscale images with AI: compare photo models, enlarge 2× or 4×, preserve transparent PNGs, batch export and calculate pixel dimensions for printing.">
@@ -38,6 +38,9 @@ main{max-width:1168px;margin:44px auto 72px;padding:0 28px}.breadcrumbs{font-siz
 @media(max-width:360px){.header{gap:8px}.brand{font-size:clamp(14px,5vw,18px);gap:5px}.brand svg{width:18px;height:18px}.languages a{min-width:32px;padding-inline:6px}h1{font-size:32px}}
 @media(max-width:340px){.header{gap:8px}.brand{font-size:13px;gap:5px;letter-spacing:-.6px}.brand svg{width:18px;height:18px}.languages a{min-width:30px;padding-inline:6px}}
 </style>
+<script async fetchpriority="low" src="https://vlastni-analytika-collector.jan-osoba.workers.dev/tracker.js"
+  data-site="07ba3e87333245f7bcc03223cfe8998c"
+  referrerpolicy="no-referrer" crossorigin="anonymous"></script>
 </head>
 <body>
   <header class="header">

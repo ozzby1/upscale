@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval'; worker-src 'self'; connect-src 'self' blob: data: https://abacus.jasoncameron.dev; img-src 'self' blob: data:; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval' https://vlastni-analytika-collector.jan-osoba.workers.dev; worker-src 'self'; connect-src 'self' blob: data: https://abacus.jasoncameron.dev https://vlastni-analytika-collector.jan-osoba.workers.dev; img-src 'self' blob: data:; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self'; form-action 'none'">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f7f8f5">
   <meta name="description" content="Zvětšete fotografie a ilustrace 2× nebo 4× pomocí AI přímo v prohlížeči. Zdarma, bez registrace a vodoznaku. Hromadné zpracování a rozměry pro tisk.">
@@ -67,6 +67,9 @@ button.upscale-action{background:#ed8722;color:#fff;border-color:#ed8722}button.
 @media(max-width:600px){.model-toolbar{gap:12px}.model-toolbar .model-choice{min-width:0;padding-inline:15px}.model-toolbar .preview-trigger{font-size:11px}}
 </style>
   
+<script async fetchpriority="low" src="https://vlastni-analytika-collector.jan-osoba.workers.dev/tracker.js"
+  data-site="07ba3e87333245f7bcc03223cfe8998c"
+  referrerpolicy="no-referrer" crossorigin="anonymous"></script>
 </head>
 <body>
   <header class="header">
